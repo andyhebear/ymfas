@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<UserCombinePreferences filename="/home/mason/workspace/ymfas/ymfas.mds">
+  <Files>
+    <File filename="Welcome" />
+    <File filename="./IrrInputSystem.cs" />
+    <File filename="./Ship.cs" />
+    <File filename="./Program.cs" />
+  </Files>
+  <Views>
+    <ViewMemento Id="MonoDevelop.Ide.Gui.Pads.ProjectPad">
+      <TreeView>
+        <Node expanded="True">
+          <Node name="ymfas" expanded="True">
+            <Node name="References" expanded="True" />
+            <Node name="Program.cs" expanded="False" selected="True" />
+          </Node>
+        </Node>
+      </TreeView>
+    </ViewMemento>
+    <ViewMemento Id="MonoDevelop.Ide.Gui.Pads.ClassPad">
+      <TreeView>
+        <Node expanded="True" />
+      </TreeView>
+    </ViewMemento>
+  </Views>
+  <Properties>
+    <Properties>
+      <Property key="ActiveConfiguration" value="Debug" />
+      <Property key="ActiveWindow" value="/home/mason/workspace/ymfas/Program.cs" />
+    </Properties>
+  </Properties>
+</UserCombinePreferences>
