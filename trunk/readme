@@ -1,0 +1,16 @@
+ymfas README FILE
+Author: Mason Smith
+
+Table of Contents:
+1. Build Notes
+
+****************************************
+1. Build Notes
+
+ymfas current requires the Irrlicht 3D rendering engine, the IrrlichtNETCP wrapper, and the Tao.Ode bindings to the ODE physics engine. 
+
+To build the project, you need to add references to irrlicht/Irrlicht.NET.dll and tao/Tao.Ode.dll to your project. Additionally, the executable needs access to the other four files in the irrlicht folder (Irrlicht.dll, IrrlichtW.dll, Irrlicht.Extensions.dll, and IrrlichtW.so). One way to do this is to copy the files into the same directory as the executable.
+
+- Windows-specific: You can also just copy the files into your WINDOWS directory to avoid them needing to be in the same directory. 
+
+
