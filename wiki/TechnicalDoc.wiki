@@ -8,7 +8,7 @@ This is the technical spec for YMFAS. It includes information about overall engi
 YMFAS is aimed at Windows 2000 or higher. It will require DirectX 9, along with other 
 
 = Language =
-The game/engine will be written in C# on top of the .NET platform, with the possible (though slight) exception of using a scripting language (most likely Lua). The possibility of porting the project to Mono is slim, since the project uses some non-portable libraries (see [Graphics], [Input])
+The game/engine will be written in C# on top of the .NET platform, with the possible (though slight) exception of using a scripting language (most likely Lua). The possibility of porting the project to Mono is slim, since the project uses some non-portable libraries (see Graphics, Input)
 
 = Graphics =
 == External Libraries ==
