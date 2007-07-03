@@ -1,14 +1,23 @@
-#summary Y.M.F.A.S Design Doc Wiki
+#summary Y.M.F.A.S. Design Doc Wiki
 
 = Introduction =
 
 A multiplayer 3-D first-person space pilot simulation game.  Includes accurate inertial physics with a computer-assisted "aim where you fly" mode and customized maneuver scripting.
 
 = Details =
-
 == Game Setup ==
-== Environment / Maps ==
+Y.M.F.A.S. is a multiplayer-only game, except for a single player tutorial / practice mode.  The main menu will contain buttons to host or join a game over UDP.
 
+After hosting or joining a game, a player enters the game *lobby*, where players may chat  and organize teams until each of them has indicated that they are ready to begin the game.  At this point, the game host may start the match.
+
+== Environment / Maps ==
+== Game Modes ==
+=== Deathmatch ===
+A free-for-all where each pilot may shoot down any other pilot to earn points.
+=== Team Deathmatch ===
+Similar to deathmatch, but pits two teams (organized in the *lobby*) against each other.  Friendly fire is enabled, and shooting down a friendly ship will lose a pilot points.
+=== Capture the Flag ===
+=== Convoy Defense ===
 == Ships ==
 === Propulsion Systems ===
 === Weapon Systems ===
