@@ -1,0 +1,34 @@
+#summary Current list of tasks to be implemented
+#labels Phase-Implementation
+
+= Introduction =
+
+Tasks should ideally be in an appropriate section, whenever possible. Priority should be indicated after the task name. If the task is being taken up, it should be _italicized_. Use ~~strikes~~ to indicate completed tasks. Comments can be left on tasks, but should be clearly indicated. Examples:
+
+  * ~~Brain Go's Mom (high) - Someone needs to go do Brian's mom.~~ (Task completed by Mason)
+  * _Brian Go's Mom v2 (critical) - that's what she said..._ (Task started by Mason)
+    * *I usually handle this, but go on ahead. --BGo's dad*
+    
+
+This page is not for bugs. Bugs and other defects should be listed in the issues section of the project site.
+
+= Tasks =
+ 
+== Graphics ==
+  * Arcball (AB) camera (medium) - Implement an arcball camera which allows for a 3D view at around a specific object at a fixed distance. The AB camera should attach itself to a Mogre SceneNode and, with some sort of Update function, adjust its position to be at the set radius. Ideally, the AB camera will derive from an Ogre camera, so that it can be used seamlessly within Ogre.
+
+== Engine ==
+  * Time Management system (high) 
+    # Implement a class which takes in one-time and repeated-interval events and runs them at the specified time. The class should return some sort of id after an event is submitted, so that the user can cancel an event or temporarily pause a repeated event. The system will eventually be integrated into the engine and be used for many critical subsystems (network, input, and physics updates, among others).
+    
+    # Implement a class which returns managed timers. The timers will be an improvement over native Ogre timers in that they will be automatically update by the engine after each frame. This may be as simple as "registering" a timer with the engine, and this might actually be easier.
+
+== Input ==
+
+== Networking ==
+
+== AI ==
+
+== Physics ==
+
+== Miscellaneous ==
