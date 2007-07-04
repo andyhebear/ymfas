@@ -3,12 +3,7 @@
 
 = Introduction =
 
-Tasks should ideally be in an appropriate section, whenever possible. Priority should be indicated after the task name. If the task is being taken up, it should be _italicized_. Use ~~strikes~~ to indicate completed tasks. Comments can be left on tasks, but should be clearly indicated. Examples:
-
-  * ~~Brain Go's Mom (high) - Someone needs to go do Brian's mom.~~ (Task completed by Mason)
-  * _Brian Go's Mom v2 (critical) - that's what she said..._ (Task started by Mason)
-    * *I usually handle this, but go on ahead. --BGo's dad*
-    
+Tasks should ideally be in an appropriate section, whenever possible. Priority should be indicated after the task name. If the task is being taken up, it should be _italicized_. Use ~~strikes~~ to indicate completed tasks. Comments can be left on tasks, but should be clearly indicated. 
 
 This page is not for bugs. Bugs and other defects should be listed in the issues section of the project site.
 
