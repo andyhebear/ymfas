@@ -1,4 +1,5 @@
 #summary Instructions on building prerequisites and instructions
+#labels Phase-Deploy
 
 = Dependencies =
 
