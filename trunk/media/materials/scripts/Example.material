@@ -1,0 +1,32 @@
+material Examples/Ninja
+{
+	technique
+	{
+		pass
+		{
+		
+			texture_unit
+			{
+				texture nskingr.jpg
+			}
+		}
+	}
+}
+
+material Material__25
+{
+	technique
+	{
+		pass
+		{
+			lighting on
+			diffuse 0.8 0.1 0.1
+			ambient 0.2 0.2 0.2
+
+			texture_unit
+			{
+				texture texmap2.jpg
+			}
+		}
+	}
+}
