@@ -19,8 +19,19 @@ A free-for-all where each pilot may shoot down any other pilot to earn points.
 Similar to deathmatch, but pits two teams (organized in the *lobby*) against each other.  Friendly fire is enabled, and shooting down a friendly ship will lose a pilot points.
 === Capture the Flag ===
 === Convoy Defense ===
+A slow-moving freight convoy is moving from some point A to some point B on the map.  Players are divided into teams: one team must protect the convoy until it reachees its destination while annother attempts to assault it.
 == Ships ==
 === Propulsion Systems ===
 === Weapon Systems ===
 === Defense Systems ===
 === Power Systems ===
+* All the ship's systems share a main power supply.  
+* Pilots control what percentage of power is directed towards weaponry, propulsion, and shielding.  
+* Power to shielding can be routed  in each of the 6 +/- X,Y, and Z directions.  
+* Each ship has a power transfer rate which is higher the lower its class (interceptors are most adept at re-routing power)  
+* By default, the ship has enough power to operate all systems at 100% capacity, with an extra 10% power in reserve.  The effects of overloading different systems is described above.
+=== Classes ===
+*INTERCEPTOR*
+*CORVETTE*
+*CRUISER*
+*BATTLESHIP*
