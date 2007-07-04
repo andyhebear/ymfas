@@ -1,180 +1,105 @@
 using System;
-using System.Text;
-using IrrlichtNETCP;
-using Tao.Ode;
+using System.Collections.Generic;
+using Mogre;
+//using MogreNewt;
+using Microsoft.DirectX.DirectInput;
+using YCB;
 
-namespace Ymfas
+namespace MogreSimple
 {
-    class Program : IDisposable
-    {
-        // main rendering device
-        private IrrlichtDevice irrDevice;
+	static class Program
+	{
+		static void Main()
+		{
+			OgreStart win = new OgreStart();
+			win.Go();
+		}
+	}
 
-        // input device
-        private IrrInputSystem irrInput;
+	partial class OgreStart : IDisposable
+	{
+		Ship playerShip;
 
-        // physics handle
-        private IntPtr physWorld;
-        
-        // rendering properties from the Irrlicht device
-        private VideoDriver driver;
-        private SceneManager sMgr;     
+		/// <summary>
+		/// initialize the scene
+		/// </summary>
+		private void InitializeScene()
+		{
+			// create the scene manager
+			mgr = root.CreateSceneManager(SceneType.ST_GENERIC, this.SCENE_MANAGER_ID);
 
-        // rendering objects
-        private GUIStaticText fpsLabel;
-        private LightSceneNode light;
-        private CameraSceneNode cam;
-        private Ship playerShip;
-        private SceneNode[,] cubeGrid;
-        private Texture sphereTex;
+			// Every viewport has a camera associated with it.
+			// ogre can easily render with multiple viewports, 
+			// each with different cameras.
+			// The second number is a z-order. Higher z-order viewports
+			// are rendered on top
+			Camera cam = mgr.CreateCamera("cam");
+			root.AutoCreatedWindow.AddViewport(cam, 0);
 
-        public const int GRID_WIDTH = 2;
+			Viewport vp = root.AutoCreatedWindow.GetViewport(0);
+			vp.BackgroundColour = ColourValue.Blue;
 
-        static void Main(string[] args)
-        {
-            Program p = null;
-            try
-            {
-                p = new Program(800, 600, false, DriverType.OpenGL);
+			// have the frustum set the aspect ratio automatically
+			cam.AutoAspectRatio = true;
 
-                p.InitScene();
-                p.MainLoop();
-                p.Dispose();
-                p = null;
-            }
-            catch (Exception e)
-            {
-            	System.Console.Write("Exception thrown by " +  e.Source + ": " 
-            		+ e.ToString());
-                if (p != null)
-                {
-                    p.Dispose();
-                    p = null;
-                }
-            }
-        }
+			// In Ogre, an entity is a renderable object. An entity must be attached
+			// to a scene node, however, in order to be rendered. Every entity (really, 
+			// every object in Ogre) must be assigned a unique name. 
+			playerShip = new Ship(world, mgr, null, "ship"); 
 
-        Program(int width, int height, bool fullscreen, DriverType type)
-        {
-            // create the Irrlicht rendering device
-            irrDevice = new IrrlichtDevice(type, new Dimension2D(width, height), 32,
-                false, false, false, false);
+			//shipNode.AttachObject(cam);
+			cam.Position = playerShip.Position + (new Vector3(0, 1, -2)) * playerShip.Mesh.BoundingRadius;
+			cam.LookAt(playerShip.Position);
+			
+			Light l = mgr.CreateLight("point1");
+			l.DiffuseColour = new ColourValue(1.0f, 1.0f, 1.0f);
+			l.Position = new Vector3(0, 2, -1) * playerShip.Mesh.BoundingRadius;
+			l.CastShadows = true;
+			l.Type = Light.LightTypes.LT_POINT;
+		}
 
-            if (irrDevice.Null())
-                throw new Exception("Couldn't initialize Irrlicht.");
+		/// <summary>
+		/// execute the render loop, which
+		/// is actually pretty simple at this point
+		/// </summary>
+		public void Go()
+		{
+			frameTimer.Reset();
+			float frameTime;
 
-            // retrieve the rendering properties
-            this.driver = this.irrDevice.VideoDriver;
-            this.sMgr = this.irrDevice.SceneManager;
+			// Basically, there's not much to do here
+			// RenderOneFrame returns false when we Ogre
+			// is done. Alternatively, we can not have
+			// the loop and merely call root.StartRendering();
+			bool done = false;
+			while (!done)
+			{
+				frameTime = frameTimer.Milliseconds / 1000.0f;
+				frameTimer.Reset();
 
-            // initialize the input system
-            irrInput = new IrrInputSystem();
-            irrDevice.OnEvent += new OnEventDelegate(irrInput.OnEvent);
+				input.Update();
+				if (input.IsDown(Key.Escape))
+					break;
 
-            // initialize the ODE physics engine
-            physWorld = Ode.dWorldCreate();
-            if (physWorld.ToInt32() == 0)
-            	throw new Exception();
-        }
+				int mx = input.Mouse.X;
+				int my = input.Mouse.Y;
 
-        public void InitScene()
-        {
-            fpsLabel = irrDevice.GUIEnvironment.AddStaticText("FPS: 0", 
-                new Rect(new Position2D(400, 300), new Dimension2D(100, 50)), 
-                false, true, irrDevice.GUIEnvironment.RootElement,
-                -1, false);
-
-            // add a light to the scene, which will be fixed at 
-            // the camera
-            light = sMgr.AddLightSceneNode(null, new Vector3D(0.0f, 0.0f, 0.0f),
-                new Colorf(1.0f, 0.4f, 0.4f, 0.4f), 50.0f, -1);
-
-            // the camera will be attached to the only ship
-            cam = sMgr.AddCameraSceneNode(null);
-            cam.Position = new Vector3D(-10, 5, 0);
-            cam.Target = new Vector3D(0, 0, 0);
-            cam.AddChild(light);
-
-            playerShip = new Ship(sMgr, physWorld);
-
-            // initialize the background "grid"
-            cubeGrid = new SceneNode[GRID_WIDTH, GRID_WIDTH];
-            sphereTex = driver.GetTexture("../../data/rock.png");
-            for (int i = 0; i < GRID_WIDTH; ++i)
-                for (int j = 0; j < GRID_WIDTH; ++j)
-                {
-                    cubeGrid[i, j] = sMgr.AddCubeSceneNode(0.2f, sMgr.RootSceneNode, -1);
-                    cubeGrid[i, j].Position = new Vector3D(2.0f * (float)i, 0.0f, -2.0f * (float)j);
-                    cubeGrid[i, j].SetMaterialFlag(MaterialFlag.Lighting, false);
-                    cubeGrid[i, j].SetMaterialTexture(0, sphereTex);
-                }
-        }
-
-        public Boolean MainLoop()
-        {
-            int prevTime = (int)irrDevice.Timer.Time;
-            int timeDelta;
-            // start the main rendering loop
-            while (irrDevice.Run())
-            {
-                // update timer
-                timeDelta = (int)irrDevice.Timer.Time - prevTime;
-                prevTime += timeDelta;
-                irrInput.OnLoopStart();
-
-                fpsLabel.Text = "FPS: " + driver.FPS;
+                Entity s = playerShip.Mesh;
+                SceneNode sn = s.ParentSceneNode;
+				
+                if (input.IsDown(Key.Up))
+                    playerShip.ThrustRelative(new Vector3(0.0f, 0.0f, s.BoundingRadius * 0.1f));
+                if (input.IsDown(Key.Down))
+                    playerShip.ThrustRelative(new Vector3(0.0f, 0.0f, s.BoundingRadius * -0.1f));
                 
-                // handle user input
-                if (irrInput.IsKeyDown(KeyCode.Up))
-                    playerShip.ApplyThruster(true);
-                if (irrInput.IsKeyDown(KeyCode.Down))
-                    playerShip.ApplyThruster(false);
-                if (irrInput.IsKeyPressed(KeyCode.Left))
-                    playerShip.MaximumSpeed = playerShip.MaximumSpeed * 0.5f;
-                if (irrInput.IsKeyPressed(KeyCode.Right))
-                    playerShip.MaximumSpeed = playerShip.MaximumSpeed * 2.0f;
+                System.Console.WriteLine(playerShip.Velocity.ToString() + ", " + playerShip.Position.ToString());
 
-                playerShip.ApplyEnvironmentalForces();
+                world.update(frameTime);
 
-                // update physics world
-                if (timeDelta > 0)
-                    Ode.dWorldQuickStep(physWorld, (float)timeDelta / 1000.0f);
-                
-                // update all necessary objects
-                playerShip.Update();
+				mgr.GetCamera("cam").LookAt(sn.Position);
 
-                playerShip.MoveCameraToPosition(cam);
-                driver.BeginScene(true, true, Color.From(255, 30, 30, 224));
-                
-                sMgr.DrawAll();
-                irrDevice.GUIEnvironment.DrawAll();
-
-                driver.EndScene();
-
-                irrInput.OnLoopEnd();
-            }
-
-            return true;
-        }
-
-        public void Dispose()
-        {
-            // dispose of all scene objects
-            playerShip.Dispose();
-            playerShip = null;
-
-            // destroy the rendering device
-            if (irrDevice != null)
-            {
-                this.irrDevice.Dispose();
-                this.irrDevice = null;
-            }
-
-            // input system resources are all tied to the Irrlicht device
-
-            // dispose of the physics system
-            Ode.dWorldDestroy(physWorld);
-            Ode.dCloseODE();
-        }
-    }
+				done = !root.RenderOneFrame();
+			}
+		}
+	}
 }

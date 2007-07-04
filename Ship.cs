@@ -1,118 +1,86 @@
 using System;
-using Tao.Ode;
-using IrrlichtNETCP;
+using Mogre;
+using MogreNewt;
 
-namespace Ymfas
+namespace MogreSimple
 {
-    /// <summary>
-    /// Ship encapsulates the graphical and 
-    /// physical components of the player's spaceship.
-    /// </summary>
-    public class Ship : IDisposable
-    {
-        /**
-         * private memebers fields
-         **/
-        private IntPtr body;
-        private Vector3D position;
-        private Vector3D orientation;
-        private float drag;
-        private float mass;
-        private AnimatedMeshSceneNode meshNode;
+	class Ship : IDisposable
+	{
+		SceneNode node;
+		Entity mesh;
+		Body body;
+		string id;
 
-        public Ship(SceneManager sMgr, IntPtr world)
-        {
-            // create the ship node
-            meshNode = sMgr.AddAnimatedMeshSceneNode(sMgr.GetMesh("../../data/ship.obj"));
-			if (meshNode == null || meshNode.Null())
-				throw new Exception("Couldn't create ship.");
-            // set default position/orientation
-            Position = new Vector3D();
-            orientation = new Vector3D();
+        Vector3 standbyForce;
 
-            body = Ode.dBodyCreate(world);
-            mass = 1.0f;
-            drag = 0.2f;
-            
-        }
+		public Ship(World _w, SceneManager _mgr, SceneNode _parent, string _id)
+		{
+			SceneNode parent = (_parent == null) ? _mgr.RootSceneNode : _parent;
 
-        public void ApplyThruster(bool forward)
-        {
-            ApplyForce((forward ? 1 : -1) * 1.0f, 0.0f, 0.0f);
+			id = _id;
+			mesh = _mgr.CreateEntity(id, "razor.mesh");
+			node = parent.CreateChildSceneNode();
+            node.SetScale(new Vector3(2.0f));
+			node.AttachObject(mesh);
+            node.Position = new Vector3(0);
+
+            body = new Body(_w, new MogreNewt.CollisionPrimitives.Box(_w, mesh.BoundingBox.Size));
+			body.attachToNode(node);
+            //body.unFreeze();
+			body.setMassMatrix(1.0f, MogreNewt.MomentOfInertia.CalcBoxSolid(1.0f, 
+                Mesh.BoundingBox.Size));
+            body.setPositionOrientation(new Vector3(0.0f, 0, 0), Quaternion.IDENTITY);
+            body.IsGravityEnabled = false;
+            body.ForceCallback += new ForceCallbackHandler(ForceCallback);
+            //body.Autoactivated += new AutoactivateEventHandler(ActivationCallback);
+            body.setAutoFreeze(0);
+            body.setLinearDamping(0.0f);
+            standbyForce = new Vector3();
         }
 
-        private void ApplyForce(float x, float y, float z)
+        void ForceCallback(Body b)
         {
-            Ode.dBodyAddForce((IntPtr)body, x, y, z);
-        }
-        private void ApplyForce(Ode.dVector3 v)
-        {
-            ApplyForce(v.X, v.Y, v.Z);
-        }
-        public void ApplyEnvironmentalForces()
-        {
-            Ode.dVector3 vel = Ode.dBodyGetLinearVel(body);
-            // for now, apply drag
-            ApplyForce(-drag * vel.X, -drag * vel.Y, -drag * vel.Z);
+            System.Console.WriteLine("in force callback...");
+            System.Console.WriteLine(standbyForce.ToString());
+            b.setForce(standbyForce);
+            //b.setForce(new Vector3(0, 0, 6));
+
+            standbyForce = Vector3.ZERO;
         }
 
-        public void Update()
+		// thrust is measured in meters / s^2
+		public void ThrustRelative(Vector3 vec)
+		{
+            System.Console.Write("Thrusting...");
+            standbyForce += vec;
+            System.Console.WriteLine(standbyForce.ToString());
+		}
+
+		public Vector3 Position
+		{
+			get { return node.Position; }
+		}
+		public SceneNode SceneNode
+		{
+			get { return node; }
+		}
+		public Entity Mesh
+		{
+			get { return mesh; }
+		}
+        public Vector3 Velocity
         {
-            Ode.dVector3 v = Ode.dBodyGetPosition((IntPtr)body);
-            Position = new Vector3D(v.X, v.Y, v.Z);
+            get { return body.getVelocity(); }
         }
 
-        public void MoveCameraToPosition(CameraSceneNode cam)
-        {
-            if (cam != null)
-            {
-                // move the camera so that it's behind the ship
-                cam.Position = Position + new Vector3D(-10, 5, 0);
-                cam.Target = Position;
-            }
-        }
-
-        public void Dispose()
-        {
-            Ode.dBodyDestroy(body);
-        }
-
-        /**
-         * public properties
-         **/
-        public AnimatedMeshSceneNode ShipMeshNode
-        {
-            get { return meshNode; }
-        }
-                
-        public Vector3D Position
-        {
-            get { return position; }
-            set
-            {
-                position = meshNode.Position = value;
-            }
-        }
-        public float MaximumSpeed
-        {
-            get { return 1 / drag; }
-            set { if (value <= 0) throw new Exception(); drag = 1 / value; }
-        }
-        // set the time it takes to get to 50% of maximum acceleration
-        public float HalfTime
-        {
-            get { return mass / drag * (float)Math.Log(2.0); }
-            set { if (HalfTime <= 0) throw new Exception(); 
-                  SetMass(mass = drag * value / (float)Math.Log(2.0)); }
-        }
-
-        /**
-         * private helper functions
-         **/
-        private void SetMass(float f)
-        {
-            Ode.dMass m = new Ode.dMass(f, new Ode.dVector4(), new Ode.dMatrix3());
-            Ode.dBodySetMass(body, ref m);
-        }
-    }
+		public void Dispose()
+		{
+			body.Dispose();
+			body = null;
+			mesh.Dispose();
+			mesh = null;
+			node.Dispose();
+			node = null;
+		}
+	}
 }
