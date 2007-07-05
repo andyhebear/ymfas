@@ -1,6 +1,6 @@
 using System;
 
-namespace MogreSimple
+namespace Ymfas
 {
 	static class Util
 	{

@@ -1,22 +1,21 @@
 using System;
 using System.Collections.Generic;
 using Mogre;
-//using MogreNewt;
 using Microsoft.DirectX.DirectInput;
 using YCB;
 
-namespace MogreSimple
+namespace Ymfas
 {
 	static class Program
 	{
 		static void Main()
 		{
-			OgreStart win = new OgreStart();
+			TestEngine win = new TestEngine();
 			win.Go();
 		}
 	}
 
-	partial class OgreStart : IDisposable
+	partial class TestEngine : IDisposable
 	{
 		Ship playerShip;
 

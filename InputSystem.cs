@@ -89,7 +89,7 @@ namespace YCB
 			}
 			catch (InputException e)
 			{
-				MogreSimple.Util.RecordException(e);
+				Ymfas.Util.RecordException(e);
 				throw;
 			}
 		}
