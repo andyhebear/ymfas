@@ -2,7 +2,7 @@ using System;
 using Mogre;
 using MogreNewt;
 
-namespace MogreSimple
+namespace Ymfas
 {
 	class Ship : IDisposable
 	{

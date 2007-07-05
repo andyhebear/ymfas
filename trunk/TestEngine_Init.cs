@@ -4,9 +4,9 @@ using MogreNewt;
 using System.Collections.Generic;
 using YCB;
 
-namespace MogreSimple
+namespace Ymfas
 {
-	partial class OgreStart : IDisposable
+	partial class TestEngine : IDisposable
 	{
 		private Root root;
 		private SceneManager mgr;
@@ -35,7 +35,7 @@ namespace MogreSimple
 				"OpenGL Rendering Subsystem" 
 			};
 
-		public OgreStart()
+		public TestEngine()
 		{
 			// create the root object with paths to various configuraion files
 			root = new Root();
