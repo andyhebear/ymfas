@@ -18,11 +18,21 @@ A free-for-all where each pilot may shoot down any other pilot to earn points.
 === Team Deathmatch ===
 Similar to deathmatch, but pits two teams (organized in the *lobby*) against each other.  Friendly fire is enabled, and shooting down a friendly ship will lose a pilot points.
 === Capture the Flag ===
+Two opposing teams have bases (with some automated defense turrets) at opposite ends of a small map.  Pilots try to maneuver into the enemy base, steal the flag (which will have a decent collision radius), and bring it back to base before the enemy team does the same.  The flag can be dropped by the flag carrier, and will automatically drop if the flag carrier dies.  If a team picks up its own dropped flag, then it is returned to base.  If a team picks up a dropped enemy flag, then the new carrier has an opportunity to capture it.  Flags are fairly massive, slowing the carrier's acceleration and maneuvering.
+
+Flags can only be captured by a team when its flag is in its base.  Points are awarded for successful flag capture.
+
 === Convoy Defense ===
 A slow-moving freight convoy is moving from some point A to some point B on the map.  Players are divided into teams: one team must protect the convoy until it reachees its destination while annother attempts to assault it.
 == Ships ==
 === Propulsion Systems ===
 === Weapon Systems ===
+*Mass Driven*
+Mass driven weapons are solid projectiles.  They pass directly through shields uninhibited, dealing medium damage to hull in addition to knocking the impacted ship about  realistically (based on momentum, etc).  They have a relatively slow rate of fire (on the order of one shot every 1-2 seconds) but travel at high velocity.
+*Beam Weapons*
+*Plasma Weapons*
+*Missile Systems*
+*Point Defense Weapons*
 === Defense Systems ===
 === Power Systems ===
 * All the ship's systems share a main power supply.  
