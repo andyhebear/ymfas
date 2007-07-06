@@ -27,12 +27,20 @@ A slow-moving freight convoy is moving from some point A to some point B on the 
 == Ships ==
 === Propulsion Systems ===
 === Weapon Systems ===
+
 *Mass Driven*
-Mass driven weapons are solid projectiles.  They pass directly through shields uninhibited, dealing medium damage to hull in addition to knocking the impacted ship about  realistically (based on momentum, etc).  They have a relatively slow rate of fire (on the order of one shot every 1-2 seconds) but travel at high velocity.
+
+Mass driven weapons are solid projectiles.  They pass directly through shields uninhibited, dealing medium damage to hull in addition to knocking the impacted ship about  realistically (based on momentum, etc).  They have a relatively slow rate of fire (on the 
+order of one shot every 1-2 seconds) but travel at high velocity.
+
 *Beam Weapons*
+
 *Plasma Weapons*
+
 *Missile Systems*
+
 *Point Defense Weapons*
+
 === Defense Systems ===
 === Power Systems ===
   * All the ship's systems share a main power supply.  
@@ -42,6 +50,9 @@ Mass driven weapons are solid projectiles.  They pass directly through shields u
   * By default, the ship has enough power to operate all systems at 100% capacity, with an extra 10% power in reserve.  The effects of overloading different systems is described above.
 === Classes ===
 *INTERCEPTOR*
+
 *CORVETTE*
+
 *CRUISER*
+
 *BATTLESHIP*
