@@ -35,11 +35,11 @@ Mass driven weapons are solid projectiles.  They pass directly through shields u
 *Point Defense Weapons*
 === Defense Systems ===
 === Power Systems ===
-* All the ship's systems share a main power supply.  
-* Pilots control what percentage of power is directed towards weaponry, propulsion, and shielding.  
-* Power to shielding can be routed  in each of the 6 +/- X,Y, and Z directions.  
-* Each ship has a power transfer rate which is higher the lower its class (interceptors are most adept at re-routing power)  
-* By default, the ship has enough power to operate all systems at 100% capacity, with an extra 10% power in reserve.  The effects of overloading different systems is described above.
+  * All the ship's systems share a main power supply.  
+  * Pilots control what percentage of power is directed towards weaponry, propulsion, and shielding.  
+  * Power to shielding can be routed  in each of the 6 +/- X,Y, and Z directions.  
+  * Each ship has a power transfer rate which is higher the lower its class (interceptors are most adept at re-routing power)  
+  * By default, the ship has enough power to operate all systems at 100% capacity, with an extra 10% power in reserve.  The effects of overloading different systems is described above.
 === Classes ===
 *INTERCEPTOR*
 *CORVETTE*
