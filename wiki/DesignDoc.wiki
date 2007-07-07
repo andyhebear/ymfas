@@ -39,9 +39,11 @@ Mass driven weapons are solid projectiles.  They pass directly through shields u
 order of one shot every 1-2 seconds) but travel at high velocity.  Medium power consumption.
 
 *Beam Weapons*
+
 Beam weapons are continuous and burst-fired.  They do low damage to shields and medium damage to armor, with approximately a 75% transmission rate through shielding.  Low-medium power consumption.
 
 *Plasma Weapons*
+
 Plasma weapons are pulse-fired at a medium rate.  They do high damage to shields and medium damage to armor but can barely penetrate shields so long as they are still up.  Medium-high power consumption.
 
 *Missile Systems*
