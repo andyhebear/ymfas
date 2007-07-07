@@ -31,18 +31,23 @@ A slow-moving freight convoy is moving from some point A to some point B on the 
 === Propulsion Systems ===
 === Weapon Systems ===
 
+Each weapon type included in YMFAS fulfills a specific role in taking out a target's defenses.  Weapons have varying rates of fire, damage to armor/shields respectively, and transmission rates through shielding.
+
 *Mass Driven*
 
 Mass driven weapons are solid projectiles.  They pass directly through shields uninhibited, dealing medium damage to hull in addition to knocking the impacted ship about  realistically (based on momentum, etc).  They have a relatively slow rate of fire (on the 
-order of one shot every 1-2 seconds) but travel at high velocity.
+order of one shot every 1-2 seconds) but travel at high velocity.  Medium power consumption.
 
 *Beam Weapons*
+Beam weapons are continuous and burst-fired.  They do low damage to shields and medium damage to armor, with approximately a 75% transmission rate through shielding.  Low-medium power consumption.
 
 *Plasma Weapons*
+Plasma weapons are pulse-fired at a medium rate.  They do high damage to shields and medium damage to armor but can barely penetrate shields so long as they are still up.  Medium-high power consumption.
 
 *Missile Systems*
 
 *Point Defense Weapons*
+
 
 === Defense Systems ===
 === Power Systems ===
@@ -50,7 +55,7 @@ order of one shot every 1-2 seconds) but travel at high velocity.
   * Pilots control what percentage of power is directed towards weaponry, propulsion, and shielding.  
   * Power to shielding can be routed  in each of the 6 +/- X,Y, and Z directions.  
   * Each ship has a power transfer rate which is higher the lower its class (interceptors are most adept at re-routing power)  
-  * By default, the ship has enough power to operate all systems at 100% capacity, with an extra 10% power in reserve.  The effects of overloading different systems is described above.
+  * By default, the ship has enough power to operate all systems at 100% capacity, with an extra 20% power in reserve.  The effects of overloading different systems is described above.
 === Classes ===
 *INTERCEPTOR*
 
