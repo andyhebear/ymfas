@@ -22,6 +22,9 @@ Two opposing teams have bases (with some automated defense turrets) at opposite 
 
 Flags can only be captured by a team when its flag is in its base.  Points are awarded for successful flag capture.
 
+=== King of the Asteroid ===
+
+
 === Convoy Defense ===
 A slow-moving freight convoy is moving from some point A to some point B on the map.  Players are divided into teams: one team must protect the convoy until it reachees its destination while annother attempts to assault it.
 == Ships ==
