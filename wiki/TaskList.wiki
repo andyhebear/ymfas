@@ -32,4 +32,7 @@ This page is not for bugs. Bugs and other defects should be listed in the issues
 
 == Physics ==
 
+== Networking ==
+  * Implement connection refusal after game start (medium)
+
 == Miscellaneous ==
