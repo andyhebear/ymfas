@@ -10,12 +10,7 @@ using System.Net;
 using System.Net.Sockets;
 
 namespace Ymfas {
-    public static class NetworkEngine {
-        public static SpiderEngine.Spider Engine;
-        public static SpiderEngine.SpiderType EngineType;
-        public static Hashtable playerIPs;
-    }
-    
+
     public partial class frmMainSplash : Form {
         private frmGameLobby GameLobby;
         public const int MAX_CONNECT_TIME = 10000; //max time to spend connecting in ms
@@ -38,14 +33,12 @@ namespace Ymfas {
             //Host a game
             NetworkEngine.Engine = new SpiderEngine.Spider(SpiderEngine.SpiderType.Server, txtName.Text);
             NetworkEngine.EngineType = SpiderEngine.SpiderType.Server;
-            NetworkEngine.playerIPs = new Hashtable();
+            NetworkEngine.PlayerIPs = new Hashtable();
 
             //Enter lobby
             GameLobby = new frmGameLobby();
             GameLobby.Show();
             
-
-
             this.Hide();
 
         }
@@ -65,7 +58,6 @@ namespace Ymfas {
         }
 
         private void timer_Tick(object sender, EventArgs e) {
-            
             //looking for servers
             if (searchingForServers) {
                 Console.Out.WriteLine("searching...");
@@ -117,9 +109,12 @@ namespace Ymfas {
         }
 
         private void lstServers_SelectedIndexChanged(object sender, EventArgs e) {
-            String temp = ((String)lstServers.Items[lstServers.SelectedIndex]);
-            txtConnectIP.Text = temp.Substring(temp.LastIndexOf("-") + 2);
-
+            try {
+                String temp = ((String)lstServers.Items[lstServers.SelectedIndex]);
+                txtConnectIP.Text = temp.Substring(temp.LastIndexOf("-") + 2);
+            }
+            catch(Exception err) {
+            }
 
         }
 
@@ -132,4 +127,6 @@ namespace Ymfas {
             ticksConnecting = 0;
         }
     }
+
+    
 }
