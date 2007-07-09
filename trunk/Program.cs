@@ -10,8 +10,12 @@ namespace Ymfas
 	{
 		static void Main()
 		{
-			TestEngine win = new TestEngine();
-			win.Go();
+            //Launch the main form
+            System.Windows.Forms.Application.EnableVisualStyles();
+            System.Windows.Forms.Application.SetCompatibleTextRenderingDefault(false);
+            System.Windows.Forms.Application.Run(new frmMainSplash());
+            //TestEngine win = new TestEngine();
+			//win.Go();
 		}
 	}
 
