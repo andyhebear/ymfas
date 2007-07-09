@@ -71,6 +71,7 @@
       <DependentUpon>frmMainSplash.cs</DependentUpon>
     </Compile>
     <Compile Include="InputSystem.cs" />
+    <Compile Include="NetworkEngine.cs" />
     <Compile Include="spider.cs" />
     <Compile Include="TestEngine_Init.cs" />
     <Compile Include="Program.cs" />

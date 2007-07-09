@@ -14,8 +14,6 @@ namespace Ymfas
             System.Windows.Forms.Application.EnableVisualStyles();
             System.Windows.Forms.Application.SetCompatibleTextRenderingDefault(false);
             System.Windows.Forms.Application.Run(new frmMainSplash());
-            //TestEngine win = new TestEngine();
-			//win.Go();
 		}
 	}
 

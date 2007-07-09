@@ -43,7 +43,7 @@ namespace Ymfas {
             this.rtxtChatWindow.Name = "rtxtChatWindow";
             this.rtxtChatWindow.ReadOnly = true;
             this.rtxtChatWindow.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.Vertical;
-            this.rtxtChatWindow.Size = new System.Drawing.Size(270, 285);
+            this.rtxtChatWindow.Size = new System.Drawing.Size(400, 285);
             this.rtxtChatWindow.TabIndex = 0;
             this.rtxtChatWindow.Text = "";
             // 
@@ -51,7 +51,7 @@ namespace Ymfas {
             // 
             this.txtChatInput.Location = new System.Drawing.Point(6, 310);
             this.txtChatInput.Name = "txtChatInput";
-            this.txtChatInput.Size = new System.Drawing.Size(270, 20);
+            this.txtChatInput.Size = new System.Drawing.Size(400, 20);
             this.txtChatInput.TabIndex = 1;
             this.txtChatInput.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtChatInput_KeyDown);
             // 
@@ -61,7 +61,7 @@ namespace Ymfas {
             this.groupBox1.Controls.Add(this.txtChatInput);
             this.groupBox1.Location = new System.Drawing.Point(12, 12);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(282, 336);
+            this.groupBox1.Size = new System.Drawing.Size(412, 336);
             this.groupBox1.TabIndex = 2;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Chat";
@@ -69,7 +69,7 @@ namespace Ymfas {
             // lstPlayers
             // 
             this.lstPlayers.FormattingEnabled = true;
-            this.lstPlayers.Location = new System.Drawing.Point(300, 31);
+            this.lstPlayers.Location = new System.Drawing.Point(430, 31);
             this.lstPlayers.Name = "lstPlayers";
             this.lstPlayers.Size = new System.Drawing.Size(182, 225);
             this.lstPlayers.TabIndex = 3;
@@ -77,7 +77,7 @@ namespace Ymfas {
             // chkReady
             // 
             this.chkReady.AutoSize = true;
-            this.chkReady.Location = new System.Drawing.Point(300, 322);
+            this.chkReady.Location = new System.Drawing.Point(430, 324);
             this.chkReady.Name = "chkReady";
             this.chkReady.Size = new System.Drawing.Size(57, 17);
             this.chkReady.TabIndex = 4;
@@ -87,13 +87,14 @@ namespace Ymfas {
             // 
             // btnStart
             // 
-            this.btnStart.Location = new System.Drawing.Point(363, 316);
+            this.btnStart.Location = new System.Drawing.Point(493, 316);
             this.btnStart.Name = "btnStart";
             this.btnStart.Size = new System.Drawing.Size(118, 26);
             this.btnStart.TabIndex = 5;
             this.btnStart.Text = "&Start Game";
             this.btnStart.UseVisualStyleBackColor = true;
             this.btnStart.Visible = false;
+            this.btnStart.Click += new System.EventHandler(this.btnStart_Click);
             // 
             // timer
             // 
@@ -105,36 +106,43 @@ namespace Ymfas {
             this.cmbGameMode.Enabled = false;
             this.cmbGameMode.FormattingEnabled = true;
             this.cmbGameMode.Items.AddRange(new object[] {
-            "Deathmatch, Team Deathmatch, Capture the Flag, Convoy Defense, King of the Astero" +
-                "id"});
-            this.cmbGameMode.Location = new System.Drawing.Point(300, 289);
+            "Deathmatch",
+            "Team Deathmatch",
+            "Capture The Flag",
+            "Convoy Defense",
+            "King Of The Asteroid"});
+            this.cmbGameMode.Location = new System.Drawing.Point(430, 289);
             this.cmbGameMode.Name = "cmbGameMode";
             this.cmbGameMode.Size = new System.Drawing.Size(181, 21);
             this.cmbGameMode.TabIndex = 6;
+            this.cmbGameMode.SelectedIndexChanged += new System.EventHandler(this.cmbGameMode_SelectedIndexChanged);
             // 
             // cmbTeam
             // 
             this.cmbTeam.Enabled = false;
             this.cmbTeam.Items.AddRange(new object[] {
-            "Team 1, Team 2"});
-            this.cmbTeam.Location = new System.Drawing.Point(300, 262);
+            "No Team",
+            "Team 1",
+            "Team 2"});
+            this.cmbTeam.Location = new System.Drawing.Point(432, 262);
             this.cmbTeam.Name = "cmbTeam";
             this.cmbTeam.Size = new System.Drawing.Size(180, 21);
             this.cmbTeam.TabIndex = 7;
+            this.cmbTeam.SelectedIndexChanged += new System.EventHandler(this.cmbTeam_SelectedIndexChanged);
             // 
             // frmGameLobby
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(493, 360);
+            this.ClientSize = new System.Drawing.Size(624, 354);
             this.Controls.Add(this.cmbTeam);
             this.Controls.Add(this.cmbGameMode);
             this.Controls.Add(this.btnStart);
             this.Controls.Add(this.chkReady);
             this.Controls.Add(this.lstPlayers);
             this.Controls.Add(this.groupBox1);
-            this.MaximumSize = new System.Drawing.Size(509, 396);
-            this.MinimumSize = new System.Drawing.Size(509, 396);
+            this.MaximumSize = new System.Drawing.Size(640, 390);
+            this.MinimumSize = new System.Drawing.Size(640, 390);
             this.Name = "frmGameLobby";
             this.Text = "frmGameLobby";
             this.Load += new System.EventHandler(this.frmGameLobby_Load);
