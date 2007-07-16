@@ -37,7 +37,6 @@ namespace Ymfas
             body.setPositionOrientation(new Vector3(0.0f, 0, 0), node.Orientation);
             body.IsGravityEnabled = false;
             body.ForceCallback += new ForceCallbackHandler(ForceTorqueCallback);
-            body.Transformed += new TransformEventHandler(PrintBodyPos);
             body.setAutoFreeze(0);
             body.setLinearDamping(0.0f);
             body.setAngularDamping(new Vector3(0.0f));

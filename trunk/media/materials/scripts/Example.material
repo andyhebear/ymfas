@@ -20,12 +20,44 @@ material Material__25
 		pass
 		{
 			lighting on
-			diffuse 0.8 0.1 0.1
+			diffuse 0.8 0.8 0.8
 			ambient 0.2 0.2 0.2
 
 			texture_unit
 			{
 				texture texmap2.jpg
+			}
+		}
+	}
+}
+
+material Default
+{
+	technique
+	{
+		pass
+		{
+			lighting off
+			diffuse 0.8 0.1 0.1
+		}
+	}
+}
+
+material Ribbon
+{
+	technique
+	{
+		pass
+		{
+			lighting off
+			scene_blend add
+			depth_write off
+
+			texture_unit
+			{
+				texture ribbonband.png 1d
+				tex_address_mode clamp
+				filtering none
 			}
 		}
 	}

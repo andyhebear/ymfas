@@ -114,8 +114,8 @@ namespace Ymfas {
                 txtConnectIP.Text = temp.Substring(temp.LastIndexOf("-") + 2);
             }
             catch(Exception err) {
+				System.Console.WriteLine(err.Message);
             }
-
         }
 
         private void btnConnect_Click(object sender, EventArgs e) {

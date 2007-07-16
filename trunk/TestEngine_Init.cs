@@ -165,6 +165,7 @@ namespace Ymfas
 			world.setSolverModel((int)World.SolverModelMode.SM_ADAPTIVE);
 			world.setFrictionModel((int)World.FrictionModelMode.FM_ADAPTIVE);
             world.setWorldSize(new AxisAlignedBox(new Vector3(-10000.0f), new Vector3(10000.0f)));
+			world.LeaveWorld += new LeaveWorldEventHandler(OnLeaveWorld);
 		}
 
 		/// <summary>

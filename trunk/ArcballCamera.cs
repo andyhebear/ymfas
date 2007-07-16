@@ -50,12 +50,12 @@ namespace Ymfas
         {
 			Camera.Yaw(yaw);
 			Camera.Pitch(pitch);
-
-
+			
             // update the position based on the orientation
             camera.Position = Target.Position + 
 				Camera.Orientation * new Vector3(0, 0, Radius);
-
+			camera.Orientation =
+				new Quaternion(Mogre.Math.PI, camera.Up) * Target.Orientation;
         }
     }
 }
