@@ -260,18 +260,20 @@ namespace SpiderEngine
             try
             {
                 // drawing up IPHostEntry instance with the IP address which is appointed
-                IPHstEnt = Dns.Resolve (IPAddress);
+                IPHstEnt = Dns.GetHostEntry(IPAddress);
                 strServer = IPHstEnt.HostName;
             }
-            catch (System.Net.Sockets.SocketException SockEx)
+            catch (System.Net.Sockets.SocketException sockEx)
             {
                 // HostName cannot be resolved
                 strServer = "";
+				System.Console.WriteLine(sockEx.Message);
             }
-            catch (System.Security.SecurityException SecuEx)
+            catch (System.Security.SecurityException secuEx)
             {
                 // no access permission
                 strServer = "";
+				System.Console.WriteLine(secuEx.Message);
             }
 
             return strServer;

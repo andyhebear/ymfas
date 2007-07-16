@@ -153,6 +153,7 @@ namespace Ymfas {
                                 NetworkEngine.GameMode = (GameMode)Enum.Parse(typeof(GameMode), cmbGameMode.Items[cmbGameMode.SelectedIndex].ToString().Replace(" ", ""));
                             }
                             catch (Exception err) {
+								System.Console.WriteLine(err.Message);
                             }
 
                             //team or solo play?

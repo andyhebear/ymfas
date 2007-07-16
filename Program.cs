@@ -11,10 +11,12 @@ namespace Ymfas
 	{
 		static void Main()
 		{
+			TestEngine test = new TestEngine();
+			test.Go();
             //Launch the main form
-            System.Windows.Forms.Application.EnableVisualStyles();
+            /*System.Windows.Forms.Application.EnableVisualStyles();
             System.Windows.Forms.Application.SetCompatibleTextRenderingDefault(false);
-            System.Windows.Forms.Application.Run(new frmMainSplash());
+            System.Windows.Forms.Application.Run(new frmMainSplash());*/
 		}
 	}
 
@@ -24,6 +26,7 @@ namespace Ymfas
 		ShipCamera shipCam;
 
 		StaticGeometry grid;
+		RibbonTrail ribbon;
 
 		/// <summary>
 		/// initialize the scene
@@ -40,7 +43,7 @@ namespace Ymfas
             root.AutoCreatedWindow.AddViewport(cam, 0);
 
 			Viewport vp = root.AutoCreatedWindow.GetViewport(0);
-			vp.BackgroundColour = ColourValue.Blue;
+			vp.BackgroundColour = ColourValue.Black;
 
 			// have the frustum set the aspect ratio automatically
 			cam.AutoAspectRatio = true;
@@ -56,26 +59,44 @@ namespace Ymfas
 
 			Light l = mgr.CreateLight("point1");
 			l.DiffuseColour = new ColourValue(1.0f, 1.0f, 1.0f);
-			l.Position = new Vector3(0, 2, -1) * playerShip.Mesh.BoundingRadius;
+			l.Position = Vector3.UNIT_Y * 3.0f * playerShip.Mesh.BoundingRadius;
 			l.CastShadows = true;
 			l.Type = Light.LightTypes.LT_POINT;
 
+			//mgr.SetSkyBox(true, "SpaceSkyBox");
 			grid = mgr.CreateStaticGeometry("grid");
 			float radius = playerShip.Mesh.BoundingRadius;
 
 			Entity cube;
 
-			const int NUM_CUBES_HALF_WIDTH = 4;
+			const int NUM_CUBES_HALF_WIDTH = 5;
 			for (int i = -NUM_CUBES_HALF_WIDTH; i < NUM_CUBES_HALF_WIDTH; ++i)
 				for (int j = -NUM_CUBES_HALF_WIDTH; j < NUM_CUBES_HALF_WIDTH; ++j)
 					for (int k = -NUM_CUBES_HALF_WIDTH; k < NUM_CUBES_HALF_WIDTH; ++k)
 					{
-                        cube = mgr.CreateEntity("cube-" + i + "-" + j + "-" + k,
-                            SceneManager.PrefabType.PT_CUBE);
-						grid.AddEntity(cube, new Vector3(i, j, k)* radius * 50);
+						if (i != 0)
+						{
+							cube = mgr.CreateEntity("cube-" + i + "-" + j + "-" + k,
+								SceneManager.PrefabType.PT_CUBE);
+							grid.AddEntity(cube, new Vector3(i, j, k) * radius * 10);
+						}
 					}
-            grid.Build();
+			grid.Build();
 
+			ribbon = mgr.CreateRibbonTrail("ribbon");
+			ribbon.MaxChainElements = 40;
+			ribbon.NumberOfChains = 1;
+			ribbon.UseTextureCoords = true;
+			ribbon.MaterialName = "Ribbon";
+			ribbon.TrailLength = 1.2f * playerShip.Mesh.BoundingRadius;
+			ribbon.SetInitialColour(0, ColourValue.Red * 0.5f);
+			ribbon.SetColourChange(0, new ColourValue(-0.4f, 0.4f, 0.0f));
+
+			SceneNode back = playerShip.SceneNode.CreateChildSceneNode("back");
+			back.Translate(Vector3.NEGATIVE_UNIT_Z * 0.2f * playerShip.Mesh.BoundingRadius);
+			ribbon.AddNode(back);
+
+			mgr.RootSceneNode.CreateChildSceneNode().AttachObject(ribbon);
 		}
 
 		/// <summary>
@@ -83,7 +104,7 @@ namespace Ymfas
 		/// is actually pretty simple at this point
 		/// </summary>
 		public void Go()
-		{
+		{			
 			frameTimer.Reset();
 			float frameTime;
 
@@ -155,14 +176,9 @@ namespace Ymfas
 
 		private void OnLeaveWorld(World w, Body b)
 		{
-            System.Console.WriteLine("Reached world end.");
-            Vector3 pos = new Vector3(); 
-            Quaternion orient = new Quaternion();
-            b.getPositionOrientation(out pos, out orient);
-            System.Console.WriteLine("Ship position: " + pos);
-            System.Console.WriteLine("Current ship speed: " + b.getVelocity().Length);
-            System.Console.WriteLine("Restarting ship position...");
-
+			Vector3 pos;
+			Quaternion orient;
+			b.getPositionOrientation(out pos, out orient);
 			b.setPositionOrientation(new Vector3(), orient);
 		}
 	}
