@@ -189,6 +189,14 @@ namespace Ymfas {
                         SpiderEngine.SpiderMessage message = new SpiderEngine.SpiderMessage(((String)NetworkEngine.PlayerIPs[disconIP]) + " has disconnected.", SpiderEngine.SpiderMessageType.String, "chat");
                         NetworkEngine.Engine.SendMessage(message, Lidgren.Library.Network.NetChannel.ReliableUnordered);
 
+                        //Add to host chat window
+                        rtxtChatWindow.Text += "\n" + ((String)NetworkEngine.PlayerIPs[disconIP]) + " has disconnected.";
+                        rtxtChatWindow.Select(rtxtChatWindow.Text.Length + 1, 2);
+                        rtxtChatWindow.ScrollToCaret();
+
+                        //Remove key from hashtable
+                        NetworkEngine.PlayerIPs.Remove(disconIP);
+
                         //Keep processing disconnects
                         disconIP = NetworkEngine.Engine.GetDisconnectedIP();
                     }
