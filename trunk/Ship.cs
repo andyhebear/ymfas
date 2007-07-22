@@ -32,8 +32,23 @@ namespace Ymfas
             MogreNewt.CollisionPrimitives.Box bodyBox = 
                 new MogreNewt.CollisionPrimitives.Box(_w, mesh.BoundingBox.Size);
             body = new Body(_w, bodyBox);
+
+            Console.Out.WriteLine("omega");
+            Console.Out.WriteLine(body.getOmega().ToString());
+            Console.Out.WriteLine("inertia");
+            float mass;
+            Vector3 inertia;
+            body.getMassMatrix(out mass, out inertia);
+            Console.Out.WriteLine(inertia.ToString());
+            Console.Out.WriteLine("standbyTorque");
+            Console.Out.WriteLine(standbyTorque.ToString());
+
 			body.attachToNode(node);
-			body.setMassMatrix(1.0f, MogreNewt.MomentOfInertia.CalcBoxSolid(1.0f, mesh.BoundingBox.Size));
+
+            Vector3 v = MogreNewt.MomentOfInertia.CalcBoxSolid(1.0f, mesh.BoundingBox.Size);
+            Console.Out.WriteLine(v.ToString());
+			body.setMassMatrix(1.0f, v);
+
             body.setPositionOrientation(new Vector3(0.0f, 0, 0), node.Orientation);
             body.IsGravityEnabled = false;
             body.ForceCallback += new ForceCallbackHandler(ForceTorqueCallback);
@@ -41,18 +56,44 @@ namespace Ymfas
             body.setLinearDamping(0.0f);
             body.setAngularDamping(new Vector3(0.0f));
             standbyForce = new Vector3();
+
+
+            Console.Out.WriteLine("omega");
+            Console.Out.WriteLine(body.getOmega().ToString());
+            Console.Out.WriteLine("inertia");
+            body.getMassMatrix(out mass, out inertia);
+            Console.Out.WriteLine(inertia.ToString());
+            Console.Out.WriteLine(mass);
+            Console.Out.WriteLine("standbyTorque");
+            Console.Out.WriteLine(standbyTorque.ToString());
+            Console.Out.WriteLine("");
+            
         }
 
 
         void ForceTorqueCallback(Body b)
         {
+            //debugging
+
+            Console.Out.WriteLine("time");
+            Console.Out.WriteLine(body.getWorld().getTimeStep().ToString());
+            Console.Out.WriteLine("omega");
+            Console.Out.WriteLine(body.getOmega().ToString());
+            Console.Out.WriteLine("inertia");
+            float mass;
+            Vector3 inertia;
+            body.getMassMatrix(out mass, out inertia);
+            Console.Out.WriteLine(inertia.ToString());
+            Console.Out.WriteLine("standbyTorque");
+            Console.Out.WriteLine(standbyTorque.ToString());
+            Console.Out.WriteLine("");
             b.addLocalForce(standbyForce, Vector3.ZERO);
             standbyForce = Vector3.ZERO;
 
             Vector3 pos = new Vector3();
             Quaternion orient = new Quaternion();
             b.getPositionOrientation(out pos, out orient);
-
+            
             b.addTorque(orient * standbyTorque);
 			standbyTorque = Vector3.ZERO;
 
