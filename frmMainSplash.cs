@@ -102,7 +102,7 @@ namespace Ymfas {
             if (!this.Visible) {
                 if (GameLobby.Visible == false) {
                     NetworkEngine.Engine.Destroy();
-                    this.Visible = true;
+                    Application.Restart();
                 }
             }
 
