@@ -100,11 +100,6 @@ namespace ymfas {
         public void SendEvent(GameEvent e) {
             SpiderEngine.SpiderMessage msg = new SpiderEngine.SpiderMessage(e.ToString(), SpiderEngine.SpiderMessageType.String, e.GetType().ToString());
 
-            //default delivery type is unreliable unordered
-            if (e.DeliveryType == null) {
-                e.DeliveryType = Lidgren.Library.Network.NetChannel.Unreliable;
-            }
-
             NetworkEngine.SendMessage(msg, e.DeliveryType);
         }
     }

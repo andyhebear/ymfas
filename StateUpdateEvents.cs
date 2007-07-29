@@ -8,8 +8,8 @@ using ymfas;
 namespace StateUpdateEvents {
 
     //Initializes a ship belonging to a specific player in the game environment
-    public class ShipInit : GameEvent {
+    /*public class ShipInit : GameEvent {
 
-    }
+    }*/
 }
 

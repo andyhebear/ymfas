@@ -11,6 +11,6 @@ namespace ymfas {
         
     }
 
-    public static enum ShipClass { Interceptor, Corvette, Cruiser, Battleship };
-    public static enum ShipModel { MogreFighter };
+    public enum ShipClass { Interceptor, Corvette, Cruiser, Battleship };
+    public enum ShipModel { MogreFighter };
 }
