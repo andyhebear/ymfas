@@ -50,6 +50,7 @@ namespace Ymfas {
             // txtChatInput
             // 
             this.txtChatInput.Location = new System.Drawing.Point(6, 310);
+            this.txtChatInput.Multiline = true;
             this.txtChatInput.Name = "txtChatInput";
             this.txtChatInput.Size = new System.Drawing.Size(400, 20);
             this.txtChatInput.TabIndex = 1;

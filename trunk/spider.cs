@@ -237,7 +237,24 @@ namespace SpiderEngine
 				((NetServer)spiderNet).Broadcast(msg, deliveryType);
 			}	
 		}
-		
+
+        /// <summary>
+        /// Sends the given message with the given UDP delivery type to the targetConnection (Server only)
+        /// </summary>
+        /// <param name="message">The message to be send</param>
+        /// <param name="deliveryType">The UDP delivery type</param>
+        /// <param name="targetConnection">The target connection</param>
+        public void SendMessage(SpiderMessage message, NetChannel deliveryType, NetConnection targetConnection) {
+            if (spiderType == SpiderType.Client)
+                return;
+            NetMessage msg = new NetMessage();
+            msg.Write(message.ToString());
+
+            Console.Out.WriteLine(msg.ReadString());
+
+            ((NetServer)spiderNet).SendMessage(msg, targetConnection, deliveryType);
+        }
+
 		/// <summary>
 		/// Gets the ArrayList of client IPAddress
 		/// </summary>
@@ -287,6 +304,7 @@ namespace SpiderEngine
 		private SpiderMessageType type;
 		private String label;
         private IPAddress senderIP;
+        private NetConnection connection;
 		
 		/// <summary>
 		/// Creates a new network message.  Do not use pipes ('|') in any of the parameters.
@@ -306,10 +324,10 @@ namespace SpiderEngine
 		/// <param name="msg">The NetMessage to be decoded</param>
 		public SpiderMessage(NetMessage msg) {
 			//This is the exception we throw if something goes wrong
-			Exception e = new Exception();
-			
+			Exception e = new Exception("Could not read message");
 			
 			String contents = msg.ReadString();
+            
 			//Parse
 			String strType = contents.Substring(0,contents.IndexOf('|'));
 			contents = contents.Substring(contents.IndexOf('|')+1);
@@ -317,6 +335,7 @@ namespace SpiderEngine
 			contents = contents.Substring(contents.IndexOf('|')+1);
 			String strData = contents.Substring(0,contents.IndexOf('|'));
 
+            connection = msg.Sender;
             senderIP = msg.Sender.RemoteEndpoint.Address;
 			//Create
 			switch(strType){
@@ -353,6 +372,14 @@ namespace SpiderEngine
 		public object GetData(){
 			return data;
 		}
+
+        /// <summary>
+        /// Retrieves the NetConnection to the sender of the message. Only non-null if the NetMessage constructor was used.
+        /// </summary>
+        /// <returns>A NetConnection to the sender of the message, or null if not constructed from a NetMessage</returns>
+        public NetConnection GetConnection() {
+            return connection;
+        }
 		
 		/// <summary>
 		/// Gets the type of data stored in the message.
