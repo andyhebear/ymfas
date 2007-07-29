@@ -32,7 +32,6 @@ namespace Ymfas {
     }
 
     public class EventManager{
-        private SpiderEngine.Spider NetworkEngine;
         private Queue<GameEvent> EventQueue;
         private Thread MessagePolling;
 
@@ -40,8 +39,7 @@ namespace Ymfas {
         /// Creates a new EventManager, which will begin polling the network for event messages
         /// </summary>
         /// <param name="networkEngine">The network engine to monitor for events</param>
-        public EventManager(SpiderEngine.Spider networkEngine) {
-            NetworkEngine = networkEngine;
+        public EventManager() {
             EventQueue = new Queue<GameEvent>();
 
             MessagePolling = new Thread(PollMessages);
@@ -51,10 +49,10 @@ namespace Ymfas {
         /// Polls the message queue of the network engine indefinitely, parsing out events and filling the event
         /// </summary>
         private void PollMessages() {
-            this.NetworkEngine.Update();
+            NetworkEngine.Engine.Update();
             SpiderEngine.SpiderMessage msg;
             while(true){
-                if ((msg = this.NetworkEngine.GetNextMessage()) != null) {
+                if ((msg = NetworkEngine.Engine.GetNextMessage()) != null) {
                     try {
                         //The type is contained in the label
                         Type eventType = Type.GetType(msg.GetLabel());
@@ -117,7 +115,7 @@ namespace Ymfas {
 
             SpiderEngine.SpiderMessage msg = new SpiderEngine.SpiderMessage(e.ToString(), SpiderEngine.SpiderMessageType.String, e.GetType().ToString());
 
-            NetworkEngine.SendMessage(msg, e.DeliveryType);
+            NetworkEngine.Engine.SendMessage(msg, e.DeliveryType);
         }
     }
 }
