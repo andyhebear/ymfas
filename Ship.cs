@@ -17,7 +17,7 @@ namespace Ymfas
         const float FORCE = 10.0f;
         const float TORQUE = 5.0f;
 
-		public Ship(World _w, SceneManager _mgr, SceneNode _parent, string _id)
+		public Ship(World _w, SceneManager _mgr, SceneNode _parent, string _id, Vector3 _position)
 		{
 			SceneNode parent = (_parent == null) ? _mgr.RootSceneNode : _parent;
 
@@ -25,9 +25,7 @@ namespace Ymfas
 			mesh = _mgr.CreateEntity(id, "razor.mesh");
 			node = parent.CreateChildSceneNode();
 			node.AttachObject(mesh);
-            node.Position = new Vector3(0);
-            /*node.SetOrientation(Quaternion.IDENTITY.w, Quaternion.IDENTITY.x,
-                Quaternion.IDENTITY.y, Quaternion.IDENTITY.z);*/
+
 
             MogreNewt.CollisionPrimitives.Box bodyBox = 
                 new MogreNewt.CollisionPrimitives.Box(_w, mesh.BoundingBox.Size);
@@ -40,8 +38,7 @@ namespace Ymfas
             Vector3 inertia;
             body.getMassMatrix(out mass, out inertia);
             Console.Out.WriteLine(inertia.ToString());
-            Console.Out.WriteLine("standbyTorque");
-            Console.Out.WriteLine(standbyTorque.ToString());
+
 
 			body.attachToNode(node);
 
@@ -49,7 +46,7 @@ namespace Ymfas
             Console.Out.WriteLine(v.ToString());
 			body.setMassMatrix(1.0f, v);
 
-            body.setPositionOrientation(new Vector3(0.0f, 0, 0), node.Orientation);
+            body.setPositionOrientation(_position, node.Orientation);
             body.IsGravityEnabled = false;
             body.ForceCallback += new ForceCallbackHandler(ForceTorqueCallback);
             body.setAutoFreeze(0);
@@ -110,21 +107,20 @@ namespace Ymfas
 		}
         public void StopRotation(float time)
         {
-            Console.Out.WriteLine(time);
             Vector3 pos = new Vector3();
             Quaternion orient = new Quaternion();
             body.getPositionOrientation(out pos, out orient);
-            float mass;
-            Vector3 inertia = new Vector3();
-            body.getMassMatrix(out mass, out inertia);
-
-            Vector3 omega = body.getOmega();
-            Console.Out.WriteLine(omega.ToString());
-
-            omega = orient.Inverse() * omega / time;
-
-            //Console.Out.WriteLine(omega.ToString());
+            Vector3 torque = orient.Inverse() * body.getOmega() * 100.0f / time;
             
+            Console.Out.WriteLine("StopRotation");
+            Console.Out.WriteLine("torque");
+            Console.Out.WriteLine(torque.ToString());
+            Console.Out.WriteLine("time");
+            Console.Out.WriteLine(time);
+            Console.Out.WriteLine("omega");
+            Console.Out.WriteLine((orient.Inverse() * body.getOmega()).ToString());
+            Console.Out.WriteLine("");
+
             /*
             if (omega.x > 0.0f)
             {
@@ -156,56 +152,49 @@ namespace Ymfas
             
             //x correction
 
-            Console.Out.WriteLine(omega.x * inertia.x);
-            Console.Out.WriteLine(omega.y * inertia.y);
-            Console.Out.WriteLine(omega.z * inertia.z);
-            if(omega.x * inertia.x >= TORQUE * mesh.BoundingRadius)
+            if(torque.x > TORQUE * mesh.BoundingRadius)
             {
                 standbyTorque += new Vector3(-TORQUE * mesh.BoundingRadius, 0.0f, 0.0f);
             }
-            else if (omega.x * inertia.x <= -TORQUE * mesh.BoundingRadius)
+            else if (torque.x < -TORQUE * mesh.BoundingRadius)
             {
                 standbyTorque += new Vector3(TORQUE * mesh.BoundingRadius, 0.0f, 0.0f);
             }
             else
             {
-                standbyTorque += new Vector3(-omega.x * inertia.x, 0.0f, 0.0f);
-                Console.Out.WriteLine("x");
+                standbyTorque += new Vector3(-torque.x, 0.0f, 0.0f);
             }
             //y correction
             
-            if (omega.y * inertia.y >= TORQUE * mesh.BoundingRadius)
+            if (torque.y >= TORQUE * mesh.BoundingRadius)
             {
                 standbyTorque += new Vector3(0.0f, -TORQUE * mesh.BoundingRadius, 0.0f);
             }
-            else if (omega.y * inertia.y <= -TORQUE * mesh.BoundingRadius)
+            else if (torque.y <= -TORQUE * mesh.BoundingRadius)
             {
                 standbyTorque += new Vector3(0.0f, TORQUE * mesh.BoundingRadius, 0.0f);
             }
             else
             {
-                standbyTorque += new Vector3(0.0f, -omega.y * inertia.y, 0.0f);
+                standbyTorque += new Vector3(0.0f, -torque.y, 0.0f);
                 Console.Out.WriteLine("y");
             }
             //z correction
-            if (omega.z * inertia.z >= TORQUE * mesh.BoundingRadius)
+            if (torque.z >= TORQUE * mesh.BoundingRadius)
             {
                 standbyTorque += new Vector3(0.0f, 0.0f, -TORQUE * mesh.BoundingRadius);
             }
-            else if (omega.z * inertia.z <= -TORQUE * mesh.BoundingRadius)
+            else if (torque.z <= -TORQUE * mesh.BoundingRadius)
             {
                 standbyTorque += new Vector3(0.0f, 0.0f, TORQUE * mesh.BoundingRadius);
             }
             else
             {
-                standbyTorque += new Vector3(0.0f, 0.0f, -omega.z * inertia.z);
+                standbyTorque += new Vector3(0.0f, 0.0f, -torque.z);
                 Console.Out.WriteLine("z");
             }
-            Console.Out.WriteLine(TORQUE * mesh.BoundingRadius);
-            Console.Out.WriteLine(""); 
-
-
         }
+
         private void PrintBodyPos(Body b, Quaternion orient, Vector3 pos)
         {
             System.Console.WriteLine(pos);
