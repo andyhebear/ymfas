@@ -1,9 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.ComponentModel;
 using Mogre;
 using MogreNewt;
-using System.ComponentModel;
+using Ymfas;
 
 namespace Ymfas {
 
@@ -74,5 +75,44 @@ namespace Ymfas {
         }
 
     }
+
+    public class ShipControlStatus : GameEvent
+    {
+        byte thrust;
+        sbyte pitch, roll, yaw;
+        int playerID;
+
+        public ShipControlStatus(byte _thrust, sbyte _pitch, sbyte _roll, sbyte _yaw, byte _playerID)
+        {
+            thrust = _thrust;
+            pitch = _pitch;
+            roll = _roll;
+            yaw = _yaw;
+            playerID = _playerID;
+        }
+
+        public override void SetDataFromByteArray(byte[] data)
+        {
+            thrust = (byte) data[0];
+            pitch = (sbyte) data[1];
+            roll = (sbyte) data[2];
+            yaw = (sbyte) data[3];
+            playerID = BitConverter.ToInt32(data, 4);                        
+        }
+
+        public override byte[] ToByteArray()
+        {
+            byte[] byteArray = new byte[4 + sizeof(int)];
+            byteArray[0] = thrust;
+            byteArray[1] = (byte)pitch;
+            byteArray[2] = (byte)roll;
+            byteArray[3] = (byte)yaw;
+            BitConverter.GetBytes(playerID).CopyTo(byteArray, 4);
+
+            return byteArray;
+        }
+    }
+
+    
 }
 

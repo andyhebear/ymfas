@@ -11,12 +11,12 @@ namespace Ymfas
 	{
 		static void Main()
 		{
-			//TestEngine test = new TestEngine();
-			//test.Go();
+			TestEngine test = new TestEngine();
+			test.Go();
             //Launch the main form
-            System.Windows.Forms.Application.EnableVisualStyles();
-            System.Windows.Forms.Application.SetCompatibleTextRenderingDefault(false);
-            System.Windows.Forms.Application.Run(new frmMainSplash());
+            //System.Windows.Forms.Application.EnableVisualStyles();
+            //System.Windows.Forms.Application.SetCompatibleTextRenderingDefault(false);
+            //System.Windows.Forms.Application.Run(new frmMainSplash());
 		}
 	}
 
@@ -49,11 +49,12 @@ namespace Ymfas
 			cam.AutoAspectRatio = true;
 
             Vector3 position = new Vector3(0.0f, 0.0f, 0.0f);
+            Quaternion orientation = Quaternion.IDENTITY;
 
 			// In Ogre, an entity is a renderable object. An entity must be attached
 			// to a scene node, however, in order to be rendered. Every entity (really, 
 			// every object in Ogre) must be assigned a unique name. 
-			playerShip = new Ship(world, mgr, null, "ship", position);
+			playerShip = new Ship(world, mgr, null, "ship", position, orientation);
 
             shipCam = new ShipCamera(cam);
             shipCam.Radius = playerShip.Mesh.BoundingRadius * 2.25f;
@@ -126,9 +127,6 @@ namespace Ymfas
 				if (input.IsDown(Key.Escape))
                     break;
 
-                int i;
-                if (input.IsDown(Key.Q))
-                    i = 0;
 
 				int dx = input.Mouse.dX;
 				int dy = input.Mouse.dY;
@@ -162,7 +160,7 @@ namespace Ymfas
                     playerShip.ThrustRelative(new Vector3(0.0f, 0.0f, 1.0f));
 
                 if (input.IsDown(Key.A))
-                    playerShip.StopRotation(frameTime);
+                    playerShip.TorqueRelative(playerShip.GetCorrectiveTorque(frameTime));                        
 
 				world.update(frameTime);
 

@@ -17,7 +17,7 @@ namespace Ymfas
         const float FORCE = 10.0f;
         const float TORQUE = 5.0f;
 
-		public Ship(World _w, SceneManager _mgr, SceneNode _parent, string _id, Vector3 _position)
+		public Ship(World _w, SceneManager _mgr, SceneNode _parent, string _id, Vector3 _position, Quaternion _orientation)
 		{
 			SceneNode parent = (_parent == null) ? _mgr.RootSceneNode : _parent;
 
@@ -46,7 +46,7 @@ namespace Ymfas
             Console.Out.WriteLine(v.ToString());
 			body.setMassMatrix(1.0f, v);
 
-            body.setPositionOrientation(_position, node.Orientation);
+            body.setPositionOrientation(_position, _orientation);
             body.IsGravityEnabled = false;
             body.ForceCallback += new ForceCallbackHandler(ForceTorqueCallback);
             body.setAutoFreeze(0);
@@ -105,7 +105,7 @@ namespace Ymfas
 		{
             standbyTorque += vec * TORQUE * mesh.BoundingRadius;
 		}
-        public void StopRotation(float time)
+        public Vector3 GetCorrectiveTorque(float time)
         {
             Vector3 pos = new Vector3();
             Quaternion orient = new Quaternion();
@@ -121,78 +121,54 @@ namespace Ymfas
             Console.Out.WriteLine((orient.Inverse() * body.getOmega()).ToString());
             Console.Out.WriteLine("");
 
-            /*
-            if (omega.x > 0.0f)
-            {
-                standbyTorque += new Vector3(-TORQUE * mesh.BoundingRadius, 0.0f, 0.0f);
-            }
-            else
-            {
-                standbyTorque += new Vector3(TORQUE * mesh.BoundingRadius, 0.0f, 0.0f);
-            }
 
-            if (omega.y > 0.0f)
-            {
-                standbyTorque += new Vector3(0.0f, -TORQUE * mesh.BoundingRadius, 0.0f);
-            }
-            else
-            {
-                standbyTorque += new Vector3(0.0f, TORQUE * mesh.BoundingRadius, 0.0f);
-            }
+            Vector3 correctiveTorque = new Vector3();
 
-            if (omega.z > 0.0f)
-            {
-                standbyTorque += new Vector3(0.0f, 0.0f, -TORQUE * mesh.BoundingRadius);
-            }
-            else
-            {
-                standbyTorque += new Vector3(0.0f, 0.0f, TORQUE * mesh.BoundingRadius);
-            }
-            */      
-            
             //x correction
 
             if(torque.x > TORQUE * mesh.BoundingRadius)
             {
-                standbyTorque += new Vector3(-TORQUE * mesh.BoundingRadius, 0.0f, 0.0f);
+                correctiveTorque += new Vector3(-TORQUE * mesh.BoundingRadius, 0.0f, 0.0f);
             }
             else if (torque.x < -TORQUE * mesh.BoundingRadius)
             {
-                standbyTorque += new Vector3(TORQUE * mesh.BoundingRadius, 0.0f, 0.0f);
+                correctiveTorque += new Vector3(TORQUE * mesh.BoundingRadius, 0.0f, 0.0f);
             }
             else
             {
-                standbyTorque += new Vector3(-torque.x, 0.0f, 0.0f);
+                correctiveTorque += new Vector3(-torque.x, 0.0f, 0.0f);
             }
             //y correction
             
             if (torque.y >= TORQUE * mesh.BoundingRadius)
             {
-                standbyTorque += new Vector3(0.0f, -TORQUE * mesh.BoundingRadius, 0.0f);
+                correctiveTorque += new Vector3(0.0f, -TORQUE * mesh.BoundingRadius, 0.0f);
             }
             else if (torque.y <= -TORQUE * mesh.BoundingRadius)
             {
-                standbyTorque += new Vector3(0.0f, TORQUE * mesh.BoundingRadius, 0.0f);
+                correctiveTorque += new Vector3(0.0f, TORQUE * mesh.BoundingRadius, 0.0f);
             }
             else
             {
-                standbyTorque += new Vector3(0.0f, -torque.y, 0.0f);
+                correctiveTorque += new Vector3(0.0f, -torque.y, 0.0f);
                 Console.Out.WriteLine("y");
             }
             //z correction
             if (torque.z >= TORQUE * mesh.BoundingRadius)
             {
-                standbyTorque += new Vector3(0.0f, 0.0f, -TORQUE * mesh.BoundingRadius);
+                correctiveTorque += new Vector3(0.0f, 0.0f, -TORQUE * mesh.BoundingRadius);
             }
             else if (torque.z <= -TORQUE * mesh.BoundingRadius)
             {
-                standbyTorque += new Vector3(0.0f, 0.0f, TORQUE * mesh.BoundingRadius);
+                correctiveTorque += new Vector3(0.0f, 0.0f, TORQUE * mesh.BoundingRadius);
             }
             else
             {
-                standbyTorque += new Vector3(0.0f, 0.0f, -torque.z);
+                correctiveTorque += new Vector3(0.0f, 0.0f, -torque.z);
                 Console.Out.WriteLine("z");
             }
+
+            return correctiveTorque;
         }
 
         private void PrintBodyPos(Body b, Quaternion orient, Vector3 pos)
