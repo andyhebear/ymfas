@@ -123,6 +123,7 @@ namespace Ymfas
 			// "Video Mode", of the form "[width] x [height] @ [bits]-bit colour"
 			rs.SetConfigOption("Full Screen", fullscreen ? "Yes" : "No");
 			rs.SetConfigOption("Video Mode", width + " x " + height + " @ 32-bit colour");
+            rs.SetConfigOption("VSync", "No");
 
 			return true;
 		}

@@ -48,10 +48,12 @@ namespace Ymfas
 			// have the frustum set the aspect ratio automatically
 			cam.AutoAspectRatio = true;
 
+            Vector3 position = new Vector3(0.0f, 0.0f, 0.0f);
+
 			// In Ogre, an entity is a renderable object. An entity must be attached
 			// to a scene node, however, in order to be rendered. Every entity (really, 
 			// every object in Ogre) must be assigned a unique name. 
-			playerShip = new Ship(world, mgr, null, "ship");
+			playerShip = new Ship(world, mgr, null, "ship", position);
 
             shipCam = new ShipCamera(cam);
             shipCam.Radius = playerShip.Mesh.BoundingRadius * 2.25f;
@@ -118,9 +120,15 @@ namespace Ymfas
 				frameTime = frameTimer.Milliseconds / 1000.0f;
 				frameTimer.Reset();
 
+                Console.Out.WriteLine("time");
+                Console.Out.WriteLine(frameTime);
 				input.Update();
 				if (input.IsDown(Key.Escape))
-					break;
+                    break;
+
+                int i;
+                if (input.IsDown(Key.Q))
+                    i = 0;
 
 				int dx = input.Mouse.dX;
 				int dy = input.Mouse.dY;
