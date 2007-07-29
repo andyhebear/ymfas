@@ -20,8 +20,6 @@ namespace Ymfas {
         private bool gameStarting;
         private int idTicketCounter;
 
-        public int PlayerId;
-
         public frmGameLobby() {
             InitializeComponent();
             timerTicks = 0;
@@ -36,7 +34,7 @@ namespace Ymfas {
             if (NetworkEngine.EngineType == SpiderEngine.SpiderType.Server) {
                 chkReady.Visible = false;
                 cmbGameMode.Enabled = true;
-                PlayerId = 0;
+                NetworkEngine.PlayerId = 0;
                 idTicketCounter = 1;
             }
         }
@@ -154,7 +152,7 @@ namespace Ymfas {
                             }
                             break;
                         case "id":
-                            PlayerId = (int)msg.GetData();
+                            NetworkEngine.PlayerId = (int)msg.GetData();
                             break;
                         case "mode":
                             try {

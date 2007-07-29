@@ -3,21 +3,21 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Text;
 
-namespace ymfas {
+namespace Ymfas {
     public delegate void GameEventFiringHandler(GameEvent e);
 
     public abstract class GameEvent { 
         /// <summary>
-        /// A String representation of the data contained in this object.  Must be parseable by SetDataFromString.
+        /// A byte array representation of the data contained in this object.  Must be parseable by SetDataFromByteArray.
         /// </summary>
         /// <returns>The data contained in the object as a String</returns>
-        public abstract override String ToString();
+        public abstract Byte[] ToByteArray();
 
         /// <summary>
-        /// Sets the data based on a String using the same format as returned from ToString()
+        /// Sets the data based on a byte array using the same format as returned from ToByteArray()
         /// </summary>
-        /// <param name="data">A parseable string containing the object data</param>
-        public abstract void SetDataFromString(String data);
+        /// <param name="byteArray">A parseable string containing the object data</param>
+        public abstract void SetDataFromByteArray(Byte[] byteArray);
 
         public static event GameEventFiringHandler FiringEvent;
 
@@ -65,15 +65,20 @@ namespace ymfas {
                         //Get the message data
                         String msgData = (String)msg.GetData();
                
-                        //Add this info to the event, casting it to the correct type
-                        msgEvent.SetDataFromString(msgData);
+                        //Add this info to the event (string to byteArray first)
+                        Encoder encoder = Encoding.GetEncoding(28591).GetEncoder();
+                        Byte[] byteArray = new Byte[msgData.Length];
+                        encoder.GetBytes(msgData.ToCharArray(), 0, msgData.Length, byteArray, 0, true);
+                        msgEvent.SetDataFromByteArray(byteArray);
 
                         //Add this event to the queue
                         lock (EventQueue) {
                             EventQueue.Enqueue(msgEvent);
                         }
                     }
-                    catch (Exception e) { }
+                    catch (Exception e) {
+                        Util.RecordException(e);
+                    }
                 }
             }
         }
@@ -98,6 +103,18 @@ namespace ymfas {
         /// </summary>
         /// <param name="e">The game event to be sent</param>
         public void SendEvent(GameEvent e) {
+            //latin-1
+            Byte[] bytes = e.ToByteArray();
+            Decoder decoder = Encoding.GetEncoding(28591).GetDecoder();
+            char[] chars = new char[bytes.Length + 1];
+            int ignored0;
+            int ignored1;
+            bool ignored2;
+            decoder.Convert(bytes, 0, bytes.Length, chars, 0, bytes.Length, true, out ignored0, out ignored1, out ignored2);
+            chars[bytes.Length] = (char)0;  //null-terminate
+            String msgString = new String(chars);
+
+
             SpiderEngine.SpiderMessage msg = new SpiderEngine.SpiderMessage(e.ToString(), SpiderEngine.SpiderMessageType.String, e.GetType().ToString());
 
             NetworkEngine.SendMessage(msg, e.DeliveryType);
