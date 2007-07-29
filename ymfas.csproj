@@ -71,10 +71,12 @@
     <Compile Include="frmMainSplash.Designer.cs">
       <DependentUpon>frmMainSplash.cs</DependentUpon>
     </Compile>
+    <Compile Include="EventManager.cs" />
     <Compile Include="InputSystem.cs" />
     <Compile Include="NetworkEngine.cs" />
     <Compile Include="ShipCamera.cs" />
     <Compile Include="spider.cs" />
+    <Compile Include="StateUpdateEvents.cs" />
     <Compile Include="TestEngine_Init.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Ship.cs" />

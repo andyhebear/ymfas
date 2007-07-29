@@ -18,13 +18,15 @@ namespace Ymfas {
         private ArrayList playersReady;
         private ArrayList playersNotReady;
         private bool gameStarting;
+        private int idTicketCounter;
+
+        public int PlayerId;
 
         public frmGameLobby() {
             InitializeComponent();
             timerTicks = 0;
             playersReady = new ArrayList();
             playersNotReady = new ArrayList();
-            lstPlayers.Items.Add(NetworkEngine.Engine.GetName() + " (Game Host)");
             gameStartCount = 3;
             gameStarting = false;
 
@@ -34,6 +36,8 @@ namespace Ymfas {
             if (NetworkEngine.EngineType == SpiderEngine.SpiderType.Server) {
                 chkReady.Visible = false;
                 cmbGameMode.Enabled = true;
+                PlayerId = 0;
+                idTicketCounter = 1;
             }
         }
 
@@ -78,7 +82,12 @@ namespace Ymfas {
                             //newly connected player is identifying himself                            
                             NetworkEngine.PlayerIPs.Add(msg.GetIP(), ((String)msg.GetData()) + " [" + msg.GetIP() + "]");
                             playersNotReady.Add(((String)msg.GetData()) + " [" + msg.GetIP() + "]");
-                            lstPlayers.Items.Add(((String)msg.GetData()) + " [" + msg.GetIP() + "]");
+
+                            //reply with a player identifier
+                            SpiderEngine.SpiderMessage responseMsg = new SpiderEngine.SpiderMessage(idTicketCounter, SpiderEngine.SpiderMessageType.Int, "id");
+                            idTicketCounter++;
+                            NetworkEngine.Engine.SendMessage(responseMsg, Lidgren.Library.Network.NetChannel.Ordered1, msg.GetConnection());
+
                             btnStart.Enabled = false;
                             break;
                         case "ready":
@@ -144,6 +153,9 @@ namespace Ymfas {
                                 players = players.Substring(i+1);
                             }
                             break;
+                        case "id":
+                            PlayerId = (int)msg.GetData();
+                            break;
                         case "mode":
                             try {
                                 cmbGameMode.SelectedIndex = (int)msg.GetData();
@@ -203,15 +215,21 @@ namespace Ymfas {
                 }
 
                 if ((timer.Interval * timerTicks) % PLAYERLIST_UPDATE_INTERVAL == 0) {
-                    //Send player list
+                    //Send player list & update host player list
+                    lstPlayers.Items.Clear();
                     String playerList = NetworkEngine.Engine.GetName() + " (Game Host)\n";
+                    lstPlayers.Items.Add(NetworkEngine.Engine.GetName() + " (Game Host)");
+
                     Array playerArray = Array.CreateInstance(typeof(String),NetworkEngine.PlayerIPs.Count);
                     NetworkEngine.PlayerIPs.Values.CopyTo(playerArray, 0);
+
+                    
                     for (int i = 0; i < NetworkEngine.PlayerIPs.Count; i++) {
                         playerList += playerArray.GetValue(i) + "\n";
+                        lstPlayers.Items.Add(playerArray.GetValue(i));
                     }
                     SpiderEngine.SpiderMessage message = new SpiderEngine.SpiderMessage(playerList, SpiderEngine.SpiderMessageType.String,"players");
-                    NetworkEngine.Engine.SendMessage(message, Lidgren.Library.Network.NetChannel.Unreliable);
+                    NetworkEngine.Engine.SendMessage(message, Lidgren.Library.Network.NetChannel.Ordered1);
                 }
             }
 
@@ -232,7 +250,11 @@ namespace Ymfas {
                 }
 
                 //clear input
-                txtChatInput.Text = "";
+                txtChatInput.Multiline = false;
+                txtChatInput.Text = null;
+                txtChatInput.Multiline = true;
+
+                e.Handled = true;
 
             }
         }
@@ -265,15 +287,9 @@ namespace Ymfas {
         private void cmbGameMode_SelectedIndexChanged(object sender, EventArgs e) {
             if (NetworkEngine.EngineType == SpiderEngine.SpiderType.Server) {
                 //send out the message
-                SpiderEngine.SpiderMessage msg = new SpiderEngine.SpiderMessage("The current game mode is " + cmbGameMode.Items[cmbGameMode.SelectedIndex].ToString() + ".", SpiderEngine.SpiderMessageType.String, "chat");
+                SpiderEngine.SpiderMessage msg = new SpiderEngine.SpiderMessage(cmbGameMode.SelectedIndex, SpiderEngine.SpiderMessageType.Int, "mode");
                 NetworkEngine.Engine.SendMessage(msg, Lidgren.Library.Network.NetChannel.ReliableUnordered);
-                msg = new SpiderEngine.SpiderMessage(cmbGameMode.SelectedIndex, SpiderEngine.SpiderMessageType.Int, "mode");
-                NetworkEngine.Engine.SendMessage(msg, Lidgren.Library.Network.NetChannel.ReliableUnordered);
-                //add to server's chat window
-                rtxtChatWindow.Text += "\nThe current game mode is " + cmbGameMode.Items[cmbGameMode.SelectedIndex].ToString() + ".";
-                rtxtChatWindow.Select(rtxtChatWindow.Text.Length + 1, 2);
-                rtxtChatWindow.ScrollToCaret();
-
+                
                 //parse selection into GameMode
                 NetworkEngine.GameMode = (GameMode)Enum.Parse(typeof(GameMode), cmbGameMode.Items[cmbGameMode.SelectedIndex].ToString().Replace(" ", ""));
 
