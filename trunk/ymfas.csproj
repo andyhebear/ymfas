@@ -74,7 +74,9 @@
     <Compile Include="EventManager.cs" />
     <Compile Include="InputSystem.cs" />
     <Compile Include="NetworkEngine.cs" />
+    <Compile Include="ServerShipManager.cs" />
     <Compile Include="ShipCamera.cs" />
+    <Compile Include="ShipManager.cs" />
     <Compile Include="ShipTypeData.cs" />
     <Compile Include="spider.cs" />
     <Compile Include="StateUpdateEvents.cs" />
