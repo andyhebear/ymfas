@@ -43,6 +43,7 @@ namespace Ymfas {
             EventQueue = new Queue<GameEvent>();
 
             MessagePolling = new Thread(PollMessages);
+            MessagePolling.Start();
         }
 
         /// <summary>

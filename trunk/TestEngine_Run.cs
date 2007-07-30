@@ -190,5 +190,23 @@ namespace Ymfas
 
 			root.DestroySceneManager(sceneMgr);
 		}
+
+        /// <summary>
+        /// Initializes & executes the client runtime loop
+        /// </summary>
+        public void ClientGo() {
+
+            while (true) {
+            }
+
+        }
+
+        /// <summary>
+        /// Initializes & executes the server runtime loop
+        /// </summary>
+        public void ServerGo() {
+            while (true) {
+            }
+        }
 	}
 }
