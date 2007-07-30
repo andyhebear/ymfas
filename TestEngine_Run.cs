@@ -7,23 +7,19 @@ using Microsoft.DirectX.DirectInput;
 
 namespace Ymfas
 {
-	partial class TestEngine : IDisposable
+	public partial class TestEngine : IDisposable
 	{
 		Ship playerShip;
 		ShipCamera shipCam;
 
 		StaticGeometry grid;
 		RibbonTrail ribbon;
-		TimedEventManager tem;
 
 		/// <summary>
 		/// initialize the scene
 		/// </summary>
 		private void InitializeScene()
 		{
-			// create the scene manager
-			sceneMgr = root.CreateSceneManager(SceneType.ST_GENERIC, this.SCENE_MANAGER_ID);
-
 			// Every viewport has a camera associated with it.
 			// The second number is a z-order. Higher z-order viewports
 			// are rendered on top (in the case of multiple viewports).
@@ -90,11 +86,6 @@ namespace Ymfas
 
 			sceneMgr.RootSceneNode.CreateChildSceneNode().AttachObject(ribbon);
 
-			tem = new TimedEventManager();
-			tem.AddEvent(new TimedEventManager.TimedEvent(new TimedEventManager.TimedEventFunction(Print),
-				TimedEventManager.TimedEventType.Repeating,
-				1000, "Hello"));
-
 			System.Console.WriteLine("here");
 		}
 
@@ -122,7 +113,6 @@ namespace Ymfas
 				frameTime = frameTimer.Milliseconds / 1000.0f;
 				frameTimer.Reset();
 
-				tem.Update();
 				Console.Out.WriteLine("time");
 				Console.Out.WriteLine(frameTime);
 				input.Update();
@@ -179,6 +169,11 @@ namespace Ymfas
 				if (!root.RenderOneFrame())
 					break;
 			}
+		}
+
+		public void AttachCamera(Ship s)
+		{
+			shipCam.Target = s.SceneNode;
 		}
 
 		private void OnLeaveWorld(World w, Body b)

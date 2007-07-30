@@ -85,6 +85,7 @@
     <Compile Include="Ship.cs" />
     <Compile Include="TestEngine_Run.cs" />
     <Compile Include="TimedEventManager.cs" />
+    <Compile Include="UserInputManager.cs" />
     <Compile Include="Util.cs" />
   </ItemGroup>
   <ItemGroup>

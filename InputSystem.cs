@@ -3,7 +3,7 @@ using Microsoft.DirectX.DirectInput;
 
 namespace Ymfas
 {
-	class InputSystem
+	public class InputSystem
 	{
 		#region PublicEnumerations
 		/// <summary>

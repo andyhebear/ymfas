@@ -33,7 +33,6 @@ namespace Ymfas
             Camera = _cam;
         }
 
-
         // update method
         // adjusts the position to match the direction
         public void Update()

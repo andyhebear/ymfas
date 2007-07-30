@@ -11,19 +11,14 @@ namespace Ymfas
 
         public ServerShipManager()
         {
-            ShipControlStatus.FiringEvent += handleShipControlStatus;
+            ShipControlStatus.FiringEvent += new GameEventFiringHandler(handleShipControlStatus);
         }
 
-        void handleShipControlStatus(GameEvent e)
-        {
-            ShipControlStatus ee = (ShipControlStatus) e;
-            Ship s;
-            shipTable.TryGetValue(ee.playerID.ToString(), out s);
-        }
-
-
-
+		void handleShipControlStatus(GameEvent e)
+		{
+			ShipControlStatus ee = (ShipControlStatus)e;
+			Ship s;
+			shipTable.TryGetValue(ee.playerID.ToString(), out s);
+		}
     }
-
-
 }

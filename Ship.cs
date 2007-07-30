@@ -4,7 +4,7 @@ using MogreNewt;
 
 namespace Ymfas
 {
-	class Ship : IDisposable
+	public class Ship : IDisposable
 	{
 		SceneNode node;
 		Entity mesh;
@@ -34,7 +34,6 @@ namespace Ymfas
             float mass;
             Vector3 inertia;
             body.getMassMatrix(out mass, out inertia);
-
 
 			body.attachToNode(node);
 

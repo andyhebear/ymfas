@@ -1,12 +1,13 @@
 using System;
 using Mogre;
 using MogreNewt;
+using Microsoft.DirectX.DirectInput;
 
 /// <summary>
 /// Summary description for Class1
 /// </summary>
 /// 
-namespace ymfas
+namespace Ymfas
 {
     public class UserInputManager
     {
@@ -19,15 +20,13 @@ namespace ymfas
         const sbyte AUTOCORRECT = -128;
         const byte FULL = 255;
 
-        public UserInputManager(EventManager _m, byte _playerID)
+        public UserInputManager(InputSystem _input, EventManager _m, byte _playerID)
 	    {
             m = _m;
             playerID = _playerID;
 
             // initialize the input system
-            IntPtr hwnd;
-            root.AutoCreatedWindow.GetCustomAttribute("Window", out hwnd);
-            input = new InputSystem(hwnd);
+			input = _input;
 	    }
 
         public void PollInputs()
@@ -67,7 +66,7 @@ namespace ymfas
                 yaw = AUTOCORRECT;
             }
 
-            m.SendEvent(new ShipControlStatus(thrust, pitch, roll, yaw));
+            m.SendEvent(new ShipControlStatus(thrust, pitch, roll, yaw, (byte)playerID));
         }
     }
 }
