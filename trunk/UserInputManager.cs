@@ -15,10 +15,10 @@ namespace Ymfas
         EventManager m;
         int playerID;
 
-        const sbyte POSITIVE = 127;
-        const sbyte NEGATIVE = -127;
-        const sbyte AUTOCORRECT = -128;
-        const byte FULL = 255;
+        public const sbyte POSITIVE = 127;
+        public const sbyte NEGATIVE = -127;
+        public const sbyte AUTOCORRECT = -128;
+        public const byte FULL = 255;
 
         public UserInputManager(InputSystem _input, EventManager _m, byte _playerID)
 	    {
