@@ -94,9 +94,9 @@ namespace Ymfas {
     //Information re: ship controls
     public class ShipControlStatus : GameEvent
     {
-        byte thrust;
-        sbyte pitch, roll, yaw;
-        int playerID;
+        public byte thrust;
+        public sbyte pitch, roll, yaw;
+        public int playerID;
 
         public override Lidgren.Library.Network.NetChannel DeliveryType {
             get { return Lidgren.Library.Network.NetChannel.Unreliable; }
@@ -109,6 +109,8 @@ namespace Ymfas {
             roll = _roll;
             yaw = _yaw;
             playerID = _playerID;
+            this.DeliveryType = Lidgren.Library.Network.NetChannel.Unreliable;
+
         }
 
         public override void SetDataFromByteArray(byte[] data)

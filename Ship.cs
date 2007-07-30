@@ -171,6 +171,10 @@ namespace Ymfas
             get { return body.getVelocity(); }
             set { body.setVelocity(value); }
         }
+        public string ID
+        {
+            get { return id; }
+        }
 
 		public void Dispose()
 		{
