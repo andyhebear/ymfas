@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Collections;
 using System.Text;
 using System.ComponentModel;
 using Mogre;
@@ -14,7 +15,7 @@ namespace Ymfas {
         public ShipTypeData ShipType;
         public Vector3 Position;
         public Quaternion Orientation;
-
+        public String PlayerName;
 
         /// <summary>
         /// Default constructor
@@ -26,6 +27,8 @@ namespace Ymfas {
             ShipType.Model = ShipModel.MogreFighter;
             Position = new Vector3();
             Orientation = new Quaternion();
+            PlayerName = "";
+            
         }
 
         /// <summary>
@@ -35,15 +38,21 @@ namespace Ymfas {
         /// <param name="shipType">The type of the ship</param>
         /// <param name="position">The position of the ship</param>
         /// <param name="orientation">The orientation of the ship</param>
-        public ShipInit(int playerId, ShipTypeData shipType, Vector3 position, Quaternion orientation) {
+        public ShipInit(int playerId, ShipTypeData shipType, Vector3 position, Quaternion orientation, String playerName) {
             PlayerId = playerId;
             ShipType = shipType;
             Position = position;
             Orientation = orientation;
+            PlayerName = playerName;
+        }
+
+        public override Lidgren.Library.Network.NetChannel DeliveryType {
+            get { return Lidgren.Library.Network.NetChannel.Ordered1; }
         }
 
         public override Byte[] ToByteArray() {
-            Byte[] byteArray = new Byte[sizeof(int) * 3 + sizeof(float) * 7 + 1];
+            char [] nameChars = PlayerName.ToCharArray();
+            Byte[] byteArray = new Byte[sizeof(int) * 3 + sizeof(float) * 7 +  nameChars.Length * sizeof(char) + 1];
             BitConverter.GetBytes(PlayerId).CopyTo(byteArray, 0);
             BitConverter.GetBytes(Position.x).CopyTo(byteArray, sizeof(int));
             BitConverter.GetBytes(Position.y).CopyTo(byteArray, sizeof(int) + sizeof(float));
@@ -54,8 +63,11 @@ namespace Ymfas {
             BitConverter.GetBytes(Orientation.z).CopyTo(byteArray, sizeof(int) + sizeof(float) * 6);
             BitConverter.GetBytes((int)ShipType.Model).CopyTo(byteArray, sizeof(int) + sizeof(float) * 7);
             BitConverter.GetBytes((int)ShipType.Class).CopyTo(byteArray, sizeof(int) * 2 + sizeof(float) * 7);
-            byteArray[byteArray.Length] = (Byte)0;
-
+            for(int i=0;i<nameChars.Length;i++){
+                BitConverter.GetBytes(nameChars[i]).CopyTo(byteArray, sizeof(int) * 3 + sizeof(float) * 7 + i*sizeof(char));
+            }
+            byteArray[byteArray.Length-1] = (Byte)0;
+          
             return byteArray;
         }
 
@@ -70,17 +82,25 @@ namespace Ymfas {
             Orientation.z = BitConverter.ToSingle(byteArray, sizeof(int) + sizeof(float) * 6);
             ShipType.Model = (ShipModel)BitConverter.ToInt32(byteArray, sizeof(int) + sizeof(float) * 7);
             ShipType.Class = (ShipClass)BitConverter.ToInt32(byteArray, sizeof(int) * 2 + sizeof(float) * 7);
-
+            PlayerName = "";
+            for(int i=0;i<byteArray.Length -1;i++){
+                PlayerName += BitConverter.ToChar(byteArray, sizeof(int) * 3 + sizeof(float) * 7 + i*sizeof(char));
+            }
             return;
         }
 
     }
 
+    //Information re: ship controls
     public class ShipControlStatus : GameEvent
     {
         byte thrust;
         sbyte pitch, roll, yaw;
         int playerID;
+
+        public override Lidgren.Library.Network.NetChannel DeliveryType {
+            get { return Lidgren.Library.Network.NetChannel.Unreliable; }
+        }
 
         public ShipControlStatus(byte _thrust, sbyte _pitch, sbyte _roll, sbyte _yaw, byte _playerID)
         {
@@ -112,6 +132,26 @@ namespace Ymfas {
             return byteArray;
         }
     }
+
+    //Info re: status of all ships
+    public class ShipStateStatus : GameEvent {
+        public override Lidgren.Library.Network.NetChannel DeliveryType {
+            get { throw new Exception("The method or operation is not implemented."); }
+        }
+        public override byte[] ToByteArray() {
+            throw new Exception("The method or operation is not implemented.");
+        }
+        public override void SetDataFromByteArray(byte[] byteArray) {
+            throw new Exception("The method or operation is not implemented.");
+        }
+    }
+    public struct ShipState {
+        public Vector3 Position;
+        public Vector3 Velocity;
+        public Vector3 RotationalVelocity;
+        public Quaternion Orientation;
+    }
+
 
     
 }
