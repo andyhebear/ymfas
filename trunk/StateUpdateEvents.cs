@@ -102,6 +102,14 @@ namespace Ymfas {
             get { return Lidgren.Library.Network.NetChannel.Unreliable; }
         }
 
+        public ShipControlStatus() {
+            thrust = 0;
+            pitch = 0;
+            roll = 0;
+            yaw = 0;
+            playerID = -1;
+        }
+
         public ShipControlStatus(byte _thrust, sbyte _pitch, sbyte _roll, sbyte _yaw, byte _playerID)
         {
             thrust = _thrust;
@@ -109,7 +117,6 @@ namespace Ymfas {
             roll = _roll;
             yaw = _yaw;
             playerID = _playerID;
-            this.DeliveryType = Lidgren.Library.Network.NetChannel.Unreliable;
 
         }
 
