@@ -5,7 +5,7 @@ using System.Text;
 namespace Ymfas {
     //Contains information about the ship class & model
     //if this class is updated (diff properties), it's byte encoding in game events need to be updated...
-    public class ShipTypeData {
+    public struct ShipTypeData {
         public ShipClass Class;
         public ShipModel Model;
 

@@ -28,7 +28,7 @@ namespace Ymfas {
             FiringEvent(this);
         }
 
-        public Lidgren.Library.Network.NetChannel DeliveryType;
+        public abstract Lidgren.Library.Network.NetChannel DeliveryType { get; }
     }
 
     public class EventManager{
@@ -116,6 +116,9 @@ namespace Ymfas {
             SpiderEngine.SpiderMessage msg = new SpiderEngine.SpiderMessage(e.ToString(), SpiderEngine.SpiderMessageType.String, e.GetType().ToString());
 
             NetworkEngine.Engine.SendMessage(msg, e.DeliveryType);
+            if (NetworkEngine.EngineType == SpiderEngine.SpiderType.Server) {
+                e.FireEvent();
+            }
         }
     }
 }
