@@ -11,22 +11,23 @@ namespace Ymfas
     /// </summary>
     public class ShipManager
     {
-        World world;
-        SceneManager mgr;
-        Dictionary<String, Ship> shipTable = new Dictionary<String, Ship>();
+		TestEngine engine;
+		Dictionary<String, Ship> shipTable = new Dictionary<String, Ship>();
 
-        public ShipManager(World _world, SceneManager _mgr)
+        public ShipManager(TestEngine _engine)
         {
-            world = _world;
-            mgr = _mgr;
-            ShipInit.FiringEvent += handleShipInit;
+			engine = _engine;
+            ShipInit.FiringEvent += new GameEventFiringHandler(handleShipInit);
         }
 
         private void handleShipInit(GameEvent e)
         {
             ShipInit ee = (ShipInit) e;
-            Ship ship = new Ship(world, mgr, null, ee.PlayerId.ToString(), ee.Position, ee.Orientation);
+            Ship ship = new Ship(engine.World, engine.SceneManager, null, ee.PlayerId.ToString(), ee.Position, ee.Orientation);
             shipTable.Add(ship.ID, ship);
+
+			if (ship.ID == NetworkEngine.PlayerId.ToString())
+				engine.AttachCamera(ship);
         }
 
     }

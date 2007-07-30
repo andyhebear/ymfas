@@ -5,14 +5,12 @@ using System.Collections.Generic;
 
 namespace Ymfas
 {
-	partial class TestEngine : IDisposable
+	public partial class TestEngine : IDisposable
 	{
 		private Root root;
 		private SceneManager sceneMgr;
-		private RenderWindow window;
 		private InputSystem input;
 		private World world;
-		private EventManager eventMgr;
 
 		private Timer frameTimer;
 
@@ -87,6 +85,9 @@ namespace Ymfas
 
 			// various other things
 			frameTimer = new Mogre.Timer();
+
+			// create the scene manager
+			sceneMgr = root.CreateSceneManager(SceneType.ST_GENERIC, this.SCENE_MANAGER_ID);
 
 			// initalize the scene
 			InitializeScene();
@@ -216,6 +217,15 @@ namespace Ymfas
 				root.Dispose();
 				root = null;
 			}
+		}
+
+		public World World
+		{
+			get { return world; }
+		}
+		public SceneManager SceneManager
+		{
+			get { return sceneMgr; }
 		}
 	}
 }
