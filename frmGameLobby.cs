@@ -46,9 +46,8 @@ namespace Ymfas {
             if (gameStarting) {
                 if ((timerTicks * timer.Interval - gameStartTime) % GAMESTART_INTERVAL == 0) {
                     if (gameStartCount == 0) {
-                        this.Visible = false;
-                        TestEngine win = new TestEngine();
-                        win.Go();
+                        //this.Visible = false;
+						System.Windows.Forms.Application.Exit();
                     }
 
                     //count down

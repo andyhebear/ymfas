@@ -62,3 +62,17 @@ material Ribbon
 		}
 	}
 }
+
+material Space
+{
+	technique
+	{
+		pass
+		{
+			texture_unit
+			{
+				cubic_texture stevecube.jpg separateUV
+			}
+		}
+	}
+}

@@ -1,7 +1,7 @@
 using System;
 using Microsoft.DirectX.DirectInput;
 
-namespace YCB
+namespace Ymfas
 {
 	class InputSystem
 	{
