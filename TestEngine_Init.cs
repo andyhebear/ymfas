@@ -2,17 +2,20 @@ using System;
 using Mogre;
 using MogreNewt;
 using System.Collections.Generic;
+using System.Threading;
 
 namespace Ymfas
 {
-	public partial class TestEngine : IDisposable
+	partial class TestEngine : IDisposable
 	{
 		private Root root;
 		private SceneManager sceneMgr;
+		private RenderWindow window;
 		private InputSystem input;
 		private World world;
+		private EventManager eventMgr;
 
-		private Timer frameTimer;
+		private Mogre.Timer frameTimer;
 
 		#region Constants
 		//private string PLUGIN_FILE = "Plugins.cfg";
@@ -86,12 +89,28 @@ namespace Ymfas
 			// various other things
 			frameTimer = new Mogre.Timer();
 
-			// create the scene manager
-			sceneMgr = root.CreateSceneManager(SceneType.ST_GENERIC, this.SCENE_MANAGER_ID);
+            InitializeThreads();
 
 			// initalize the scene
 			InitializeScene();
 		}
+
+        /// <summary>
+        /// Creates client/server threads
+        /// </summary>
+        private void InitializeThreads() {
+            EventManager eventMgr = new EventManager();
+
+            //create client thread
+            Thread ClientThread = new Thread(ClientGo);
+            ClientThread.Start();
+
+            //create server thread if necessary
+            if (NetworkEngine.EngineType == SpiderEngine.SpiderType.Server) {
+                Thread ServerThread = new Thread(ServerGo);
+                ServerThread.Start();
+            }
+        }
 
 		/// <summary>
 		/// Process the config file and add all the proper resource locations
@@ -217,15 +236,6 @@ namespace Ymfas
 				root.Dispose();
 				root = null;
 			}
-		}
-
-		public World World
-		{
-			get { return world; }
-		}
-		public SceneManager SceneManager
-		{
-			get { return sceneMgr; }
 		}
 	}
 }
