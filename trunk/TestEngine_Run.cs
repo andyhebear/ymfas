@@ -15,6 +15,8 @@ namespace Ymfas
 		StaticGeometry grid;
 		RibbonTrail ribbon;
 
+        private const float WORLD_SIZE_PARAM = 10000.0f;
+
 		/// <summary>
 		/// initialize the scene
 		/// </summary>
@@ -105,6 +107,11 @@ namespace Ymfas
 
 			float MAX_SPEED = 30.0f;
 
+            //init client managers
+            ShipManager shipMgr = new ShipManager(this);
+            UserInputManager userInputMgr = new UserInputManager(this.input, this.eventMgr, (byte) NetworkEngine.PlayerId);
+
+
 			// RenderOneFrame returns false when we Ogre
 			// is done. Alternatively, we can not have
 			// the loop and merely call root.StartRendering
@@ -115,55 +122,16 @@ namespace Ymfas
 
 				Console.Out.WriteLine("time");
 				Console.Out.WriteLine(frameTime);
-				input.Update();
+
+                //update input
+                input.Update();
 				if (input.IsDown(Key.Escape))
 					break;
 
-				int dx = input.Mouse.dX;
-				int dy = input.Mouse.dY;
-				int mx = input.Mouse.X;
-				int my = input.Mouse.Y;
+                //process event queue
+                eventMgr.Update();
 
-				Entity s = playerShip.Mesh;
-				SceneNode sn = s.ParentSceneNode;
-
-				// respond to ship input
-
-				if (input.IsDown(Key.E))
-					playerShip.TorqueRelative(new Vector3(1.0f, 0.0f, 0.0f));
-
-				if (input.IsDown(Key.D))
-					playerShip.TorqueRelative(new Vector3(-1.0f, 0.0f, 0.0f));
-
-				if (input.IsDown(Key.F))
-					playerShip.TorqueRelative(new Vector3(0.0f, -1.0f, 0.0f));
-
-				if (input.IsDown(Key.S))
-					playerShip.TorqueRelative(new Vector3(0.0f, 1.0f, 0.0f));
-
-				if (input.IsDown(Key.R))
-					playerShip.TorqueRelative(new Vector3(0.0f, 0.0f, 1.0f));
-
-				if (input.IsDown(Key.W))
-					playerShip.TorqueRelative(new Vector3(0.0f, 0.0f, -1.0f));
-
-				if (input.IsDown(Key.Space))
-					playerShip.ThrustRelative(new Vector3(0.0f, 0.0f, 1.0f));
-
-				if (input.IsDown(Key.A))
-					playerShip.TorqueRelative(playerShip.GetCorrectiveTorque(frameTime));
-
-				world.update(frameTime);
-				System.Console.WriteLine(frameTime + ", " + world.getTimeStep());
-
-				if (playerShip.Velocity.Length > MAX_SPEED * s.BoundingRadius)
-				{
-					Vector3 vel = playerShip.Velocity;
-					vel.Normalise();
-					vel *= MAX_SPEED * s.BoundingRadius;
-					playerShip.Velocity = vel;
-				}
-
+                //update camera
 				shipCam.Update();
 
 				if (!root.RenderOneFrame())
@@ -192,20 +160,36 @@ namespace Ymfas
 		}
 
         /// <summary>
-        /// Initializes & executes the client runtime loop
-        /// </summary>
-        public void ClientGo() {
-
-            while (true) {
-            }
-
-        }
-
-        /// <summary>
         /// Initializes & executes the server runtime loop
         /// </summary>
         public void ServerGo() {
+            ServerShipManager serverShipMgr = new ServerShipManager();
+            
+            //init world
+            World serverWorld = new World();
+            // use faster, inexact settings
+            serverWorld.setSolverModel((int)World.SolverModelMode.SM_ADAPTIVE);
+            serverWorld.setFrictionModel((int)World.FrictionModelMode.FM_ADAPTIVE);
+            serverWorld.setWorldSize(new AxisAlignedBox(new Vector3(-WORLD_SIZE_PARAM), new Vector3(WORLD_SIZE_PARAM)));
+            serverWorld.LeaveWorld += new LeaveWorldEventHandler(OnLeaveWorld);
+
+            //init ships
+            int [] playerIds = new int[NetworkEngine.PlayerIdsByIP.Count];
+            NetworkEngine.PlayerIdsByIP.Values.CopyTo(playerIds, 0);
+            for (int i = 0; i < playerIds.Length; i++) {
+                ShipTypeData curShipType = new ShipTypeData();
+                curShipType.Class = ShipClass.Interceptor;
+                curShipType.Model = ShipModel.MogreFighter;
+                Vector3 curPosition = new Vector3(Mogre.Math.RangeRandom(-WORLD_SIZE_PARAM/1.5f,WORLD_SIZE_PARAM/1.5f),Mogre.Math.RangeRandom(-WORLD_SIZE_PARAM/1.5f,WORLD_SIZE_PARAM/1.5f),Mogre.Math.RangeRandom(-WORLD_SIZE_PARAM/1.5f,WORLD_SIZE_PARAM/1.5f));
+                Quaternion curOrientation = Quaternion.IDENTITY;
+                
+                ShipInit curShipInit = new ShipInit(playerIds[i], curShipType, curPosition, curOrientation, (String)NetworkEngine.PlayerNamesById[playerIds[i]]);
+                
+                //TODO: pass this ship to the manager
+            }
+
             while (true) {
+                //do shit
             }
         }
 	}

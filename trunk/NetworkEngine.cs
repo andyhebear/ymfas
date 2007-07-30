@@ -13,5 +13,7 @@ namespace Ymfas {
         public static GameMode GameMode;
         public static GameTeam Team;
         public static int PlayerId;
+        public static Hashtable PlayerIdsByIP;
+        public static Hashtable PlayerNamesById;
     }
 }

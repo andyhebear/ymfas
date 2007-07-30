@@ -88,6 +88,10 @@ namespace Ymfas
 			// various other things
 			frameTimer = new Mogre.Timer();
 
+            //event manager
+            EventManager eventMgr = new EventManager();
+
+            // initialize server thread if necessary
             InitializeThreads();
 
 			// initalize the scene
@@ -95,14 +99,10 @@ namespace Ymfas
 		}
 
         /// <summary>
-        /// Creates client/server threads
+        /// Creates server thread if needed
         /// </summary>
         private void InitializeThreads() {
-            EventManager eventMgr = new EventManager();
-
-            //create client thread
-            Thread ClientThread = new Thread(ClientGo);
-            ClientThread.Start();
+            
 
             //create server thread if necessary
             if (NetworkEngine.EngineType == SpiderEngine.SpiderType.Server) {
@@ -206,7 +206,7 @@ namespace Ymfas
 			world = new World();
 			world.setSolverModel((int)World.SolverModelMode.SM_ADAPTIVE);
 			world.setFrictionModel((int)World.FrictionModelMode.FM_ADAPTIVE);
-            world.setWorldSize(new AxisAlignedBox(new Vector3(-10000.0f), new Vector3(10000.0f)));
+            world.setWorldSize(new AxisAlignedBox(new Vector3(-WORLD_SIZE_PARAM), new Vector3(WORLD_SIZE_PARAM)));
 			world.LeaveWorld += new LeaveWorldEventHandler(OnLeaveWorld);
 		}	
 

@@ -78,6 +78,8 @@ namespace Ymfas {
                         case "name":
                             //newly connected player is identifying himself                            
                             NetworkEngine.PlayerIPs.Add(msg.GetIP(), ((String)msg.GetData()) + " [" + msg.GetIP() + "]");
+                            NetworkEngine.PlayerIdsByIP.Add(msg.GetIP(), idTicketCounter);
+                            NetworkEngine.PlayerNamesById.Add(idTicketCounter, (String)msg.GetData());
                             playersNotReady.Add(((String)msg.GetData()) + " [" + msg.GetIP() + "]");
 
                             //reply with a player identifier
@@ -205,6 +207,8 @@ namespace Ymfas {
 
                         //Remove key from hashtable
                         NetworkEngine.PlayerIPs.Remove(disconIP);
+                        NetworkEngine.PlayerNamesById.Remove(NetworkEngine.PlayerIdsByIP[disconIP]);
+                        NetworkEngine.PlayerIdsByIP.Remove(disconIP);
 
                         //Keep processing disconnects
                         disconIP = NetworkEngine.Engine.GetDisconnectedIP();
