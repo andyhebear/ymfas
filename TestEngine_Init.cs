@@ -10,7 +10,6 @@ namespace Ymfas
 	{
 		private Root root;
 		private SceneManager sceneMgr;
-		private RenderWindow window;
 		private InputSystem input;
 		private World world;
 		private EventManager eventMgr;
@@ -236,6 +235,15 @@ namespace Ymfas
 				root.Dispose();
 				root = null;
 			}
+		}
+
+		public World World
+		{
+			get { return world; }
+		}
+		public SceneManager SceneManager
+		{
+			get { return sceneMgr; }
 		}
 	}
 }
