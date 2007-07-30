@@ -327,8 +327,10 @@ namespace Ymfas {
             NetworkEngine.Team = (GameTeam)Enum.Parse(typeof(GameTeam), cmbTeam.Items[cmbTeam.SelectedIndex].ToString().Replace(" ", ""));
         }
 
-
-    }
-
-   
+		private void frmGameLobby_FormClosing(object sender, FormClosingEventArgs e)
+		{
+			if (!gameStarting)
+				NetworkEngine.Engine.Destroy();
+		}
+    }   
 }
