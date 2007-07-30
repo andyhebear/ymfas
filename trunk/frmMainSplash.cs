@@ -37,10 +37,8 @@ namespace Ymfas {
 
             //Enter lobby
             GameLobby = new frmGameLobby();
-            GameLobby.Show();
+            GameLobby.ShowDialog();
             
-            this.Hide();
-
         }
 
         private void btnJoin_Click(object sender, EventArgs e) {
@@ -92,8 +90,7 @@ namespace Ymfas {
                          
                         //join lobby
                         GameLobby = new frmGameLobby();
-                        GameLobby.Show();
-                        this.Visible = false;
+                        GameLobby.ShowDialog();
                     }
                 }
             }

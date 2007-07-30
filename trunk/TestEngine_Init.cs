@@ -2,16 +2,17 @@ using System;
 using Mogre;
 using MogreNewt;
 using System.Collections.Generic;
-using YCB;
 
 namespace Ymfas
 {
 	partial class TestEngine : IDisposable
 	{
 		private Root root;
-		private SceneManager mgr;
+		private SceneManager sceneMgr;
+		private RenderWindow window;
 		private InputSystem input;
 		private World world;
+		private EventManager eventMgr;
 
 		private Timer frameTimer;
 
@@ -46,7 +47,28 @@ namespace Ymfas
 			if (!SetupRenderSystem(RenderType.Direct3D9, 1024, 768, false))
 				//if (!SetupRenderSystem())
 				throw new Exception();
+		}
 
+		void Singleton_ResourceGroupLoadEnded(string groupName)
+		{
+			throw new Exception("The method or operation is not implemented.");
+		}
+		
+		/// <summary>
+		/// Launches the form to configure networking 
+		/// upon return, the network engine should be fully initialized
+		/// </summary>
+		public bool ConfigureNetwork()
+		{
+			// launch the main splash window
+			frmMainSplash networkForm = new frmMainSplash();
+			System.Windows.Forms.Application.Run(networkForm);
+
+			return (NetworkEngine.Engine != null);
+		}
+
+		public void PrepareGameInstance()
+		{			
 			CreateWindow("blah blah");
 			InitializeResourceGroups();
 
@@ -84,12 +106,12 @@ namespace Ymfas
 			while (itr.MoveNext())
 			{
 				string sectionName = itr.CurrentKey;
-				ConfigFile.SettingsMultiMap m = itr.Current;
+				ConfigFile.SettingsMultiMap smm = itr.Current;
 
 				// each section is set of key/value pairs
 				// value is the resource type (FileSystem, Zip, etc)
 				// key is the location of the resource set
-				foreach (KeyValuePair<string, string> kv in m)
+				foreach (KeyValuePair<string, string> kv in smm)
 				{
 					// add the resource location to Ogre
 					ResourceGroupManager.Singleton.AddResourceLocation(kv.Value, kv.Key, sectionName);
@@ -123,7 +145,7 @@ namespace Ymfas
 			// "Video Mode", of the form "[width] x [height] @ [bits]-bit colour"
 			rs.SetConfigOption("Full Screen", fullscreen ? "Yes" : "No");
 			rs.SetConfigOption("Video Mode", width + " x " + height + " @ 32-bit colour");
-            rs.SetConfigOption("VSync", "No");
+			rs.SetConfigOption("VSync", "no");
 
 			return true;
 		}
@@ -167,7 +189,7 @@ namespace Ymfas
 			world.setFrictionModel((int)World.FrictionModelMode.FM_ADAPTIVE);
             world.setWorldSize(new AxisAlignedBox(new Vector3(-10000.0f), new Vector3(10000.0f)));
 			world.LeaveWorld += new LeaveWorldEventHandler(OnLeaveWorld);
-		}
+		}	
 
 		/// <summary>
 		/// event handle for the end of a frame render
@@ -180,11 +202,15 @@ namespace Ymfas
 
 		public void Dispose()
 		{
+			// destroy all scene instance-specific information
+			DisposeScene();
+
 			if (world != null)
 			{
 				world.Dispose();
 				world = null;
 			}
+
 			if (root != null)
 			{
 				root.Dispose();

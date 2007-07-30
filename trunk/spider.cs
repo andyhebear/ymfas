@@ -4,7 +4,6 @@
  * Date: 6/13/2007
  * Time: 3:30 AM
  * 
- * To change this template use Tools | Options | Coding | Edit Standard Headers.
  */
 
 using System;
