@@ -53,10 +53,13 @@ namespace Ymfas {
         /// </summary>
         private void PollMessages() {
             NetworkEngine.Engine.Update();
+
             SpiderEngine.SpiderMessage msg;
             while(true){
+                Console.Out.WriteLine("polling!");
                 if ((msg = NetworkEngine.Engine.GetNextMessage()) != null) {
                     try {
+                        Console.Out.Write("got an event!");
                         //The type is contained in the label
                         Type eventType = Type.GetType(msg.GetLabel());
                         //Create an event object
@@ -88,9 +91,12 @@ namespace Ymfas {
         /// Processes all events currently in the queue
         /// </summary>
         public void Update() {
+            Console.Out.WriteLine("processing event queue");
+
             GameEvent[] tempArray = new GameEvent[EventQueue.Count];
             lock (EventQueue) {
                 EventQueue.CopyTo(tempArray, 0);
+                EventQueue.Clear();
             }
 
             //Process each event
