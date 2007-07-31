@@ -89,7 +89,7 @@ namespace Ymfas
 			frameTimer = new Mogre.Timer();
 
             //event manager
-            EventManager eventMgr = new EventManager();
+            this.eventMgr = new EventManager();
 
             // initialize server thread if necessary
             InitializeThreads();
