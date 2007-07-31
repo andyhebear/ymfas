@@ -50,22 +50,19 @@ namespace Ymfas
 		/// Launches the form to configure networking 
 		/// upon return, the network engine should be fully initialized
 		/// </summary>
-		public bool ConfigureNetwork()
-		{
-			// launch the main splash window
-			frmMainSplash networkForm = new frmMainSplash();
-			System.Windows.Forms.Application.Run(networkForm);
+        public bool ConfigureNetwork() {
+            // launch the main splash window
+            frmMainSplash networkForm = new frmMainSplash();
+            System.Windows.Forms.Application.Run(networkForm);
 
-			return (NetworkEngine.Engine != null);
-		}
+            return (NetworkEngine.Engine != null);
+        }
+
 
 		public void PrepareGameInstance()
 		{
             //event manager
             this.eventMgr = new EventManager();
-
-            // initialize server/client threads
-            InitializeThreads();
 
             // create the root object with paths to various configuraion files
             root = new Root();
@@ -91,7 +88,10 @@ namespace Ymfas
 			input = new InputSystem(hwnd);
 
 			// physics system
-			InitializePhysics();
+			InitializePhysics();            
+
+            // initialize server/client threads
+            InitializeThreads();
 
 			// various other things
 			frameTimer = new Mogre.Timer();
