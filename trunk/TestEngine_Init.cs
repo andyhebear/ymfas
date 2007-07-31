@@ -38,15 +38,7 @@ namespace Ymfas
 
 		public TestEngine()
 		{
-			// create the root object with paths to various configuraion files
-			root = new Root();
-
-			// call the various rendering functions, essentially in 
-			// the order they are defined
-			DefineResources();
-			if (!SetupRenderSystem(RenderType.Direct3D9, 1024, 768, false))
-				//if (!SetupRenderSystem())
-				throw new Exception();
+			
 		}
 
 		void Singleton_ResourceGroupLoadEnded(string groupName)
@@ -68,7 +60,23 @@ namespace Ymfas
 		}
 
 		public void PrepareGameInstance()
-		{			
+		{
+            //event manager
+            this.eventMgr = new EventManager();
+
+            // initialize server/client threads
+            InitializeThreads();
+
+            // create the root object with paths to various configuraion files
+            root = new Root();
+
+            // call the various rendering functions, essentially in 
+            // the order they are defined
+            DefineResources();
+            if (!SetupRenderSystem(RenderType.Direct3D9, 1024, 768, false))
+                //if (!SetupRenderSystem())
+                throw new Exception();
+
 			CreateWindow("blah blah");
 			InitializeResourceGroups();
 
@@ -88,18 +96,14 @@ namespace Ymfas
 			// various other things
 			frameTimer = new Mogre.Timer();
 
-            //event manager
-            this.eventMgr = new EventManager();
-
-            // initialize server thread if necessary
-            InitializeThreads();
+            
 
 			// initalize the scene
 			InitializeScene();
 		}
 
         /// <summary>
-        /// Creates server thread if needed
+        /// Creates server/client threads
         /// </summary>
         private void InitializeThreads() {
             //create client thread
