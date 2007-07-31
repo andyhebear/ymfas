@@ -56,7 +56,6 @@ namespace Ymfas {
 
             SpiderEngine.SpiderMessage msg;
             while(true){
-                Console.Out.WriteLine("polling!");
                 if ((msg = NetworkEngine.Engine.GetNextMessage()) != null) {
                     try {
                         Console.Out.Write("got an event!");
@@ -91,7 +90,6 @@ namespace Ymfas {
         /// Processes all events currently in the queue
         /// </summary>
         public void Update() {
-            Console.Out.WriteLine("processing event queue");
 
             GameEvent[] tempArray = new GameEvent[EventQueue.Count];
             lock (EventQueue) {
@@ -101,6 +99,7 @@ namespace Ymfas {
 
             //Process each event
             for (int i = 0; i < tempArray.Length; i++) {
+                Console.Out.WriteLine("firing an event");
                 tempArray[i].FireEvent();
             }
         }
