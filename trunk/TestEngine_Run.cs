@@ -124,8 +124,8 @@ namespace Ymfas
 				frameTime = frameTimer.Milliseconds / 1000.0f;
 				frameTimer.Reset();
 
-				Console.Out.WriteLine("time");
-				Console.Out.WriteLine(frameTime);
+				//Console.Out.WriteLine("time");
+				//Console.Out.WriteLine(frameTime);
 
                 //update input
                 input.Update();
