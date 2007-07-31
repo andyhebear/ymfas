@@ -102,7 +102,10 @@ namespace Ymfas
         /// Creates server thread if needed
         /// </summary>
         private void InitializeThreads() {
-            
+            //create client thread
+            Thread ClientThread = new Thread(ClientGo);
+            ClientThread.Start();
+
 
             //create server thread if necessary
             if (NetworkEngine.EngineType == SpiderEngine.SpiderType.Server) {

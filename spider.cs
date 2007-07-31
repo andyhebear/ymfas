@@ -84,6 +84,7 @@ namespace SpiderEngine
 					clients.Add(e.Connection.RemoteEndpoint.Address);
 					break;
 				case NetConnectionStatus.Disconnected:
+                    Console.Out.WriteLine("someone left the game, yo!");
 					clients.Remove(e.Connection.RemoteEndpoint.Address);
                     disconnectQueue.Enqueue(e.Connection.RemoteEndpoint.Address);
 					break;
