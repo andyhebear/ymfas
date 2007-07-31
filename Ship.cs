@@ -60,14 +60,14 @@ namespace Ymfas
             Vector3 inertia;
             body.getMassMatrix(out mass, out inertia);
             b.addLocalForce(standbyForce, Vector3.ZERO);
-            standbyForce = Vector3.ZERO;
+            //standbyForce = Vector3.ZERO;
 
             Vector3 pos = new Vector3();
             Quaternion orient = new Quaternion();
             b.getPositionOrientation(out pos, out orient);
             
             b.addTorque(orient * standbyTorque);
-			standbyTorque = Vector3.ZERO;
+			//standbyTorque = Vector3.ZERO;
         }
 
 		public void InertiaCheck()
@@ -81,11 +81,11 @@ namespace Ymfas
 		// thrust is measured in meters / s^2
 		public void ThrustRelative(Vector3 vec)
 		{
-            standbyForce += vec * FORCE * mesh.BoundingRadius;
+            standbyForce = vec * FORCE * mesh.BoundingRadius;
 		}
 		public void TorqueRelative(Vector3 vec)
 		{
-            standbyTorque += new Vector3(vec.x * MAX_X_TORQUE, vec.y * MAX_Y_TORQUE, vec.z * MAX_Z_TORQUE) * mesh.BoundingRadius;
+            standbyTorque = new Vector3(vec.x * MAX_X_TORQUE, vec.y * MAX_Y_TORQUE, vec.z * MAX_Z_TORQUE) * mesh.BoundingRadius;
 		}
         public Vector3 GetCorrectiveTorque()
         {
