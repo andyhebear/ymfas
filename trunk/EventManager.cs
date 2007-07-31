@@ -25,7 +25,9 @@ namespace Ymfas {
         /// Fires the FiringEvent event
         /// </summary>
         public void FireEvent() {
-            FiringEvent(this);
+            if (FiringEvent != null) {
+                FiringEvent(this);
+            }
         }
 
         public abstract Lidgren.Library.Network.NetChannel DeliveryType { get; }
