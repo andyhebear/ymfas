@@ -48,7 +48,8 @@ namespace Ymfas {
                     if (gameStartCount == 0) {
                         //this.Visible = false;
 
-						System.Windows.Forms.Application.Exit();
+                        Console.Out.WriteLine("if the network engine fits you must aquit");
+                        System.Windows.Forms.Application.Exit();
                     }
 
                     //count down
