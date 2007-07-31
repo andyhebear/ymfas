@@ -28,6 +28,8 @@ namespace Ymfas
 
 			if (ship.ID == NetworkEngine.PlayerId.ToString())
 				engine.AttachCamera(ship);
+
+            Console.Out.WriteLine("Ship " + ship.ID + "inited.  my ID is " + NetworkEngine.PlayerId);
         }
 
     }
