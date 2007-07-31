@@ -34,6 +34,8 @@ namespace Ymfas {
             NetworkEngine.Engine = new SpiderEngine.Spider(SpiderEngine.SpiderType.Server, txtName.Text);
             NetworkEngine.EngineType = SpiderEngine.SpiderType.Server;
             NetworkEngine.PlayerIPs = new Hashtable();
+            NetworkEngine.PlayerIdsByIP = new Hashtable();
+            NetworkEngine.PlayerNamesById = new Hashtable();
 
             //Enter lobby
             GameLobby = new frmGameLobby();
