@@ -24,7 +24,10 @@ namespace Ymfas
 
 		public Ship(World _w, SceneManager _mgr, SceneNode _parent, string _id, Vector3 _position, Quaternion _orientation)
 		{
-			SceneNode parent = (_parent == null) ? _mgr.RootSceneNode : _parent;
+			SceneNode parent = _mgr.RootSceneNode;
+            if(_parent == null){
+                parent =  _parent;
+            }
 
 			id = _id;
 			mesh = _mgr.CreateEntity(id, "razor.mesh");
