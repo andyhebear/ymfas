@@ -186,9 +186,11 @@ namespace Ymfas
             ShipManager shipMgr = new ShipManager(this);
             UserInputManager userInputMgr = new UserInputManager(this.input, this.eventMgr, (byte)NetworkEngine.PlayerId);
 
-            //process event queue if we are not the host (then the server thread is doing that already)
-            if (NetworkEngine.EngineType == SpiderEngine.SpiderType.Server) {
-                eventMgr.Update();
+            while (true) {
+                //process event queue if we are not the host (then the server thread is doing that already)
+                if (NetworkEngine.EngineType == SpiderEngine.SpiderType.Server) {
+                    eventMgr.Update();
+                }
             }
         }
 	}
