@@ -182,13 +182,16 @@ namespace Ymfas
         /// </summary>
         public void ClientGo() {
 
+            Console.Out.WriteLine("the client thread is running!");
+
             //init client managers
             ShipManager shipMgr = new ShipManager(this);
             UserInputManager userInputMgr = new UserInputManager(this.input, this.eventMgr, (byte)NetworkEngine.PlayerId);
 
             while (true) {
+
                 //process event queue if we are not the host (then the server thread is doing that already)
-                if (NetworkEngine.EngineType == SpiderEngine.SpiderType.Server) {
+                if (NetworkEngine.EngineType != SpiderEngine.SpiderType.Server) {
                     eventMgr.Update();
                 }
             }
