@@ -15,7 +15,8 @@ namespace Ymfas
 		StaticGeometry grid;
 		RibbonTrail ribbon;
 
-        private const float WORLD_SIZE_PARAM = 10000.0f;
+        public static float WorldSizeParam {get { return 10000.0f; }  }
+
 
 		/// <summary>
 		/// initialize the scene
@@ -163,30 +164,17 @@ namespace Ymfas
         /// Initializes & executes the server runtime loop
         /// </summary>
         public void ServerGo() {
-            ServerShipManager serverShipMgr = new ServerShipManager();
-            
             //init world
             World serverWorld = new World();
             // use faster, inexact settings
             serverWorld.setSolverModel((int)World.SolverModelMode.SM_ADAPTIVE);
             serverWorld.setFrictionModel((int)World.FrictionModelMode.FM_ADAPTIVE);
-            serverWorld.setWorldSize(new AxisAlignedBox(new Vector3(-WORLD_SIZE_PARAM), new Vector3(WORLD_SIZE_PARAM)));
+            serverWorld.setWorldSize(new AxisAlignedBox(new Vector3(-WorldSizeParam), new Vector3(WorldSizeParam)));
             serverWorld.LeaveWorld += new LeaveWorldEventHandler(OnLeaveWorld);
 
-            //init ships
-            int [] playerIds = new int[NetworkEngine.PlayerIdsByIP.Count];
-            NetworkEngine.PlayerIdsByIP.Values.CopyTo(playerIds, 0);
-            for (int i = 0; i < playerIds.Length; i++) {
-                ShipTypeData curShipType = new ShipTypeData();
-                curShipType.Class = ShipClass.Interceptor;
-                curShipType.Model = ShipModel.MogreFighter;
-                Vector3 curPosition = new Vector3(Mogre.Math.RangeRandom(-WORLD_SIZE_PARAM/1.5f,WORLD_SIZE_PARAM/1.5f),Mogre.Math.RangeRandom(-WORLD_SIZE_PARAM/1.5f,WORLD_SIZE_PARAM/1.5f),Mogre.Math.RangeRandom(-WORLD_SIZE_PARAM/1.5f,WORLD_SIZE_PARAM/1.5f));
-                Quaternion curOrientation = Quaternion.IDENTITY;
-                
-                ShipInit curShipInit = new ShipInit(playerIds[i], curShipType, curPosition, curOrientation, (String)NetworkEngine.PlayerNamesById[playerIds[i]]);
-                
-                //TODO: pass this ship to the manager
-            }
+            ServerShipManager serverShipMgr = new ServerShipManager(serverWorld, eventMgr);
+
+            
 
             while (true) {
                 //do shit

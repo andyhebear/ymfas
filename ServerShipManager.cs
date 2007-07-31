@@ -10,9 +10,31 @@ namespace Ymfas
     public class ServerShipManager
     {
         Dictionary<String, Ship> shipTable = new Dictionary<String, Ship>();
+        private World world;
+        private EventManager eventMgr;
 
-        public ServerShipManager()
+        public ServerShipManager(World serverWorld, EventManager eventManager)
         {
+            world = serverWorld;
+            eventMgr = eventManager;
+
+            //init ships
+            int[] playerIds = new int[NetworkEngine.PlayerIdsByIP.Count];
+            NetworkEngine.PlayerIdsByIP.Values.CopyTo(playerIds, 0);
+            for (int i = 0; i < playerIds.Length; i++) {
+                ShipTypeData curShipType = new ShipTypeData();
+                curShipType.Class = ShipClass.Interceptor;
+                curShipType.Model = ShipModel.MogreFighter;
+                Vector3 curPosition = new Vector3(Mogre.Math.RangeRandom(-TestEngine.WorldSizeParam / 1.5f, TestEngine.WorldSizeParam / 1.5f), Mogre.Math.RangeRandom(-TestEngine.WorldSizeParam / 1.5f, TestEngine.WorldSizeParam / 1.5f), Mogre.Math.RangeRandom(-TestEngine.WorldSizeParam / 1.5f, TestEngine.WorldSizeParam / 1.5f));
+                Quaternion curOrientation = Quaternion.IDENTITY;
+
+                ShipInit curShipInit = new ShipInit(playerIds[i], curShipType, curPosition, curOrientation, (String)NetworkEngine.PlayerNamesById[playerIds[i]]);
+                eventMgr.SendEvent(curShipInit);
+
+                //TODO: put them in the world
+            }
+
+            //init listeners
             ShipControlStatus.FiringEvent += new GameEventFiringHandler(handleShipControlStatus);
         }
 
