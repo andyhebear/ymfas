@@ -109,11 +109,7 @@ namespace Ymfas
 			frameTimer.Reset();
 			float frameTime;
 
-			float MAX_SPEED = 30.0f;
-
-            //init client managers
-            ShipManager shipMgr = new ShipManager(this);
-            UserInputManager userInputMgr = new UserInputManager(this.input, this.eventMgr, (byte) NetworkEngine.PlayerId);
+            float MAX_SPEED = 30.0f;
 
 
 			// RenderOneFrame returns false when we Ogre
@@ -129,11 +125,8 @@ namespace Ymfas
 
                 //update input
                 input.Update();
-				if (input.IsDown(Key.Escape))
-					break;
-
-                //process event queue
-                eventMgr.Update();
+                if (input.IsDown(Key.Escape))
+                    break;
 
                 //update camera
 				shipCam.Update();
@@ -181,6 +174,21 @@ namespace Ymfas
 
             while (true) {
                 //do shit
+            }
+        }
+
+        /// <summary>
+        /// Client Runtime loop
+        /// </summary>
+        public void ClientGo() {
+
+            //init client managers
+            ShipManager shipMgr = new ShipManager(this);
+            UserInputManager userInputMgr = new UserInputManager(this.input, this.eventMgr, (byte)NetworkEngine.PlayerId);
+
+            //process event queue if we are not the host (then the server thread is doing that already)
+            if (NetworkEngine.EngineType == SpiderEngine.SpiderType.Server) {
+                eventMgr.Update();
             }
         }
 	}
