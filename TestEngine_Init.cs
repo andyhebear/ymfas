@@ -53,7 +53,12 @@ namespace Ymfas
         public bool ConfigureNetwork() {
             // launch the main splash window
             frmMainSplash networkForm = new frmMainSplash();
+            Console.Out.WriteLine("Running the form");
             System.Windows.Forms.Application.Run(networkForm);
+            Console.Out.WriteLine("Form done running");
+
+            //launch the event manager
+            this.eventMgr = new EventManager();
 
             return (NetworkEngine.Engine != null);
         }
@@ -61,9 +66,6 @@ namespace Ymfas
 
 		public void PrepareGameInstance()
 		{
-            //event manager
-            this.eventMgr = new EventManager();
-
             // create the root object with paths to various configuraion files
             root = new Root();
 
