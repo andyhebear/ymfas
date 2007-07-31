@@ -23,6 +23,9 @@ namespace Ymfas
 		/// </summary>
 		private void InitializeScene()
 		{
+            //create scene mgr
+            sceneMgr = root.CreateSceneManager(SceneType.ST_GENERIC);
+
 			// Every viewport has a camera associated with it.
 			// The second number is a z-order. Higher z-order viewports
 			// are rendered on top (in the case of multiple viewports).
