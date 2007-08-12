@@ -56,6 +56,7 @@ namespace Ymfas {
 
             SpiderEngine.SpiderMessage msg;
             while(true){
+				Thread.Sleep(50);
                 if ((msg = NetworkEngine.Engine.GetNextMessage()) != null) {
                     try {
                         Console.Out.Write("got an event!");
@@ -84,6 +85,7 @@ namespace Ymfas {
                     }
                 }
             }
+			
         }
 
         /// <summary>
