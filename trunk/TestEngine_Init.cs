@@ -54,13 +54,16 @@ namespace Ymfas
             // launch the main splash window
             frmMainSplash networkForm = new frmMainSplash();
             Console.Out.WriteLine("Running the form");
-            System.Windows.Forms.Application.Run(networkForm);
+			networkForm.ShowDialog();
             Console.Out.WriteLine("Form done running");
+
+			if (NetworkEngine.Engine == null)
+				return false;
 
             //launch the event manager
             this.eventMgr = new EventManager();
 
-            return (NetworkEngine.Engine != null);
+            return true;
         }
 
 
@@ -217,7 +220,7 @@ namespace Ymfas
 			world.setFrictionModel((int)World.FrictionModelMode.FM_ADAPTIVE);
             world.setWorldSize(new AxisAlignedBox(new Vector3(-WorldSizeParam), new Vector3(WorldSizeParam)));
 			world.LeaveWorld += new LeaveWorldEventHandler(OnLeaveWorld);
-		}	
+		}
 
 		/// <summary>
 		/// event handle for the end of a frame render

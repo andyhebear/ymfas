@@ -26,7 +26,8 @@ namespace Ymfas {
 
         private void btnExit_Click(object sender, EventArgs e) {
             //Exit the game
-            System.Windows.Forms.Application.Exit();
+			this.DialogResult = DialogResult.Cancel;
+			this.Close();
         }
 
         private void btnHost_Click(object sender, EventArgs e) {
@@ -40,7 +41,12 @@ namespace Ymfas {
             //Enter lobby
             GameLobby = new frmGameLobby();
             GameLobby.ShowDialog();
-            
+
+			if (GameLobby.DialogResult == DialogResult.OK)
+			{
+				this.DialogResult = DialogResult.OK;
+				this.Close();
+			}            
         }
 
         private void btnJoin_Click(object sender, EventArgs e) {
@@ -81,7 +87,7 @@ namespace Ymfas {
                     connectingToServer = false;
                     NetworkEngine.Engine.Destroy();
                     MessageBox.Show("Connection attempt failed.");
-                    Application.Restart();
+					this.DialogResult = DialogResult.OK;
                 }
                 else {
                     ticksConnecting++;
@@ -93,18 +99,15 @@ namespace Ymfas {
                         //join lobby
                         GameLobby = new frmGameLobby();
                         GameLobby.ShowDialog();
+
+						if (GameLobby.DialogResult == DialogResult.OK)
+						{
+							this.DialogResult = DialogResult.OK;
+							this.Close();
+						}					
                     }
                 }
             }
-
-            //hidden
-            if (!this.Visible) {
-                if (GameLobby.Visible == false) {
-                    NetworkEngine.Engine.Destroy();
-                    Application.Restart();
-                }
-            }
-
         }
 
         private void lstServers_SelectedIndexChanged(object sender, EventArgs e) {
@@ -126,26 +129,4 @@ namespace Ymfas {
             ticksConnecting = 0;
         }
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    
 }
