@@ -19,18 +19,29 @@ namespace Ymfas
             eventMgr = eventManager;
 
             //init ships
+            ShipTypeData curShipType = new ShipTypeData();
+            curShipType.Class = ShipClass.Interceptor;
+            curShipType.Model = ShipModel.MogreFighter;
+
+            //server ship
+            Vector3 serverShipPosition = new Vector3(Mogre.Math.RangeRandom(-TestEngine.WorldSizeParam / 1.5f, TestEngine.WorldSizeParam / 1.5f), Mogre.Math.RangeRandom(-TestEngine.WorldSizeParam / 1.5f, TestEngine.WorldSizeParam / 1.5f), Mogre.Math.RangeRandom(-TestEngine.WorldSizeParam / 1.5f, TestEngine.WorldSizeParam / 1.5f));
+            Quaternion serverShipOrientation = Quaternion.IDENTITY;
+            eventMgr.SendEvent(new ShipInit(0, curShipType, serverShipPosition, serverShipOrientation, (String)NetworkEngine.Engine.GetName()));
+
+            Console.Out.WriteLine("sent init for server's ship");
+
+            //player ships
             int[] playerIds = new int[NetworkEngine.PlayerIdsByIP.Count];
             NetworkEngine.PlayerIdsByIP.Values.CopyTo(playerIds, 0);
             for (int i = 0; i < playerIds.Length; i++) {
-                ShipTypeData curShipType = new ShipTypeData();
-                curShipType.Class = ShipClass.Interceptor;
-                curShipType.Model = ShipModel.MogreFighter;
+                
                 Vector3 curPosition = new Vector3(Mogre.Math.RangeRandom(-TestEngine.WorldSizeParam / 1.5f, TestEngine.WorldSizeParam / 1.5f), Mogre.Math.RangeRandom(-TestEngine.WorldSizeParam / 1.5f, TestEngine.WorldSizeParam / 1.5f), Mogre.Math.RangeRandom(-TestEngine.WorldSizeParam / 1.5f, TestEngine.WorldSizeParam / 1.5f));
                 Quaternion curOrientation = Quaternion.IDENTITY;
 
                 ShipInit curShipInit = new ShipInit(playerIds[i], curShipType, curPosition, curOrientation, (String)NetworkEngine.PlayerNamesById[playerIds[i]]);
                 eventMgr.SendEvent(curShipInit);
 
+                Console.Out.WriteLine("sent init for " + i +"th ship " + playerIds[i]);
                 //TODO: put them in the world
             }
 

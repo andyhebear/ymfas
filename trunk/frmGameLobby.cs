@@ -46,7 +46,6 @@ namespace Ymfas {
             if (gameStarting) {
                 if ((timerTicks * timer.Interval - gameStartTime) % GAMESTART_INTERVAL == 0) {
                     if (gameStartCount == 0) {
-                        Console.Out.WriteLine("if the network engine fits you must aquit");
 						this.DialogResult = DialogResult.OK;
 						this.Close();
                     }

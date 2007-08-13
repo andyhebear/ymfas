@@ -15,5 +15,6 @@ namespace Ymfas {
         public static int PlayerId;
         public static Hashtable PlayerIdsByIP;
         public static Hashtable PlayerNamesById;
+
     }
 }
