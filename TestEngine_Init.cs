@@ -95,16 +95,15 @@ namespace Ymfas
 			// physics system
 			InitializePhysics();            
 
-            // initialize server/client threads
-            InitializeThreads();
-
 			// various other things
 			frameTimer = new Mogre.Timer();
 
-            
-
 			// initalize the scene
 			InitializeScene();
+
+            // initialize server/client threads
+            InitializeThreads();
+
 		}
 
         /// <summary>

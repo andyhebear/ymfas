@@ -52,26 +52,28 @@ namespace Ymfas {
         /// Polls the message queue of the network engine indefinitely, parsing out events and filling the event
         /// </summary>
         private void PollMessages() {
-            NetworkEngine.Engine.Update();
+            
 
             SpiderEngine.SpiderMessage msg;
             while(true){
 				Thread.Sleep(50);
-                if ((msg = NetworkEngine.Engine.GetNextMessage()) != null) {
+                NetworkEngine.Engine.Update();
+                msg = NetworkEngine.Engine.GetNextMessage();
+                while(msg != null) {
                     try {
-                        Console.Out.Write("got an event!");
+                        Console.Out.WriteLine("got an event!");
                         //The type is contained in the label
                         Type eventType = Type.GetType(msg.GetLabel());
+                        Console.Out.WriteLine("the type is " + eventType.ToString());
                         //Create an event object
-                        GameEvent msgEvent = (GameEvent)(new object());
-                        msgEvent = (GameEvent)Convert.ChangeType(msgEvent, eventType);
+                        GameEvent msgEvent = (GameEvent)System.Activator.CreateInstance(eventType);
 
                         //Get the message data
                         String msgData = (String)msg.GetData();
                
                         //Add this info to the event (string to byteArray first)
                         Encoder encoder = Encoding.GetEncoding(28591).GetEncoder();
-                        Byte[] byteArray = new Byte[msgData.Length];
+                        Byte[] byteArray = new Byte[msgData.Length];                   
                         encoder.GetBytes(msgData.ToCharArray(), 0, msgData.Length, byteArray, 0, true);
                         msgEvent.SetDataFromByteArray(byteArray);
 
@@ -83,6 +85,8 @@ namespace Ymfas {
                     catch (Exception e) {
                         Util.RecordException(e);
                     }
+
+                    msg = NetworkEngine.Engine.GetNextMessage();
                 }
             }
 			
@@ -122,10 +126,9 @@ namespace Ymfas {
             chars[bytes.Length] = (char)0;  //null-terminate
             String msgString = new String(chars);
 
-
-            SpiderEngine.SpiderMessage msg = new SpiderEngine.SpiderMessage(e.ToString(), SpiderEngine.SpiderMessageType.String, e.GetType().ToString());
-
+            SpiderEngine.SpiderMessage msg = new SpiderEngine.SpiderMessage(msgString, SpiderEngine.SpiderMessageType.String, e.GetType().ToString());
             NetworkEngine.Engine.SendMessage(msg, e.DeliveryType);
+
             if (NetworkEngine.EngineType == SpiderEngine.SpiderType.Server) {
                 e.FireEvent();
             }
