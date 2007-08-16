@@ -42,6 +42,7 @@ namespace Ymfas {
 
         private void btnHost_Click(object sender, EventArgs e) {
             //Host a game
+			// create a client and a server for the game lobby to use
             ymfasServer = new YmfasServer(txtName.Text);
 			ymfasClient = new YmfasClient(txtName.Text);
 			ymfasClient.Update();
@@ -55,7 +56,7 @@ namespace Ymfas {
 			{
 				this.DialogResult = DialogResult.OK;
 				this.Close();
-			}            
+			}
         }
 
         private void btnJoin_Click(object sender, EventArgs e) {
