@@ -10,34 +10,60 @@ using System.Net;
 
 namespace Ymfas {
     public partial class frmGameLobby : Form {
-        private const int PLAYERLIST_UPDATE_INTERVAL = 1000;
-        private const int GAMESTART_INTERVAL = 1000;
-        private int gameStartTime;
+
+		#region PrivateConstants
+		private const int PLAYERLIST_UPDATE_INTERVAL = 1000;
+		private const int GAMESTART_INTERVAL = 1000; 
+		#endregion
+        
+		// timing
+		private int gameStartTime;
         private int timerTicks;
         private int gameStartCount;
-        private ArrayList playersReady;
+		private bool gameStarting;
+
+		// player lists
+		private ArrayList playersReady;
         private ArrayList playersNotReady;
-        private bool gameStarting;
+		        
         private int idTicketCounter;
 
-        public frmGameLobby() {
-            InitializeComponent();
-            timerTicks = 0;
-            playersReady = new ArrayList();
-            playersNotReady = new ArrayList();
-            gameStartCount = 3;
-            gameStarting = false;
+		private YmfasClient client;
+		private YmfasServer server;
 
-            cmbGameMode.SelectedIndex = 0;
-            cmbTeam.SelectedIndex = 0;
+        public frmGameLobby(YmfasClient _client, YmfasServer _server) 
+		{
+			client = _client;
+			server = _server;
+			Initialize();
 
-            if (NetworkEngine.EngineType == SpiderEngine.SpiderType.Server) {
-                chkReady.Visible = false;
-                cmbGameMode.Enabled = true;
-                NetworkEngine.PlayerId = 0;
-                idTicketCounter = 1;
-            }
+			chkReady.Visible = false;
+			cmbGameMode.Enabled = true;
+			server.PlayerId = 0;
+			idTicketCounter = 1;
         }
+
+		public frmGameLobby(YmfasClient _client)
+		{
+			client = _client;
+			Initialize();			
+		}
+
+		/// <summary>
+		/// form initialization common to both lobby types
+		/// </summary>
+		public void Initialize()
+		{
+			InitializeComponent();
+			timerTicks = 0;
+			playersReady = new ArrayList();
+			playersNotReady = new ArrayList();
+			gameStartCount = 3;
+			gameStarting = false;
+
+			cmbGameMode.SelectedIndex = 0;
+			cmbTeam.SelectedIndex = 0;
+		}
 
         private void timer_Tick(object sender, EventArgs e) {
             timerTicks++;
@@ -239,6 +265,7 @@ namespace Ymfas {
 
         private void txtChatInput_KeyDown(object sender, KeyEventArgs e) {
             if (e.KeyCode == Keys.Enter) {
+
                 //send chat message
                 SpiderEngine.SpiderMessage msg = new SpiderEngine.SpiderMessage(NetworkEngine.Engine.GetName() + ": " + txtChatInput.Text, SpiderEngine.SpiderMessageType.String, "chat");
                 NetworkEngine.Engine.SendMessage(msg, Lidgren.Library.Network.NetChannel.ReliableUnordered);

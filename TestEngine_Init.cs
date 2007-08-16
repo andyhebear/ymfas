@@ -57,7 +57,9 @@ namespace Ymfas
 			networkForm.ShowDialog();
             Console.Out.WriteLine("Form done running");
 
-			if (NetworkEngine.Engine == null)
+			System.Console.Write(networkForm.DialogResult);
+
+			if (NetworkEngine.Engine == null || networkForm.DialogResult == System.Windows.Forms.DialogResult.Cancel)
 				return false;
 
             //launch the event manager

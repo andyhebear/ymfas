@@ -8,20 +8,30 @@ using System.Text;
 using System.Windows.Forms;
 using System.Net;
 using System.Net.Sockets;
+using Lidgren.Library.Network;
 
 namespace Ymfas {
 
     public partial class frmMainSplash : Form {
+
+		enum MainSplashState
+		{
+			None,
+			Searching,
+			Connecting
+		};
+
         private frmGameLobby GameLobby;
         public const int MAX_CONNECT_TIME = 10000; //max time to spend connecting in ms
-        private Boolean searchingForServers;
-        private Boolean connectingToServer;
+		private MainSplashState splashState;
         private int ticksConnecting;
+
+		private YmfasClient ymfasClient = null;
+		private YmfasServer ymfasServer = null;
 
         public frmMainSplash() {
             InitializeComponent();
-            searchingForServers = false;
-            connectingToServer = false;
+			splashState = MainSplashState.None;
         }
 
         private void btnExit_Click(object sender, EventArgs e) {
@@ -32,16 +42,15 @@ namespace Ymfas {
 
         private void btnHost_Click(object sender, EventArgs e) {
             //Host a game
-            NetworkEngine.Engine = new SpiderEngine.Spider(SpiderEngine.SpiderType.Server, txtName.Text);
-            NetworkEngine.EngineType = SpiderEngine.SpiderType.Server;
-            NetworkEngine.PlayerIPs = new Hashtable();
-            NetworkEngine.PlayerIdsByIP = new Hashtable();
-            NetworkEngine.PlayerNamesById = new Hashtable();
+            ymfasServer = new YmfasServer(txtName.Text);
+			ymfasClient = new YmfasClient(txtName.Text);
+			ymfasClient.Update();
+			ymfasClient.Connect(ymfasServer.GetLocalSession().RemoteEndpoint.Address.ToString());
 
             //Enter lobby
-            GameLobby = new frmGameLobby();
-            GameLobby.ShowDialog();
+            GameLobby = new frmGameLobby(ymfasClient, ymfasServer);
 
+            GameLobby.ShowDialog();
 			if (GameLobby.DialogResult == DialogResult.OK)
 			{
 				this.DialogResult = DialogResult.OK;
@@ -52,51 +61,54 @@ namespace Ymfas {
         private void btnJoin_Click(object sender, EventArgs e) {
             //Initiate search for servers
             grpServerList.Visible = true;
-            NetworkEngine.Engine = new SpiderEngine.Spider(SpiderEngine.SpiderType.Client, txtName.Text);
-            NetworkEngine.EngineType = SpiderEngine.SpiderType.Client;
+            ymfasClient = new YmfasClient(txtName.Text);
+
             btnJoin.Enabled = false;
             btnHost.Enabled = false;
-            NetworkEngine.Engine.SearchSessions();
+            ymfasClient.SearchSessions();
 
             //Handle server search in the timer object
-            searchingForServers = true;
+			splashState = MainSplashState.Searching;
 
         }
 
         private void timer_Tick(object sender, EventArgs e) {
             //looking for servers
-            if (searchingForServers) {
+            if (splashState == MainSplashState.Searching) {
+
                 Console.Out.WriteLine("searching...");
                 //update the engine state
-                NetworkEngine.Engine.Update();
+                ymfasClient.Update();
                 
                 //attempt to find a new server
-                Lidgren.Library.Network.NetServerInfo session = NetworkEngine.Engine.GetLocalSession();
+                Lidgren.Library.Network.NetServerInfo session = ymfasClient.GetLocalSession();
                 if (session != null) {
-                    String hostname = NetworkEngine.Engine.GetHostNameFromIP(session.RemoteEndpoint.Address.ToString());
+                    String hostname = ymfasClient.GetHostNameFromIP(session.RemoteEndpoint.Address.ToString());
                     lstServers.Items.Add(hostname + " - " + session.RemoteEndpoint.Address.ToString());
                 }
             }
+
             //connecting to a server
-            if (connectingToServer) {
-                //update the engine state
-                NetworkEngine.Engine.Update();
+            if (splashState == MainSplashState.Connecting) {
+
+                // update the engine state
+                ymfasClient.Update();
                 
                 //time out if too long
                 if (ticksConnecting * timer.Interval >= MAX_CONNECT_TIME) {
-                    connectingToServer = false;
-                    NetworkEngine.Engine.Destroy();
+					splashState = MainSplashState.Searching;
+					ymfasClient.Destroy();
+					ymfasClient = null;
                     MessageBox.Show("Connection attempt failed.");
-					this.DialogResult = DialogResult.OK;
                 }
                 else {
                     ticksConnecting++;
 
                     //check for successful connection
-                    if (NetworkEngine.Engine.Status == Lidgren.Library.Network.NetConnectionStatus.Connected) {
-                        connectingToServer = false;
+                    if (ymfasClient.Status == NetConnectionStatus.Connected) {
+						splashState = MainSplashState.None;
                          
-                        //join lobby
+                        // join lobby
                         GameLobby = new frmGameLobby();
                         GameLobby.ShowDialog();
 
@@ -104,13 +116,14 @@ namespace Ymfas {
 						{
 							this.DialogResult = DialogResult.OK;
 							this.Close();
-						}					
+						}
                     }
                 }
             }
         }
 
-        private void lstServers_SelectedIndexChanged(object sender, EventArgs e) {
+        private void lstServers_SelectedIndexChanged(object sender, EventArgs e) 
+		{
             try {
                 String temp = ((String)lstServers.Items[lstServers.SelectedIndex]);
                 txtConnectIP.Text = temp.Substring(temp.LastIndexOf("-") + 2);
@@ -120,12 +133,12 @@ namespace Ymfas {
             }
         }
 
-        private void btnConnect_Click(object sender, EventArgs e) {
-            searchingForServers = false;
+        private void btnConnect_Click(object sender, EventArgs e) 
+		{
             btnConnect.Enabled = false;
-            NetworkEngine.Engine.Connect(txtConnectIP.Text);
-            
-            connectingToServer = true;
+            ymfasClient.Connect(txtConnectIP.Text);
+
+			splashState = MainSplashState.Connecting;
             ticksConnecting = 0;
         }
     }
