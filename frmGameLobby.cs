@@ -7,6 +7,7 @@ using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
 using System.Net;
+using Lidgren.Library.Network;
 
 namespace Ymfas {
     public partial class frmGameLobby : Form {
@@ -15,7 +16,13 @@ namespace Ymfas {
 		private const int PLAYERLIST_UPDATE_INTERVAL = 1000;
 		private const int GAMESTART_INTERVAL = 1000; 
 		#endregion
-        
+
+		enum LobbyMode
+		{
+			Hosting,
+			ClientOnly
+		};
+
 		// timing
 		private int gameStartTime;
         private int timerTicks;
@@ -30,11 +37,13 @@ namespace Ymfas {
 
 		private YmfasClient client;
 		private YmfasServer server;
+		private LobbyMode lobbyMode = LobbyMode.ClientOnly;
 
         public frmGameLobby(YmfasClient _client, YmfasServer _server) 
 		{
 			client = _client;
 			server = _server;
+			lobbyMode = LobbyMode.Hosting;
 			Initialize();
 
 			chkReady.Visible = false;
@@ -46,6 +55,7 @@ namespace Ymfas {
 		public frmGameLobby(YmfasClient _client)
 		{
 			client = _client;
+			lobbyMode = LobbyMode.ClientOnly;
 			Initialize();			
 		}
 
@@ -263,19 +273,17 @@ namespace Ymfas {
 
         }
 
+		/// <summary>
+		/// send a message to the server
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
         private void txtChatInput_KeyDown(object sender, KeyEventArgs e) {
             if (e.KeyCode == Keys.Enter) {
 
-                //send chat message
-                SpiderEngine.SpiderMessage msg = new SpiderEngine.SpiderMessage(NetworkEngine.Engine.GetName() + ": " + txtChatInput.Text, SpiderEngine.SpiderMessageType.String, "chat");
-                NetworkEngine.Engine.SendMessage(msg, Lidgren.Library.Network.NetChannel.ReliableUnordered);
-
-                //if host then display message (no bounce)
-                if (NetworkEngine.EngineType == SpiderEngine.SpiderType.Server) {
-                    rtxtChatWindow.Text += "\n"+ NetworkEngine.Engine.GetName() + ": " + txtChatInput.Text;
-                    rtxtChatWindow.Select(rtxtChatWindow.Text.Length + 1, 2);
-                    rtxtChatWindow.ScrollToCaret();
-                }
+                // have the client send the message to the server
+                SpiderMessage msg = new SpiderMessage(client.GetName() + ": " + txtChatInput.Text, SpiderMessageType.String, "chat");
+                client.SendMessage(msg, NetChannel.ReliableUnordered);
 
                 //clear input
                 txtChatInput.Multiline = false;
@@ -287,81 +295,116 @@ namespace Ymfas {
             }
         }
 
+		/// <summary>
+		/// Configure what kind of lobby is seen
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
         private void frmGameLobby_Load(object sender, EventArgs e) {
-            if (NetworkEngine.EngineType == SpiderEngine.SpiderType.Server) {
+            
+			if (lobbyMode == LobbyMode.Host) 
                 btnStart.Visible = true;
-            }
-            else {
-                //Chat connect message
-                SpiderEngine.SpiderMessage msg = new SpiderEngine.SpiderMessage(NetworkEngine.Engine.GetName() + " has connected.", SpiderEngine.SpiderMessageType.String, "chat");
-                NetworkEngine.Engine.SendMessage(msg, Lidgren.Library.Network.NetChannel.ReliableUnordered);
-                
-                //Send name
-                msg = new SpiderEngine.SpiderMessage(NetworkEngine.Engine.GetName(), SpiderEngine.SpiderMessageType.String, "name");
-                NetworkEngine.Engine.SendMessage(msg, Lidgren.Library.Network.NetChannel.ReliableUnordered);   
-                
-            }
+            
+            // Chat connect message
+            SpiderMessage msg = new SpiderMessage(client.GetName() + " has connected.", SpiderMessageType.String, "chat");
+            client.SendMessage(msg, Lidgren.Library.Network.NetChannel.ReliableUnordered);
+            
+            // Send name
+            msg = new SpiderMessage(client.GetName(), SpiderMessageType.String, "name");
+            client.SendMessage(msg, Lidgren.Library.Network.NetChannel.ReliableUnordered);   
+         
         }
 
+		/// <summary>
+		/// send a ready/not ready message to the server
+		/// only applies to LobbyMode.Client only, since only they have ready checks
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
         private void chkReady_CheckedChanged(object sender, EventArgs e) {
             int chk = chkReady.Checked ? 1 : 0;
             String strChk = chkReady.Checked ? "ready" : "not ready";
-            SpiderEngine.SpiderMessage msg = new SpiderEngine.SpiderMessage(chk, SpiderEngine.SpiderMessageType.Int, "ready");
-            NetworkEngine.Engine.SendMessage(msg, Lidgren.Library.Network.NetChannel.ReliableUnordered);
-            msg = new SpiderEngine.SpiderMessage(NetworkEngine.Engine.GetName() + " is " + strChk + " to begin.", SpiderEngine.SpiderMessageType.String, "chat");
-            NetworkEngine.Engine.SendMessage(msg, Lidgren.Library.Network.NetChannel.ReliableUnordered);
+
+			// send the ready message to the server
+            SpiderMessage msg = new SpiderMessage(chk, SpiderMessageType.Int, "ready");
+            client.SendMessage(msg, Lidgren.Library.Network.NetChannel.ReliableUnordered);
+
+			// send the chat message to everyone (via the server)
+            msg = new SpiderMessage(client.GetName() + " is " + strChk + " to begin.", SpiderMessageType.String, "chat");
+            client.SendMessage(msg, Lidgren.Library.Network.NetChannel.ReliableUnordered);
         }
 
+		/// <summary>
+		/// change the game mode 
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
         private void cmbGameMode_SelectedIndexChanged(object sender, EventArgs e) {
-            if (NetworkEngine.EngineType == SpiderEngine.SpiderType.Server) {
-                //send out the message
-                SpiderEngine.SpiderMessage msg = new SpiderEngine.SpiderMessage(cmbGameMode.SelectedIndex, SpiderEngine.SpiderMessageType.Int, "mode");
-                NetworkEngine.Engine.SendMessage(msg, Lidgren.Library.Network.NetChannel.ReliableUnordered);
-                
-                //parse selection into GameMode
-                NetworkEngine.GameMode = (GameMode)Enum.Parse(typeof(GameMode), cmbGameMode.Items[cmbGameMode.SelectedIndex].ToString().Replace(" ", ""));
+			if (lobbyMode == LobbyMode.ClientOnly)
+				return;
 
-                //team or solo play?
-                if (NetworkEngine.GameMode != GameMode.Deathmatch && NetworkEngine.GameMode != GameMode.KingOfTheAsteroid) {
-                    cmbTeam.Enabled = true;
-                }
-                else {
-                    cmbTeam.Enabled = false;
-                }
-            }
+            //send out the message
+            SpiderMessage msg = new SpiderMessage(cmbGameMode.SelectedIndex, SpiderMessageType.Int, "mode");
+            server.SendMessage(msg, Lidgren.Library.Network.NetChannel.ReliableUnordered);
+            
+            //parse selection into GameMode
+            server.GameMode = (GameMode)Enum.Parse(typeof(GameMode), cmbGameMode.Items[cmbGameMode.SelectedIndex].ToString().Replace(" ", ""));
 
-        }
-
-        private void btnStart_Click(object sender, EventArgs e) {
-            //send game start messages
-            if (NetworkEngine.EngineType == SpiderEngine.SpiderType.Server) {
-                SpiderEngine.SpiderMessage msg = new SpiderEngine.SpiderMessage("Game starting...", SpiderEngine.SpiderMessageType.String, "chat");
-                NetworkEngine.Engine.SendMessage(msg, Lidgren.Library.Network.NetChannel.Sequenced1);
-                msg = new SpiderEngine.SpiderMessage("", SpiderEngine.SpiderMessageType.String, "start");
-                NetworkEngine.Engine.SendMessage(msg, Lidgren.Library.Network.NetChannel.Sequenced1);
-
-                //set countdown timer
-                gameStartTime = timerTicks * timer.Interval;
-                gameStarting = true;
-                rtxtChatWindow.Text += "\nGame starting...";
-                rtxtChatWindow.Select(rtxtChatWindow.Text.Length + 1, 2);
-                rtxtChatWindow.ScrollToCaret();
-
-                cmbGameMode.Enabled = false;
+            //team or solo play?
+            if (server.GameMode != GameMode.Deathmatch && server.GameMode != GameMode.KingOfTheAsteroid) 
+                cmbTeam.Enabled = true;
+            else
                 cmbTeam.Enabled = false;
-                btnStart.Enabled = false;
-
-            }
         }
 
+		/// <summary>
+		/// start the game
+		/// only valid for hosting mode
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+        private void btnStart_Click(object sender, EventArgs e) {
+			if (lobbyMode == LobbyMode.ClientOnly)
+				return;
+			
+            //send game start messages
+            SpiderMessage msg = new SpiderMessage("Game starting...", SpiderMessageType.String, "chat");
+            server.SendMessage(msg, Lidgren.Library.Network.NetChannel.Sequenced1);
+            msg = new SpiderMessage("", SpiderMessageType.String, "start");
+            server.SendMessage(msg, Lidgren.Library.Network.NetChannel.Sequenced1);
+
+            //set countdown timer
+            /*
+			gameStartTime = timerTicks * timer.Interval;
+            gameStarting = true;
+            rtxtChatWindow.Text += "\nGame starting...";
+            rtxtChatWindow.Select(rtxtChatWindow.Text.Length + 1, 2);
+            rtxtChatWindow.ScrollToCaret();
+			*/
+
+			// disable other buttons and boxes
+            cmbGameMode.Enabled = false;
+            cmbTeam.Enabled = false;
+            btnStart.Enabled = false;
+        }
+
+		/// <summary>
+		/// update the team id to reflect the id box
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
         private void cmbTeam_SelectedIndexChanged(object sender, EventArgs e) {
-            NetworkEngine.Team = (GameTeam)Enum.Parse(typeof(GameTeam), cmbTeam.Items[cmbTeam.SelectedIndex].ToString().Replace(" ", ""));
+            client.Team = (GameTeam)Enum.Parse(typeof(GameTeam), cmbTeam.Items[cmbTeam.SelectedIndex].ToString().Replace(" ", ""));
         }
 
 		private void frmGameLobby_FormClosing(object sender, FormClosingEventArgs e)
 		{
 			if (!gameStarting)
-				NetworkEngine.Engine.Destroy();
+			{
+				client.Dispose();
+				if (lobbyMode == LobbyMode.Hosting)
+					server.Dispose();
+			}
 		}
     }   
 }
