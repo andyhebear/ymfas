@@ -157,25 +157,6 @@ namespace Ymfas
 		}
 
         /// <summary>
-        /// Initializes & executes the server runtime loop
-        /// </summary>
-        public void ServerGo() {
-            //init world
-            World serverWorld = new World();
-            // use faster, inexact settings
-            serverWorld.setSolverModel((int)World.SolverModelMode.SM_ADAPTIVE);
-            serverWorld.setFrictionModel((int)World.FrictionModelMode.FM_ADAPTIVE);
-            serverWorld.setWorldSize(new AxisAlignedBox(new Vector3(-WorldSizeParam), new Vector3(WorldSizeParam)));
-            serverWorld.LeaveWorld += new LeaveWorldEventHandler(OnLeaveWorld);
-
-            ServerShipManager serverShipMgr = new ServerShipManager(serverWorld, eventMgr);
-
-            while (true) {
-                //do shit
-            }
-        }
-
-        /// <summary>
         /// Client Runtime loop
         /// </summary>
         public void ClientGo() {
@@ -183,16 +164,15 @@ namespace Ymfas
             Console.Out.WriteLine("the client thread is running!");
 
             //init client managers
-            ShipManager shipMgr = new ShipManager(this);
-            UserInputManager userInputMgr = new UserInputManager(this.input, this.eventMgr, (byte)PlayerId);
+            // TODO: this all needs to be moved...
+			/*
+				ShipManager shipMgr = new ShipManager(this);
+				UserInputManager userInputMgr = new UserInputManager(this.input, this.eventMgr, (byte)PlayerId);
+			*/
 
-			// TODO: Fix client go
-            while (true) {
-
-                //process event queue if we are not the host (then the server thread is doing that already)
-                if (NetworkEngine.EngineType != SpiderEngine.SpiderType.Server) {
-                    eventMgr.Update();
-                }
+            while (true) 
+			{
+                eventMgr.Update();
             }
         }
 	}

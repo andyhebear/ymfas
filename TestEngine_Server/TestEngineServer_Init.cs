@@ -10,6 +10,7 @@ namespace Ymfas
 	{
 		private World world;
 		private EventManager eventMgr;
+		private YmfasServer netServer;
 
 		private Mogre.Timer frameTimer;
 
@@ -19,9 +20,10 @@ namespace Ymfas
 			OpenGL = 1
 		};
 
-		public TestEngineServer()
+		public TestEngineServer(YmfasServer _server)
 		{
-			
+			netServer = _server;
+			eventMgr = new EventManager(_server);
 		}
 
 		void Singleton_ResourceGroupLoadEnded(string groupName)
@@ -29,29 +31,6 @@ namespace Ymfas
 			throw new Exception("The method or operation is not implemented.");
 		}
 		
-		/// <summary>
-		/// Launches the form to configure networking 
-		/// upon return, the network engine should be fully initialized
-		/// </summary>
-        public bool ConfigureNetwork() {
-            // launch the main splash window
-            frmMainSplash networkForm = new frmMainSplash();
-            Console.Out.WriteLine("Running the form");
-			networkForm.ShowDialog();
-            Console.Out.WriteLine("Form done running");
-
-			System.Console.Write(networkForm.DialogResult);
-
-			if (NetworkEngine.Engine == null || networkForm.DialogResult == System.Windows.Forms.DialogResult.Cancel)
-				return false;
-
-            //launch the event manager
-			this.eventMgr = new EventManager();
-
-            return true;
-        }
-
-
 		public void PrepareGameInstance()
 		{
 			// physics system
@@ -64,25 +43,17 @@ namespace Ymfas
 			InitializeScene();
 
             // initialize server/client threads
-            InitializeThreads();
-
+            //InitializeThreads();
 		}
 
-        /// <summary>
+        /*/// <summary>
         /// Creates server/client threads
         /// </summary>
         private void InitializeThreads() {
-            //create client thread
-            Thread ClientThread = new Thread(ClientGo);
-            ClientThread.Start();
-
-
             //create server thread if necessary
-            if (NetworkEngine.EngineType == SpiderEngine.SpiderType.Server) {
-                Thread ServerThread = new Thread(ServerGo);
-                ServerThread.Start();
-            }
-        }
+            Thread ServerThread = new Thread(ServerGo);
+            ServerThread.Start();
+        }*/
 
 		/// <summary>
 		/// initialize the physics engine
@@ -100,29 +71,18 @@ namespace Ymfas
 
 		public void Dispose()
 		{
-			// destroy all scene instance-specific information
-			DisposeScene();
+			// destroy all instance-specific information
 
 			if (world != null)
 			{
 				world.Dispose();
 				world = null;
 			}
-
-			if (root != null)
-			{
-				root.Dispose();
-				root = null;
-			}
 		}
 
 		public World World
 		{
 			get { return world; }
-		}
-		public SceneManager SceneManager
-		{
-			get { return sceneMgr; }
 		}
 	}
 }

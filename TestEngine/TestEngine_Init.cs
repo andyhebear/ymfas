@@ -14,7 +14,6 @@ namespace Ymfas
 		private World world;
 		private EventManager eventMgr;
 		YmfasClient netClient;
-		YmfasServer netServer;
 
 		private Mogre.Timer frameTimer;
 
@@ -38,9 +37,12 @@ namespace Ymfas
 				"OpenGL Rendering Subsystem" 
 			};
 
-		public TestEngine()
+		public TestEngine(YmfasClient _client)
 		{
-			
+			netClient = _client;
+
+			// create the event manager
+			eventMgr = new EventManager(netClient);
 		}
 
 		void Singleton_ResourceGroupLoadEnded(string groupName)
@@ -48,33 +50,6 @@ namespace Ymfas
 			throw new Exception("The method or operation is not implemented.");
 		}
 		
-		/// <summary>
-		/// Launches the form to configure networking 
-		/// upon return, the network engine should be fully initialized
-		/// </summary>
-        public bool ConfigureNetwork() {
-            // launch the main splash window
-            frmMainSplash networkForm = new frmMainSplash();
-            Console.Out.WriteLine("Running the form");
-			networkForm.ShowDialog();
-            Console.Out.WriteLine("Form done running");
-
-			System.Console.Write(networkForm.DialogResult);
-
-			if (networkForm.DialogResult == System.Windows.Forms.DialogResult.Cancel)
-				return false;
-
-			// check to see if we have a host as well
-			netClient = networkForm.Client;
-			netServer = networkForm.Server;
-
-            //launch the event manager
-			eventMgr = new EventManager( netClient );
-
-            return true;
-        }
-
-
 		public void PrepareGameInstance()
 		{
             // create the root object with paths to various configuraion files
