@@ -38,22 +38,7 @@ namespace Ymfas
 
 			// various other things
 			frameTimer = new Mogre.Timer();
-
-			// initalize the scene
-			InitializeScene();
-
-            // initialize server/client threads
-            //InitializeThreads();
 		}
-
-        /*/// <summary>
-        /// Creates server/client threads
-        /// </summary>
-        private void InitializeThreads() {
-            //create server thread if necessary
-            Thread ServerThread = new Thread(ServerGo);
-            ServerThread.Start();
-        }*/
 
 		/// <summary>
 		/// initialize the physics engine
@@ -71,6 +56,13 @@ namespace Ymfas
 
 		public void Dispose()
 		{
+			// destroy the server
+			if (netServer != null)
+			{
+				netServer.Dispose();
+				netServer = null;
+			}
+
 			// destroy all instance-specific information
 			if (world != null)
 			{
