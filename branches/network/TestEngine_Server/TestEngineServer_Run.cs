@@ -51,7 +51,7 @@ namespace Ymfas
             serverWorld.setWorldSize(new AxisAlignedBox(new Vector3(-WorldSizeParam), new Vector3(WorldSizeParam)));
             serverWorld.LeaveWorld += new LeaveWorldEventHandler(OnLeaveWorld);
 
-            ServerShipManager serverShipMgr = new ServerShipManager(serverWorld, eventMgr);
+            ServerShipManager serverShipMgr = new ServerShipManager(serverWorld, eventMgr, netServer);
 
             while (true) {
                 //do shit
