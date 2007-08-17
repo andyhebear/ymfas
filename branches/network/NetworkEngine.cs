@@ -2,19 +2,25 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using System.Net;
 
 namespace Ymfas {
     public enum GameMode { Deathmatch, TeamDeathmatch, CaptureTheFlag, ConvoyDefense, KingOfTheAsteroid };
     public enum GameTeam { NoTeam, Team1, Team2 };
+	
+	public static class GameInfo
+	{
+		public static bool IsTeamGame( GameMode gm )
+		{
+			return (gm != GameMode.TeamDeathmatch && gm == GameMode.KingOfTheAsteroid );
+		}
+	}
 
 	public class YmfasClient : SpiderClient
 	{
-		public Hashtable PlayerIPs;
 		public GameMode GameMode;
 		public GameTeam Team;
 		public int PlayerId;
-		public Hashtable PlayerIdsByIP;
-		public Hashtable PlayerNamesById;
 
 		public YmfasClient(string name) : base(name) 
 		{
@@ -23,20 +29,59 @@ namespace Ymfas {
 
     public class YmfasServer : SpiderServer 
 	{
-        public Hashtable PlayerIPs;
+        private Dictionary<IPAddress, string> playerIPs;
         public GameMode GameMode;
         public GameTeam Team;
         public int PlayerId;
-        public Hashtable PlayerIdsByIP;
-        public Hashtable PlayerNamesById;
+		private Dictionary<IPAddress, int> playerIdsByIP;
+		private Dictionary<int, string> playerNamesById;
 
 		public YmfasServer(string name) : base(name)
 		{
-			PlayerIPs = new Hashtable();
-			PlayerIdsByIP = new Hashtable();
-			PlayerNamesById = new Hashtable();
+			playerIPs = new Dictionary<IPAddress, string>();
+			playerIdsByIP = new Dictionary<IPAddress, int>();
+			playerNamesById = new Dictionary<int,string>();
 		}
+
+		// add a player
+		public void AddPlayer(IPAddress ip, string name, int id)
+		{
+			playerIPs.Add(ip, name + " [" + ip + "]");
+			playerIdsByIP.Add(ip, id);
+			playerNamesById.Add(id, name);
+		}
+
+		// remove a player
+		public void RemovePlayer(IPAddress ip)
+		{
+			//Remove key from all hashtables
+			playerIPs.Remove(ip);
+			playerNamesById.Remove(playerIdsByIP[ip]);
+			playerIdsByIP.Remove(ip);
+		}
+
+		// grab a player's information
+		public string GetPlayerInfoString(IPAddress ip)
+		{
+			return playerIPs[ip];
+		}
+		
+		public bool IsPlayerConnected(IPAddress ip)
+		{
+			return playerIPs.ContainsKey(ip);
+		}
+
+		#region PublicProperties
+		public int NumPlayers
+		{
+			get { return playerIPs.Count; }
+		}
+
+		public ICollection<String> PlayerInfoStrings
+		{
+			get { return playerIPs.Values; }
+		}
+		#endregion
+
     }
-
-
 }

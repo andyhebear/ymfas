@@ -98,7 +98,7 @@ namespace Ymfas {
                 //time out if too long
                 if (ticksConnecting * timer.Interval >= MAX_CONNECT_TIME) {
 					splashState = MainSplashState.Searching;
-					ymfasClient.Destroy();
+					ymfasClient.Dispose();
 					ymfasClient = null;
                     MessageBox.Show("Connection attempt failed.");
                 }
@@ -110,7 +110,7 @@ namespace Ymfas {
 						splashState = MainSplashState.None;
                          
                         // join lobby
-                        GameLobby = new frmGameLobby();
+                        GameLobby = new frmGameLobby(ymfasClient);
                         GameLobby.ShowDialog();
 
 						if (GameLobby.DialogResult == DialogResult.OK)

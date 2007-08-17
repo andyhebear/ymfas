@@ -83,6 +83,7 @@ namespace Ymfas
 			return type.ToString() + "|" + label + "|" + data.ToString() + "|" + ((senderIP == null) ? "" : senderIP.ToString());
 		}
 
+		#region PublicProperties
 		/// <summary>
 		/// Retrieves the data stored in this message.
 		/// </summary>
@@ -115,19 +116,20 @@ namespace Ymfas
 		/// Gets the label for this message.
 		/// </summary>
 		/// <returns>A String containing the message label</returns>
-		public String GetLabel()
+		public String Label
 		{
-			return label;
+			get { return label; }
 		}
 
 		/// <summary>
 		/// Gets the IP address of the message source
 		/// </summary>
 		/// <returns>The IP address of the message source</returns>
-		public IPAddress GetIP()
+		public IPAddress IP
 		{
-			return senderIP;
-		}
+			get { return senderIP; }
+		} 
+		#endregion
 	}
 
 	public enum SpiderMessageType { String, Int, Double };

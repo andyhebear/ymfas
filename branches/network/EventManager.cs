@@ -52,7 +52,6 @@ namespace Ymfas {
         /// Polls the message queue of the network engine indefinitely, parsing out events and filling the event
         /// </summary>
         private void PollMessages() {
-            
 
             SpiderEngine.SpiderMessage msg;
             while(true){
