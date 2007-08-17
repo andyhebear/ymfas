@@ -26,7 +26,7 @@ namespace Ymfas {
 		private MainSplashState splashState;
         private int ticksConnecting;
 
-		private YmfasClient ymfasClient = null;
+		private YmfasClient ymfasClient = null;		
 		private YmfasServer ymfasServer = null;
 
         public frmMainSplash() {
@@ -52,8 +52,11 @@ namespace Ymfas {
             GameLobby = new frmGameLobby(ymfasClient, ymfasServer);
 
             GameLobby.ShowDialog();
+			// if we actually started a game
 			if (GameLobby.DialogResult == DialogResult.OK)
 			{
+				ymfasClient = GameLobby.Client;
+				ymfasServer = GameLobby.Server;
 				this.DialogResult = DialogResult.OK;
 				this.Close();
 			}
@@ -115,6 +118,7 @@ namespace Ymfas {
 
 						if (GameLobby.DialogResult == DialogResult.OK)
 						{
+							ymfasClient = GameLobby.Client;
 							this.DialogResult = DialogResult.OK;
 							this.Close();
 						}
@@ -142,5 +146,14 @@ namespace Ymfas {
 			splashState = MainSplashState.Connecting;
             ticksConnecting = 0;
         }
+
+		public YmfasServer Server
+		{
+			get { return ymfasServer; }
+		}
+		public YmfasClient Client
+		{
+			get { return ymfasClient; }
+		}
     }
 }

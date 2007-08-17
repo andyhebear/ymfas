@@ -7,9 +7,28 @@ using Lidgren.Library.Network;
 
 namespace Ymfas
 {
-	public interface SpiderBaseEngine
+	/// <summary>
+	/// shared interface for SpiderClient and SpiderServer
+	/// </summary>
+	public interface SpiderBase
 	{
+		/// <summary>
+		/// grab all incoming messages
+		/// </summary>
 		void Update();
+
+		/// <summary>
+		/// grab the next message from the queue
+		/// </summary>
+		/// <returns></returns>
+		SpiderMessage GetNextMessage();
+
+		/// <summary>
+		/// send or broadcast a message
+		/// </summary>
+		/// <param name="message"></param>
+		/// <param name="deliveryType"></param>
+		void SendMessage(SpiderMessage message, NetChannel deliveryType);
 	}
 
 	public class SpiderMessage

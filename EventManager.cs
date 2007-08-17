@@ -33,104 +33,110 @@ namespace Ymfas {
         public abstract Lidgren.Library.Network.NetChannel DeliveryType { get; }
     }
 
-    public class EventManager{
-        private Queue<GameEvent> EventQueue;
-        private Thread MessagePolling;
+	public class EventManager
+	{
+		private SpiderBase net;
+		private Queue<GameEvent> EventQueue;
+		private Thread MessagePolling;
 
-        /// <summary>
-        /// Creates a new EventManager, which will begin polling the network for event messages
-        /// </summary>
-        /// <param name="networkEngine">The network engine to monitor for events</param>
-        public EventManager() {
-            EventQueue = new Queue<GameEvent>();
+		/// <summary>
+		/// Creates a new EventManager, which will begin polling the network for event messages
+		/// </summary>
+		/// <param name="networkEngine">The network engine to monitor for events</param>
+		public EventManager(SpiderBase _spider)
+		{
+			net = _spider;
+			EventQueue = new Queue<GameEvent>();
 
-            MessagePolling = new Thread(PollMessages);
-            MessagePolling.Start();
-        }
+			MessagePolling = new Thread(PollMessages);
+			MessagePolling.Start();
+		}
 
-        /// <summary>
-        /// Polls the message queue of the network engine indefinitely, parsing out events and filling the event
-        /// </summary>
-        private void PollMessages() {
-
-            SpiderEngine.SpiderMessage msg;
-            while(true){
+		/// <summary>
+		/// Polls the message queue of the network engine indefinitely, parsing out events and filling the event
+		/// </summary>
+		private void PollMessages()
+		{
+			SpiderMessage msg = null;
+			while (true)
+			{
 				Thread.Sleep(50);
-                NetworkEngine.Engine.Update();
-                msg = NetworkEngine.Engine.GetNextMessage();
-                while(msg != null) {
-                    try {
-                        Console.Out.WriteLine("got an event!");
-                        //The type is contained in the label
-                        Type eventType = Type.GetType(msg.GetLabel());
-                        Console.Out.WriteLine("the type is " + eventType.ToString());
-                        //Create an event object
-                        GameEvent msgEvent = (GameEvent)System.Activator.CreateInstance(eventType);
+				net.Update();
+				while ((msg = net.GetNextMessage()) != null)
+				{
+					try
+					{
+						Console.Out.WriteLine("got an event!");
 
-                        //Get the message data
-                        String msgData = (String)msg.GetData();
-               
-                        //Add this info to the event (string to byteArray first)
-                        Encoder encoder = Encoding.GetEncoding(28591).GetEncoder();
-                        Byte[] byteArray = new Byte[msgData.Length];                   
-                        encoder.GetBytes(msgData.ToCharArray(), 0, msgData.Length, byteArray, 0, true);
-                        msgEvent.SetDataFromByteArray(byteArray);
+						//The type is contained in the label
+						Type eventType = Type.GetType(msg.Label);
+						Console.Out.WriteLine("the type is " + eventType.ToString());
 
-                        //Add this event to the queue
-                        lock (EventQueue) {
-                            EventQueue.Enqueue(msgEvent);
-                        }
-                    }
-                    catch (Exception e) {
-                        Util.RecordException(e);
-                    }
+						//Create an event object
+						GameEvent msgEvent = (GameEvent)System.Activator.CreateInstance(eventType);
 
-                    msg = NetworkEngine.Engine.GetNextMessage();
-                }
-            }
-			
-        }
+						//Get the message data
+						String msgData = (String)msg.Data;
 
-        /// <summary>
-        /// Processes all events currently in the queue
-        /// </summary>
-        public void Update() {
+						//Add this info to the event (string to byteArray first)
+						Encoder encoder = Encoding.GetEncoding(28591).GetEncoder();
+						Byte[] byteArray = new Byte[msgData.Length];
+						encoder.GetBytes(msgData.ToCharArray(), 0, msgData.Length, byteArray, 0, true);
+						msgEvent.SetDataFromByteArray(byteArray);
 
-            GameEvent[] tempArray = new GameEvent[EventQueue.Count];
-            lock (EventQueue) {
-                EventQueue.CopyTo(tempArray, 0);
-                EventQueue.Clear();
-            }
+						//Add this event to the queue
+						lock (EventQueue)
+						{
+							EventQueue.Enqueue(msgEvent);
+						}
+					}
+					catch (Exception e)
+					{
+						Util.RecordException(e);
+					}
+				}
+			}
+		}
 
-            //Process each event
-            for (int i = 0; i < tempArray.Length; i++) {
-                Console.Out.WriteLine("firing an event");
-                tempArray[i].FireEvent();
-            }
-        }
+		/// <summary>
+		/// Processes all events currently in the queue
+		/// </summary>
+		public void Update()
+		{
+			GameEvent[] tempArray = new GameEvent[EventQueue.Count];
+			lock (EventQueue)
+			{
+				EventQueue.CopyTo(tempArray, 0);
+				EventQueue.Clear();
+			}
 
-        /// <summary>
-        /// Sends a game event over the network.  If the caller is a server, it will be broadcast, otherwise it will be sent to the server.
-        /// </summary>
-        /// <param name="e">The game event to be sent</param>
-        public void SendEvent(GameEvent e) {
-            //latin-1
-            Byte[] bytes = e.ToByteArray();
-            Decoder decoder = Encoding.GetEncoding(28591).GetDecoder();
-            char[] chars = new char[bytes.Length + 1];
-            int ignored0;
-            int ignored1;
-            bool ignored2;
-            decoder.Convert(bytes, 0, bytes.Length, chars, 0, bytes.Length, true, out ignored0, out ignored1, out ignored2);
-            chars[bytes.Length] = (char)0;  //null-terminate
-            String msgString = new String(chars);
+			//Process each event
+			for (int i = 0; i < tempArray.Length; i++)
+			{
+				Console.Out.WriteLine("firing an event");
+				tempArray[i].FireEvent();
+			}
+		}
 
-            SpiderEngine.SpiderMessage msg = new SpiderEngine.SpiderMessage(msgString, SpiderEngine.SpiderMessageType.String, e.GetType().ToString());
-            NetworkEngine.Engine.SendMessage(msg, e.DeliveryType);
+		/// <summary>
+		/// Sends a game event over the network.  If the caller is a server, it will be broadcast, otherwise it will be sent to the server.
+		/// </summary>
+		/// <param name="e">The game event to be sent</param>
+		public void SendEvent(GameEvent e)
+		{
+			//latin-1
+			Byte[] bytes = e.ToByteArray();
+			Decoder decoder = Encoding.GetEncoding(28591).GetDecoder();
+			char[] chars = new char[bytes.Length + 1];
+			int ignored0;
+			int ignored1;
+			bool ignored2;
+			decoder.Convert(bytes, 0, bytes.Length, chars, 0, bytes.Length, true, out ignored0, out ignored1, out ignored2);
+			chars[bytes.Length] = (char)0;  //null-terminate
+			String msgString = new String(chars);
 
-            if (NetworkEngine.EngineType == SpiderEngine.SpiderType.Server) {
-                e.FireEvent();
-            }
-        }
-    }
+			SpiderMessage msg = new SpiderMessage(msgString, SpiderMessageType.String, e.GetType().ToString());
+			net.SendMessage(msg, e.DeliveryType);
+		}
+	}
 }
