@@ -20,7 +20,13 @@ namespace Ymfas {
 	{
 		public GameMode GameMode;
 		public GameTeam Team;
-		public int PlayerId;
+		public int playerId;
+
+		public int PlayerId
+		{
+			get { return playerId; }
+			set { playerId = value; }
+		}
 
 		public YmfasClient(string name) : base(name) 
 		{
@@ -32,7 +38,6 @@ namespace Ymfas {
         private Dictionary<IPAddress, string> playerIPs;
         public GameMode GameMode;
         public GameTeam Team;
-        public int PlayerId;
 		private Dictionary<IPAddress, int> playerIdsByIP;
 		private Dictionary<int, string> playerNamesById;
 
@@ -65,6 +70,14 @@ namespace Ymfas {
 		{
 			return playerIPs[ip];
 		}
+		public string GetPlayerName(int id)
+		{
+			return playerNamesById[id];
+		}
+		public string GetPlayerName(IPAddress ip)
+		{
+			return playerNamesById[playerIdsByIP[ip]];
+		}
 		
 		public bool IsPlayerConnected(IPAddress ip)
 		{
@@ -81,6 +94,12 @@ namespace Ymfas {
 		{
 			get { return playerIPs.Values; }
 		}
+
+		public ICollection<int> PlayerIds
+		{
+			get { return playerIdsByIP.Values; }
+		}
+
 		#endregion
 
     }

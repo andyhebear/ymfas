@@ -84,10 +84,12 @@
     <Compile Include="SpiderClient.cs" />
     <Compile Include="SpiderServer.cs" />
     <Compile Include="StateUpdateEvents.cs" />
-    <Compile Include="TestEngine_Init.cs" />
+    <Compile Include="TestEngine\TestEngine_Init.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Ship.cs" />
-    <Compile Include="TestEngine_Run.cs" />
+    <Compile Include="TestEngine\TestEngine_Run.cs" />
+    <Compile Include="TestEngine_Server\TestEngineServer_Init.cs" />
+    <Compile Include="TestEngine_Server\TestEngineServer_Run.cs" />
     <Compile Include="TimedEventManager.cs" />
     <Compile Include="UserInputManager.cs" />
     <Compile Include="Util.cs" />

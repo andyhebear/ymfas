@@ -38,6 +38,18 @@ namespace Ymfas {
 
 		private YmfasClient client;
 		private YmfasServer server;
+		
+		public YmfasClient Client
+		{
+			get { return client; }
+			set { client = value; }
+		}
+		public YmfasServer Server
+		{
+			get { return server; }
+			set { server = value; }
+		}
+
 		private LobbyMode lobbyMode = LobbyMode.ClientOnly;
 
         public frmGameLobby(YmfasClient _client, YmfasServer _server) 
@@ -49,7 +61,6 @@ namespace Ymfas {
 
 			chkReady.Visible = false;
 			cmbGameMode.Enabled = true;
-			server.PlayerId = 0;
 			idTicketCounter = 1;
         }
 
