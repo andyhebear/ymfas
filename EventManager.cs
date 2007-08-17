@@ -63,8 +63,10 @@ namespace Ymfas {
 			SpiderMessage msg = null;
 			while (true)
 			{
-				Thread.Sleep(50);
+				Thread.Sleep(1000);
 				net.Update();
+				//System.Console.WriteLine("Requesting Messages...");
+
 				while ((msg = net.GetNextMessage()) != null)
 				{
 					try

@@ -19,7 +19,6 @@ namespace Ymfas
 		private NetServer spiderNet;
 		private String spiderName;
 		
-		private Queue localSessionQueue;
 		private Queue messageQueue;
         private Queue disconnectQueue;
 
@@ -38,7 +37,6 @@ namespace Ymfas
 			spiderConfig = new NetAppConfiguration("ymfas",DEFAULT_PORT);
             spiderLog = new NetLog();
             spiderLog.OutputFileName = "YMFAS Net Log (Port 30803).html";
-			localSessionQueue = new Queue(50);
             messageQueue = new Queue(50);
             disconnectQueue = new Queue(50);
 			
@@ -86,29 +84,7 @@ namespace Ymfas
             if (disconnectQueue.Count == 0) { return null; }
             return (IPAddress)disconnectQueue.Dequeue();
         }
-			
-		/// <summary>
-		/// Gets the information of a local server on the queue of discovered servers.
-		/// </summary>
-		/// <returns>The NetServerInfo of the first local server on the queue</returns>
-		public NetServerInfo GetLocalSession(){
-			if(localSessionQueue.Count == 0){return null;}
-			return (NetServerInfo)localSessionQueue.Dequeue();
-		}
-		
-
-		/// <summary>
-		/// Connects a client to a specified server on the default port.
-		/// </summary>
-		/// <param name="hostIP">The host server IP</param>
-		public void Connect(IPAddress hostIP)
-		{
-		}
-		
-		public void Connect(String hostIP)
-		{
-		}
-		
+				
 		/// <summary>
 		/// Receives new messages into the message queue.  Should be called regularly.
 		/// </summary>

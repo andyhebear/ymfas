@@ -1,30 +1,16 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Net;
 using Mogre;
 using MogreNewt;
-using Microsoft.DirectX.DirectInput;
 
 namespace Ymfas
 {
 	public partial class TestEngineServer : IDisposable
 	{
-		Ship playerShip;
-		ShipCamera shipCam;
-
-		StaticGeometry grid;
-		RibbonTrail ribbon;
-
         public static float WorldSizeParam {get { return 10000.0f; }  }
-
-
-		/// <summary>
-		/// initialize the scene
-		/// </summary>
-		private void InitializeScene()
-		{
-		}
-
+		
 		void Print(uint time, Object msg)
 		{
 			System.Console.WriteLine(msg.ToString());
@@ -41,21 +27,22 @@ namespace Ymfas
         /// <summary>
         /// Initializes & executes the server runtime loop
         /// </summary>
-        public void Go() {
-
-            //init world
-            World serverWorld = new World();
-            // use faster, inexact settings
-            serverWorld.setSolverModel((int)World.SolverModelMode.SM_ADAPTIVE);
-            serverWorld.setFrictionModel((int)World.FrictionModelMode.FM_ADAPTIVE);
-            serverWorld.setWorldSize(new AxisAlignedBox(new Vector3(-WorldSizeParam), new Vector3(WorldSizeParam)));
-            serverWorld.LeaveWorld += new LeaveWorldEventHandler(OnLeaveWorld);
-
-            ServerShipManager serverShipMgr = new ServerShipManager(serverWorld, eventMgr, netServer);
+        public void Go() 
+		{
+            ServerShipManager serverShipMgr = new ServerShipManager(world, eventMgr, netServer);
 
             while (true) {
-                //do shit
-            }
+				eventMgr.Update();
+
+				IPAddress ip = null;
+				while ((ip = netServer.GetDisconnectedIP()) != null)
+				{
+					netServer.RemovePlayer(ip);
+				}
+
+				if (netServer.NumPlayers == 0)
+					break;
+			}
         }
 	}
 }

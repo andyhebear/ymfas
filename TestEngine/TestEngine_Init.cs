@@ -14,14 +14,12 @@ namespace Ymfas
 		private World world;
 		private EventManager eventMgr;
 		private YmfasClient netClient;
+		private UserInputManager inputMgr;
 
 		private Mogre.Timer frameTimer;
 
 		#region Constants
-		//private string PLUGIN_FILE = "Plugins.cfg";
 		private string RESOURCE_FILE = "resources.cfg";
-		//private string LOG_FILE = "log.txt";
-
 		private string SCENE_MANAGER_ID = "default";
 		#endregion
 
@@ -74,6 +72,7 @@ namespace Ymfas
 			IntPtr hwnd;
 			root.AutoCreatedWindow.GetCustomAttribute("Window", out hwnd);
 			input = new InputSystem(hwnd);
+			inputMgr = new UserInputManager(input, eventMgr, (byte)PlayerId);
 
 			// physics system
 			InitializePhysics();            
