@@ -108,6 +108,7 @@ namespace Ymfas
 		{
 			frameTimer.Reset();
 			float frameTime;
+			uint frameTimeMod50 = 0;
 
             float MAX_SPEED = 30.0f;
 
@@ -118,8 +119,14 @@ namespace Ymfas
 			while (true)
 			{
 				frameTime = frameTimer.Milliseconds / 1000.0f;
+				frameTimeMod50 += frameTimer.Milliseconds;
 				frameTimer.Reset();
 
+				if (frameTimeMod50 > 50)
+				{
+					eventMgr.Update();
+					frameTimeMod50 -= 50;
+				}
 				//Console.Out.WriteLine("time");
 				//Console.Out.WriteLine(frameTime);
 
@@ -159,21 +166,20 @@ namespace Ymfas
         /// <summary>
         /// Client Runtime loop
         /// </summary>
-        public void ClientGo() {
+        /*public void ClientGo() {
 
             Console.Out.WriteLine("the client thread is running!");
-
-            //init client managers
-            // TODO: this all needs to be moved...
-			/*
-				ShipManager shipMgr = new ShipManager(this);
-				UserInputManager userInputMgr = new UserInputManager(this.input, this.eventMgr, (byte)PlayerId);
-			*/
 
             while (true) 
 			{
                 eventMgr.Update();
             }
-        }
+        }*/
+
+		public void GrabEvents(uint x, object obj)
+		{
+			System.Console.WriteLine("updating");
+			eventMgr.Update();
+		}
 	}
 }

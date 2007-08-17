@@ -31,6 +31,15 @@ namespace Ymfas {
             
         }
 
+		public static event GameEventFiringHandler FiringEvent;
+		public override void FireEvent()
+		{
+			if (FiringEvent != null)
+			{
+				FiringEvent(this);
+			}
+		}
+
         /// <summary>
         /// Creates the event to initialize a ship
         /// </summary>
@@ -144,6 +153,15 @@ namespace Ymfas {
 
             return byteArray;
         }
+
+		public static event GameEventFiringHandler FiringEvent;
+		public override void FireEvent()
+		{
+			if (FiringEvent != null)
+			{
+				FiringEvent(this);
+			}
+		}
     }
 
     //Info re: status of all ships
@@ -157,6 +175,15 @@ namespace Ymfas {
         public override void SetDataFromByteArray(byte[] byteArray) {
             throw new Exception("The method or operation is not implemented.");
         }
+
+		public static event GameEventFiringHandler FiringEvent;
+		public override void FireEvent()
+		{
+			if (FiringEvent != null)
+			{
+				FiringEvent(this);
+			}
+		}
     }
     public struct ShipState {
         public Vector3 Position;

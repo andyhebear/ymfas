@@ -24,11 +24,14 @@ namespace Ymfas {
         /// <summary>
         /// Fires the FiringEvent event
         /// </summary>
+		public abstract void FireEvent();
+		/*
         public virtual void FireEvent() {
             if (FiringEvent != null) {
                 FiringEvent(this);
             }
         }
+		*/
 
         public abstract Lidgren.Library.Network.NetChannel DeliveryType { get; }
     }

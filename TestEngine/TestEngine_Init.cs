@@ -13,7 +13,7 @@ namespace Ymfas
 		private InputSystem input;
 		private World world;
 		private EventManager eventMgr;
-		YmfasClient netClient;
+		private YmfasClient netClient;
 
 		private Mogre.Timer frameTimer;
 
@@ -42,7 +42,7 @@ namespace Ymfas
 			netClient = _client;
 
 			// create the event manager
-			eventMgr = new EventManager(netClient);
+			eventMgr = new EventManager(netClient);			
 		}
 
 		void Singleton_ResourceGroupLoadEnded(string groupName)
@@ -83,28 +83,7 @@ namespace Ymfas
 
 			// initalize the scene
 			InitializeScene();
-
-            // initialize server/client threads
-            InitializeThreads();
-
 		}
-
-        /// <summary>
-        /// Creates server/client threads
-        /// </summary>
-        private void InitializeThreads() {
-
-            //create client thread
-            Thread ClientThread = new Thread(ClientGo);
-            ClientThread.Start();
-
-
-            //create server thread if necessary
-            /*if ( netServer ) {
-                Thread ServerThread = new Thread(ServerGo);
-                ServerThread.Start();
-            }*/
-        }
 
 		/// <summary>
 		/// Process the config file and add all the proper resource locations
