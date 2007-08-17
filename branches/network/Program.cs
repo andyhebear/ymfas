@@ -16,9 +16,7 @@ namespace Ymfas
 		{
 			System.Windows.Forms.Application.EnableVisualStyles();
 			System.Windows.Forms.Application.SetCompatibleTextRenderingDefault(false);
-
 			
-
 			// run the form to create a networking game
 			if (!ConfigureNetwork())
 				return;

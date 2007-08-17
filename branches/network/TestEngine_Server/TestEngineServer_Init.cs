@@ -72,7 +72,6 @@ namespace Ymfas
 		public void Dispose()
 		{
 			// destroy all instance-specific information
-
 			if (world != null)
 			{
 				world.Dispose();
