@@ -148,20 +148,22 @@ namespace Ymfas {
 				
 				// update player list for everyone
                 if ((timer.Interval * timerTicks) % PLAYERLIST_UPDATE_INTERVAL == 0) {
-                    
-					//Send player list as concatenated names, separated by newlines
-                    lstPlayers.Items.Clear();
-					String playerList = ""; //client.GetName() + " (Game Host)\n";
-
-					ICollection<String> playerStrings = server.PlayerInfoStrings;
-					foreach (string s in playerStrings)
-						playerList += s + "\n";
-
-                    SpiderMessage message = new SpiderMessage(playerList, SpiderMessageType.String,"players");
-                    server.SendMessage(message, Lidgren.Library.Network.NetChannel.Ordered1);
+					//SendPlayerList();					
                 }
             }
         }
+
+		private void SendPlayerList()
+		{
+			String playerList = "";
+
+			ICollection<String> playerStrings = server.PlayerInfoStrings;
+			foreach (string s in playerStrings)
+				playerList += s + "\n";
+
+			SpiderMessage message = new SpiderMessage(playerList, SpiderMessageType.String, "players");
+			server.SendMessage(message, Lidgren.Library.Network.NetChannel.Ordered1);
+		}
 
 		/// <summary>
 		/// Process messages sent to the server by various clients
@@ -191,8 +193,12 @@ namespace Ymfas {
                         idTicketCounter++;
                         server.SendMessage(responseMsg, NetChannel.Ordered1, msg.Connection);
 
+						// update the player list
+						SendPlayerList();
+
                         btnStart.Enabled = false;
                         break;
+
                     case "ready":
                         Console.Out.WriteLine("value : " + msg.Data);
 
@@ -209,6 +215,7 @@ namespace Ymfas {
                                 }
                             }
                         }
+
                         //player is not ready
                         else {
                             for (int i = 0; i < playersReady.Count; i++) {
@@ -324,19 +331,24 @@ namespace Ymfas {
 		/// </summary>
 		/// <param name="sender"></param>
 		/// <param name="e"></param>
-        private void frmGameLobby_Load(object sender, EventArgs e) {
-            
-			if (lobbyMode == LobbyMode.Hosting) 
-                btnStart.Visible = true;
-            
+        private void frmGameLobby_Load(object sender, EventArgs e) 
+		{                        
             // Chat connect message
+			System.Console.WriteLine("Loading game lobby...");
             SpiderMessage msg = new SpiderMessage(client.GetName() + " has connected.", SpiderMessageType.String, "chat");
             client.SendMessage(msg, Lidgren.Library.Network.NetChannel.ReliableUnordered);
             
             // Send name
             msg = new SpiderMessage(client.GetName(), SpiderMessageType.String, "name");
             client.SendMessage(msg, Lidgren.Library.Network.NetChannel.ReliableUnordered);   
-         
+			
+			// if hosting, tell itself that it's ready
+			if (lobbyMode == LobbyMode.Hosting)
+			{
+				btnStart.Visible = true;
+				client.SendMessage(new SpiderMessage(1, SpiderMessageType.Int, "ready"),
+					NetChannel.ReliableUnordered);
+			}
         }
 
 		/// <summary>

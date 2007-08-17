@@ -45,8 +45,9 @@ namespace Ymfas {
 			// create a client and a server for the game lobby to use
             ymfasServer = new YmfasServer(txtName.Text);
 			ymfasClient = new YmfasClient(txtName.Text);
+			
 			ymfasClient.Update();
-			ymfasClient.Connect(ymfasServer.GetLocalSession().RemoteEndpoint.Address.ToString());
+			ymfasClient.Connect(IPAddress.Loopback);
 
             //Enter lobby
             GameLobby = new frmGameLobby(ymfasClient, ymfasServer);

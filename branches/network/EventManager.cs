@@ -19,12 +19,12 @@ namespace Ymfas {
         /// <param name="byteArray">A parseable string containing the object data</param>
         public abstract void SetDataFromByteArray(Byte[] byteArray);
 
-        public static event GameEventFiringHandler FiringEvent;
+		//public static event GameEventFiringHandler FiringEvent;
 
         /// <summary>
         /// Fires the FiringEvent event
         /// </summary>
-        public void FireEvent() {
+        public virtual void FireEvent() {
             if (FiringEvent != null) {
                 FiringEvent(this);
             }
