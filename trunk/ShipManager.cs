@@ -12,7 +12,7 @@ namespace Ymfas
     public class ShipManager
     {
 		TestEngine engine;
-		Dictionary<String, Ship> shipTable = new Dictionary<String, Ship>();
+		Dictionary<String, ClientShip> shipTable = new Dictionary<String, ClientShip>();
 
         public ShipManager(TestEngine _engine)
         {
@@ -23,7 +23,7 @@ namespace Ymfas
         private void handleShipInit(GameEvent e)
         {
             ShipInit ee = (ShipInit) e;
-            Ship ship = new Ship(engine.World, engine.SceneManager, null, ee.PlayerId.ToString(), ee.Position, ee.Orientation);
+            ClientShip ship = new ClientShip(engine.World, engine.SceneManager, null, ee.PlayerId.ToString(), ee.Position, ee.Orientation);
             shipTable.Add(ship.ID, ship);
 
 			if (ship.ID == engine.PlayerId.ToString())

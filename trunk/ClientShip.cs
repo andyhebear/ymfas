@@ -2,7 +2,7 @@ using System;
 using Mogre;
 using MogreNewt;
 
-namespace ymfas
+namespace Ymfas
 {
     class ClientShip : Ship
     {
