@@ -7,7 +7,7 @@ using Ymfas;
 namespace Ymfas
 {
     /// <summary>
-    /// Summary description for Class1
+    /// Manages all ships
     /// </summary>
     public class ShipManager
     {
@@ -26,10 +26,10 @@ namespace Ymfas
             Ship ship = new Ship(engine.World, engine.SceneManager, null, ee.PlayerId.ToString(), ee.Position, ee.Orientation);
             shipTable.Add(ship.ID, ship);
 
-			if (ship.ID == NetworkEngine.PlayerId.ToString())
+			if (ship.ID == engine.PlayerId.ToString())
 				engine.AttachCamera(ship);
 
-            Console.Out.WriteLine("Ship " + ship.ID + "inited.  my ID is " + NetworkEngine.PlayerId);
+            Console.Out.WriteLine("Ship " + ship.ID + "inited.  my ID is " + engine.PlayerId);
         }
 
     }
