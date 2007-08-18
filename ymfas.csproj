@@ -59,6 +59,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ArcballCamera.cs" />
+    <Compile Include="ClientShip.cs" />
     <Compile Include="frmGameLobby.cs">
       <SubType>Form</SubType>
     </Compile>

@@ -1,13 +1,11 @@
 using System;
-using Mogre;
 using MogreNewt;
 
 namespace Ymfas
 {
 	public class Ship : IDisposable
 	{
-		SceneNode node;
-		Entity mesh;
+
 		Body body;
 		string id;
 
@@ -22,18 +20,10 @@ namespace Ymfas
         //this is VERY temporary
         const float time = 1 / 60.0f;
 
-		public Ship(World _w, SceneManager _mgr, SceneNode _parent, string _id, Vector3 _position, Quaternion _orientation)
+		public Ship(World _w, string _id, Vector3 _position, Quaternion _orientation)
 		{
-			SceneNode parent = _mgr.RootSceneNode;
-            if(_parent != null){
-                parent =  _parent;
-            }
 
 			id = _id;
-			mesh = _mgr.CreateEntity(id, "razor.mesh");
-			node = parent.CreateChildSceneNode();
-			node.AttachObject(mesh);
-
 
             MogreNewt.CollisionPrimitives.Box bodyBox = 
                 new MogreNewt.CollisionPrimitives.Box(_w, mesh.BoundingBox.Size);
