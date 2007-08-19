@@ -1,4 +1,5 @@
 using System;
+using Mogre;
 using MogreNewt;
 
 namespace Ymfas
@@ -6,13 +7,14 @@ namespace Ymfas
 	public class Ship : IDisposable
 	{
 
-		Body body;
-		string id;
+		protected Body body;
+		protected string id;
 
         Vector3 standbyForce;
 		Vector3 standbyTorque;
 
         const float FORCE = 10.0f;
+        const float BOUNDING_RADIUS = 50.0f;
         const float MAX_X_TORQUE = 5.0f;
         const float MAX_Y_TORQUE = 5.0f;
         const float MAX_Z_TORQUE = 5.0f;
@@ -25,18 +27,15 @@ namespace Ymfas
 
 			id = _id;
 
-            MogreNewt.CollisionPrimitives.Box bodyBox = 
-                new MogreNewt.CollisionPrimitives.Box(_w, mesh.BoundingBox.Size);
+            MogreNewt.CollisionPrimitives.Box bodyBox =
+                new MogreNewt.CollisionPrimitives.Box(_w, new Vector3(1.0f, 1.0f, 1.0f));
             body = new Body(_w, bodyBox);
 
             float mass;
             Vector3 inertia;
             body.getMassMatrix(out mass, out inertia);
 
-			body.attachToNode(node);
-
-            Vector3 v = MogreNewt.MomentOfInertia.CalcBoxSolid(1.0f, mesh.BoundingBox.Size);
-			body.setMassMatrix(1.0f, v);
+           	body.setMassMatrix(1.0f, new Vector3(1.0f, 1.0f, 1.0f));
 
             body.setPositionOrientation(_position, _orientation);
             body.IsGravityEnabled = false;
@@ -46,7 +45,7 @@ namespace Ymfas
 			body.setAngularDamping(new Vector3(0.0f));
         }
 
-        void ForceTorqueCallback(Body b)
+        protected void ForceTorqueCallback(Body b)
         {
             //debugging
             float mass;
@@ -74,11 +73,11 @@ namespace Ymfas
 		// thrust is measured in meters / s^2
 		public void ThrustRelative(Vector3 vec)
 		{
-            standbyForce = vec * FORCE * mesh.BoundingRadius;
+            standbyForce = vec * FORCE * BOUNDING_RADIUS;
 		}
 		public void TorqueRelative(Vector3 vec)
 		{
-            standbyTorque = new Vector3(vec.x * MAX_X_TORQUE, vec.y * MAX_Y_TORQUE, vec.z * MAX_Z_TORQUE) * mesh.BoundingRadius;
+            standbyTorque = new Vector3(vec.x * MAX_X_TORQUE, vec.y * MAX_Y_TORQUE, vec.z * MAX_Z_TORQUE) * BOUNDING_RADIUS;
 		}
         public Vector3 GetCorrectiveTorque()
         {
@@ -101,44 +100,44 @@ namespace Ymfas
 
             //x correction
 
-            if(torque.x > MAX_X_TORQUE * mesh.BoundingRadius)
+            if(torque.x > MAX_X_TORQUE * BOUNDING_RADIUS)
             {
                 correctiveTorque.x = -1;
             }
-            else if (torque.x < -MAX_X_TORQUE * mesh.BoundingRadius)
+            else if (torque.x < -MAX_X_TORQUE * BOUNDING_RADIUS)
             {
                 correctiveTorque.x = 1;
             }
             else
             {
-                correctiveTorque.x = -torque.x / MAX_X_TORQUE / mesh.BoundingRadius;
+                correctiveTorque.x = -torque.x / MAX_X_TORQUE / BOUNDING_RADIUS;
             }
             //y correction
 
-            if (torque.y > MAX_Y_TORQUE * mesh.BoundingRadius)
+            if (torque.y > MAX_Y_TORQUE * BOUNDING_RADIUS)
             {
                 correctiveTorque.y = -1;
             }
-            else if (torque.y < -MAX_Y_TORQUE * mesh.BoundingRadius)
+            else if (torque.y < -MAX_Y_TORQUE * BOUNDING_RADIUS)
             {
                 correctiveTorque.y = 1;
             }
             else
             {
-                correctiveTorque.y = -torque.y / MAX_Y_TORQUE / mesh.BoundingRadius;
+                correctiveTorque.y = -torque.y / MAX_Y_TORQUE / BOUNDING_RADIUS;
             }
             //z correction
-            if (torque.z > MAX_Z_TORQUE * mesh.BoundingRadius)
+            if (torque.z > MAX_Z_TORQUE * BOUNDING_RADIUS)
             {
                 correctiveTorque.z = -1;
             }
-            else if (torque.z < -MAX_Z_TORQUE * mesh.BoundingRadius)
+            else if (torque.z < -MAX_Z_TORQUE * BOUNDING_RADIUS)
             {
                 correctiveTorque.z = 1;
             }
             else
             {
-                correctiveTorque.z = -torque.z / MAX_Z_TORQUE / mesh.BoundingRadius;
+                correctiveTorque.z = -torque.z / MAX_Z_TORQUE / BOUNDING_RADIUS;
             }
 
             return correctiveTorque;
@@ -151,16 +150,15 @@ namespace Ymfas
 
 		public Vector3 Position
 		{
-			get { return node.Position; }
+            get
+            {
+                Vector3 pos;
+                Quaternion or;
+                body.getPositionOrientation(out pos, out or);
+                return pos; 
+            }
 		}
-		public SceneNode SceneNode
-		{
-			get { return node; }
-		}
-		public Entity Mesh
-		{
-			get { return mesh; }
-		}
+
         public Vector3 Velocity
         {
             get { return body.getVelocity(); }
@@ -171,14 +169,10 @@ namespace Ymfas
             get { return id; }
         }
 
-		public void Dispose()
+		public virtual void Dispose()
 		{
 			body.Dispose();
 			body = null;
-			mesh.Dispose();
-			mesh = null;
-			node.Dispose();
-			node = null;
 		}
 	}
 }

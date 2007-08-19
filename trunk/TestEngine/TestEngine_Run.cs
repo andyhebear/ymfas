@@ -80,6 +80,11 @@ namespace Ymfas
 			System.Console.WriteLine(msg.ToString());
 		}
 
+        public void AttachCamera(ClientShip s)
+        {
+            shipCam.Target = s.SceneNode;
+        }
+
 		/// <summary>
 		/// execute the render loop, which
 		/// is actually pretty simple at this point
@@ -90,7 +95,7 @@ namespace Ymfas
 			float frameTime;
 			uint frameTimeMod50 = 0;
 
-            float MAX_SPEED = 30.0f;
+            //float MAX_SPEED = 30.0f;
 
 			// RenderOneFrame returns false when we Ogre
 			// is done. Alternatively, we can not have
@@ -119,10 +124,7 @@ namespace Ymfas
 			}
 		}
 
-		public void AttachCamera(Ship s)
-		{
-			shipCam.Target = s.SceneNode;
-		}
+
 
 		private void OnLeaveWorld(World w, Body b)
 		{
