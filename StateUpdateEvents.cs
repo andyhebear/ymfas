@@ -172,6 +172,9 @@ namespace Ymfas {
 
         private List<ShipState> states;
 
+        public ShipStateStatus() {
+        }
+
         public ShipStateStatus(List<ShipState> stateList) {
             states = stateList;
         }
