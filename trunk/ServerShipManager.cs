@@ -9,7 +9,7 @@ namespace Ymfas
 {
     public class ServerShipManager
     {
-        Dictionary<String, Ship> shipTable = new Dictionary<String, Ship>();
+        Dictionary<int, Ship> shipTable = new Dictionary<int, Ship>();
         private World world;
         private EventManager eventMgr;
 		private YmfasServer server;
@@ -37,6 +37,9 @@ namespace Ymfas
 
                 Console.Out.WriteLine("sent init for ship " + id);
                 //TODO: put them in the world
+				
+				Ship s = new Ship(world, id.ToString(), curPosition, curOrientation);
+				shipTable.Add(id, s);
             }
 
             //init listeners
@@ -47,7 +50,7 @@ namespace Ymfas
 		{
 			ShipControlStatus ee = (ShipControlStatus)e;
 			Ship s;
-			shipTable.TryGetValue(ee.playerID.ToString(), out s);
+			shipTable.TryGetValue(ee.playerID, out s);
             Vector3 torque = new Vector3();
             if (ee.pitch == UserInputManager.AUTOCORRECT || ee.roll == UserInputManager.AUTOCORRECT || ee.yaw == UserInputManager.AUTOCORRECT)
             {
