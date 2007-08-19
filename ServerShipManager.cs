@@ -82,8 +82,10 @@ namespace Ymfas
             foreach (int id in server.PlayerIds)
             {
                 Ship s;
-                shipTable.TryGetValue(id, out s);
-                l.Add(s.ShipState);
+                if (shipTable.TryGetValue(id, out s))
+                {
+                    l.Add(s.ShipState);
+                }
             }
             eventMgr.SendEvent(new ShipStateStatus(l));
         }
