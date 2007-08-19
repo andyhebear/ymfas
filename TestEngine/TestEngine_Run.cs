@@ -44,7 +44,8 @@ namespace Ymfas
 			// every object in Ogre) must be assigned a unique name. 
 
 			shipCam = new ShipCamera(cam);
-			shipCam.Radius = 150.0f;
+			shipCam.Radius = 250.0f;
+			shipCam.Target = sceneMgr.RootSceneNode;
 
 			Light l = sceneMgr.CreateLight("point1");
 			l.DiffuseColour = new ColourValue(1.0f, 1.0f, 1.0f);
@@ -110,7 +111,9 @@ namespace Ymfas
 
 				// grab events
 				GrabEvents(frameTimer.Milliseconds, null);
-				
+
+				shipCam.Update();
+
 				frameTimeMod50 += frameTimer.Milliseconds;
 				frameTimer.Reset();
 

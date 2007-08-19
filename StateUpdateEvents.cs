@@ -107,8 +107,7 @@ namespace Ymfas {
     //Information re: ship controls
     public class ShipControlStatus : GameEvent
     {
-        public byte thrust;
-        public sbyte pitch, roll, yaw;
+        public short thrust, pitch, roll, yaw;
         public int playerID;
 
         public override Lidgren.Library.Network.NetChannel DeliveryType {
@@ -123,7 +122,7 @@ namespace Ymfas {
             playerID = -1;
         }
 
-        public ShipControlStatus(byte _thrust, sbyte _pitch, sbyte _roll, sbyte _yaw, byte _playerID)
+        public ShipControlStatus(short _thrust, short _pitch, short _roll, short _yaw, int _playerID)
         {
             thrust = _thrust;
             pitch = _pitch;
@@ -135,21 +134,27 @@ namespace Ymfas {
 
         public override void SetDataFromByteArray(byte[] data)
         {
-            thrust = (byte) data[0];
-            pitch = (sbyte) data[1];
-            roll = (sbyte) data[2];
-            yaw = (sbyte) data[3];
-            playerID = BitConverter.ToInt32(data, 4);                        
+			thrust = BitConverter.ToInt16(data, 0);
+			Mogre.LogManager.Singleton.DefaultLog.LogMessage("thrust received: " + thrust);
+			pitch = BitConverter.ToInt16(data, sizeof(short));
+			roll = BitConverter.ToInt16(data, 2 * sizeof(short));
+			yaw = BitConverter.ToInt16(data, 3 * sizeof(short));
+			playerID = BitConverter.ToInt32(data, 4 * sizeof(short));                        
         }
 
         public override byte[] ToByteArray()
         {
-            byte[] byteArray = new byte[4 + sizeof(int)];
-            byteArray[0] = thrust;
-            byteArray[1] = (byte)pitch;
-            byteArray[2] = (byte)roll;
-            byteArray[3] = (byte)yaw;
-            BitConverter.GetBytes(playerID).CopyTo(byteArray, 4);
+            byte[] byteArray = new byte[4 * sizeof(short) + sizeof(int)];
+            //byteArray[0] = thrust;
+            //byteArray[1] = (byte)pitch;
+            //byteArray[2] = (byte)roll;
+            //byteArray[3] = (byte)yaw;
+			BitConverter.GetBytes(thrust).CopyTo(byteArray, 0);
+			Mogre.LogManager.Singleton.DefaultLog.LogMessage("thrust sent: " + thrust);
+			BitConverter.GetBytes(pitch).CopyTo(byteArray, sizeof(short));
+			BitConverter.GetBytes(roll).CopyTo(byteArray, 2 * sizeof(short));
+			BitConverter.GetBytes(yaw).CopyTo(byteArray, 3 * sizeof(short));
+			BitConverter.GetBytes(playerID).CopyTo(byteArray, 4 * sizeof(short));
 
             return byteArray;
         }

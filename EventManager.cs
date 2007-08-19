@@ -127,12 +127,12 @@ namespace Ymfas {
 			//latin-1
 			Byte[] bytes = e.ToByteArray();
 			Decoder decoder = Encoding.GetEncoding(28591).GetDecoder();
-			char[] chars = new char[bytes.Length + 1];
+			char[] chars = new char[bytes.Length];
 			int ignored0;
 			int ignored1;
 			bool ignored2;
 			decoder.Convert(bytes, 0, bytes.Length, chars, 0, bytes.Length, true, out ignored0, out ignored1, out ignored2);
-			chars[bytes.Length] = (char)0;  //null-terminate
+			//chars[bytes.Length] = (char)0;  //null-terminate
 			String msgString = new String(chars);
 
 			SpiderMessage msg = new SpiderMessage(msgString, SpiderMessageType.String, e.GetType().ToString());
