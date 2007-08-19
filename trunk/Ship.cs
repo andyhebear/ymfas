@@ -78,6 +78,8 @@ namespace Ymfas
 		{
             standbyTorque = new Vector3(vec.x * MAX_X_TORQUE, vec.y * MAX_Y_TORQUE, vec.z * MAX_Z_TORQUE) * BOUNDING_RADIUS;
 		}
+
+
         public Vector3 GetCorrectiveTorque()
         {
             Vector3 pos = new Vector3();
@@ -157,12 +159,31 @@ namespace Ymfas
                 return pos; 
             }
 		}
-
-        public Vector3 Velocity
+		public Vector3 Velocity
         {
             get { return body.getVelocity(); }
             set { body.setVelocity(value); }
         }
+		public ShipState ShipState
+		{
+			get
+			{
+				ShipState s = new ShipState();
+				Vector3 pos;
+				Quaternion orient;
+				body.getPositionOrientation(out s.Position, out s.Orientation);
+				s.Velocity = body.getVelocity();
+				s.RotationalVelocity = body.getOmega();
+				return s;
+			}
+			set
+			{
+				body.setPositionOrientation(value.Position, value.Orientation);
+				body.setVelocity(value.Velocity);
+				body.setOmega(value.RotationalVelocity);
+			}
+		}
+
         public string ID
         {
             get { return id; }
