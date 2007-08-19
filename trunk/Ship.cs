@@ -169,8 +169,6 @@ namespace Ymfas
 			get
 			{
 				ShipState s = new ShipState();
-				Vector3 pos;
-				Quaternion orient;
 				body.getPositionOrientation(out s.Position, out s.Orientation);
 				s.Velocity = body.getVelocity();
 				s.RotationalVelocity = body.getOmega();
