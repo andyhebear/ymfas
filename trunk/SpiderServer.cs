@@ -61,7 +61,6 @@ namespace Ymfas
 		/// </summary>
 		private void SpiderNet_StatusChangedHandler(object Sender, NetStatusEventArgs e)
 		{
-            
 			switch(e.Connection.Status){
 				case NetConnectionStatus.Connected:
 					clients.Add(e.Connection.RemoteEndpoint.Address);

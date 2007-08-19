@@ -15,12 +15,12 @@ namespace Ymfas
         EventManager m;
         int playerID;
 
-        public const sbyte POSITIVE = 127;
-        public const sbyte NEGATIVE = -127;
-        public const sbyte AUTOCORRECT = -128;
-        public const byte FULL = 255;
+        public const short POSITIVE = 0x7fff;
+        public const short NEGATIVE = -0x7fff;
+        public const short AUTOCORRECT = -0x8000;
+        public const short FULL = 0x7fff;
 
-        public UserInputManager(InputSystem _input, EventManager _m, byte _playerID)
+        public UserInputManager(InputSystem _input, EventManager _m, int _playerID)
 	    {
             m = _m;
             playerID = _playerID;
@@ -31,10 +31,10 @@ namespace Ymfas
 
         public void PollInputs()
         {
-            sbyte pitch = 0;
-            sbyte roll = 0;
-            sbyte yaw = 0;
-            byte thrust = 0;
+            short pitch = 0;
+			short roll = 0;
+			short yaw = 0;
+			short thrust = 0;
 
             input.Update();
 
@@ -56,8 +56,10 @@ namespace Ymfas
             if (input.IsDown(Key.W))
                 roll += NEGATIVE;
 
-            if (input.IsDown(Key.Space))
-                thrust = FULL;
+			if (input.IsDown(Key.Space))
+			{
+				thrust = FULL;
+			}
 
             if (input.IsDown(Key.A))
             {
@@ -66,7 +68,7 @@ namespace Ymfas
                 yaw = AUTOCORRECT;
             }
 
-            m.SendEvent(new ShipControlStatus(thrust, pitch, roll, yaw, (byte)playerID));
+            m.SendEvent(new ShipControlStatus(thrust, pitch, roll, yaw, playerID));
         }
     }
 }

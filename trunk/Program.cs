@@ -48,6 +48,8 @@ namespace Ymfas
 		{
 			TestEngineServer engineServer = new TestEngineServer(server);
 
+			engineServer.PrepareGameInstance();
+
 			engineServer.Go();
 
 			engineServer.Dispose();

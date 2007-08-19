@@ -29,6 +29,9 @@ namespace Ymfas
         /// </summary>
         public void Go() 
 		{
+			Mogre.Timer frameTimer = new Timer();
+			frameTimer.Reset();
+
             while (true) {
 				System.Threading.Thread.Sleep(100);
 				eventMgr.Update();
@@ -41,6 +44,8 @@ namespace Ymfas
 
 				if (netServer.NumPlayers == 0)
 					break;
+
+				world.update(frameTimer.Milliseconds / 1000.0f);
 			}
         }
 	}
