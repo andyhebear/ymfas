@@ -227,8 +227,8 @@ namespace Ymfas {
                 curState.Orientation.z = BitConverter.ToSingle(byteArray, i * blockSize + sizeof(int) + 9 * sizeof(float));
                 curState.RotationalVelocity.x = BitConverter.ToSingle(byteArray, i * blockSize + sizeof(int) + 10 * sizeof(float));
                 curState.RotationalVelocity.y = BitConverter.ToSingle(byteArray, i * blockSize + sizeof(int) + 11 * sizeof(float));
-                curState.RotationalVelocity.z = BitConverter.ToSingle(byteArray, i * blockSize + sizeof(int) + 12 * sizeof(float));             
-                
+                curState.RotationalVelocity.z = BitConverter.ToSingle(byteArray, i * blockSize + sizeof(int) + 12 * sizeof(float));
+                states.Add(curState);
             }
         }
 
