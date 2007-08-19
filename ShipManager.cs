@@ -39,8 +39,8 @@ namespace Ymfas
 			List<ShipState> states = ee.getStates();
 			for (int i = 0; i < states.Count; i++)
 			{
-				Ship s;
-				shipTable.TryGetValue(states[i].id, out s);
+				ClientShip s;
+				shipTable.TryGetValue(states[i].id.ToString(), out s);
 				s.ShipState = states[i];
 			}
 		}
