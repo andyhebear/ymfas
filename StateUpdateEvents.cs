@@ -185,7 +185,7 @@ namespace Ymfas {
         }
         public override byte[] ToByteArray() {
             int blockSize = sizeof(int) + sizeof(float) * 13;
-            byte[] retval = new byte[blockSize];
+            byte[] retval = new byte[blockSize*states.Count];
             for (int i = 0; i < states.Count; i++ ) {
                 BitConverter.GetBytes(states[i].id).CopyTo(retval, i * blockSize);
 
