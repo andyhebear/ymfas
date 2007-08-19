@@ -166,17 +166,67 @@ namespace Ymfas {
 
     //Info re: status of all ships
     public class ShipStateStatus : GameEvent {
-        public override Lidgren.Library.Network.NetChannel DeliveryType {
-            get { throw new Exception("The method or operation is not implemented."); }
-        }
-        public override byte[] ToByteArray() {
-            throw new Exception("The method or operation is not implemented.");
-        }
-        public override void SetDataFromByteArray(byte[] byteArray) {
-            throw new Exception("The method or operation is not implemented.");
+
+        private List<ShipState> states;
+
+        public ShipStateStatus(List<ShipState> stateList) {
+            states = stateList;
         }
 
-		public static event GameEventFiringHandler FiringEvent;
+
+        public override Lidgren.Library.Network.NetChannel DeliveryType {
+            get { return Lidgren.Library.Network.NetChannel.Sequenced1; }
+        }
+        public override byte[] ToByteArray() {
+            int blockSize = sizeof(int) + sizeof(float) * 13;
+            byte[] retval = new byte[blockSize];
+            for (int i = 0; i < states.Count; i++ ) {
+                BitConverter.GetBytes(states[i].id).CopyTo(retval, i * blockSize);
+
+                BitConverter.GetBytes(states[i].Position.x).CopyTo(retval, i * blockSize + sizeof(int));
+                BitConverter.GetBytes(states[i].Position.y).CopyTo(retval, i * blockSize + sizeof(int) + sizeof(float));
+                BitConverter.GetBytes(states[i].Position.z).CopyTo(retval, i * blockSize + sizeof(int) + 2 * sizeof(float));
+
+                BitConverter.GetBytes(states[i].Velocity.x).CopyTo(retval, i * blockSize + sizeof(int) + 3 * sizeof(float));
+                BitConverter.GetBytes(states[i].Velocity.y).CopyTo(retval, i * blockSize + sizeof(int) + 4 * sizeof(float));
+                BitConverter.GetBytes(states[i].Velocity.z).CopyTo(retval, i * blockSize + sizeof(int) + 5 * sizeof(float));
+
+                BitConverter.GetBytes(states[i].Orientation.w).CopyTo(retval, i * blockSize + sizeof(int) + 6 * sizeof(float));
+                BitConverter.GetBytes(states[i].Orientation.x).CopyTo(retval, i * blockSize + sizeof(int) + 7 * sizeof(float));
+                BitConverter.GetBytes(states[i].Orientation.y).CopyTo(retval, i * blockSize + sizeof(int) + 8 * sizeof(float));
+                BitConverter.GetBytes(states[i].Orientation.z).CopyTo(retval, i * blockSize + sizeof(int) + 9 * sizeof(float));
+
+                BitConverter.GetBytes(states[i].RotationalVelocity.x).CopyTo(retval, i * blockSize + sizeof(int) + 10 * sizeof(float));
+                BitConverter.GetBytes(states[i].RotationalVelocity.y).CopyTo(retval, i * blockSize + sizeof(int) + 11 * sizeof(float));
+                BitConverter.GetBytes(states[i].RotationalVelocity.z).CopyTo(retval, i * blockSize + sizeof(int) + 12 * sizeof(float));
+            }
+            return retval;
+        }
+        public override void SetDataFromByteArray(byte[] byteArray) {
+            states = new List<ShipState>();
+            int blockSize = sizeof(int) + sizeof(float) * 13;
+            ShipState curState;
+            for (int i = 0; (i + 1) * blockSize < byteArray.Length; i++) {
+                curState = new ShipState();
+                curState.id = BitConverter.ToInt32(byteArray, i * blockSize);
+                curState.Position.x = BitConverter.ToSingle(byteArray, i * blockSize + sizeof(int));
+                curState.Position.y = BitConverter.ToSingle(byteArray, i * blockSize + sizeof(int) + sizeof(float));
+                curState.Position.z = BitConverter.ToSingle(byteArray, i * blockSize + sizeof(int) + 2 * sizeof(float));
+                curState.Velocity.x = BitConverter.ToSingle(byteArray, i * blockSize + sizeof(int) + 3 * sizeof(float));
+                curState.Velocity.y = BitConverter.ToSingle(byteArray, i * blockSize + sizeof(int) + 4 * sizeof(float));
+                curState.Velocity.z = BitConverter.ToSingle(byteArray, i * blockSize + sizeof(int) + 5 * sizeof(float));
+                curState.Orientation.w = BitConverter.ToSingle(byteArray, i * blockSize + sizeof(int) + 6 * sizeof(float));
+                curState.Orientation.x = BitConverter.ToSingle(byteArray, i * blockSize + sizeof(int) + 7 * sizeof(float));
+                curState.Orientation.y = BitConverter.ToSingle(byteArray, i * blockSize + sizeof(int) + 8 * sizeof(float));
+                curState.Orientation.z = BitConverter.ToSingle(byteArray, i * blockSize + sizeof(int) + 9 * sizeof(float));
+                curState.RotationalVelocity.x = BitConverter.ToSingle(byteArray, i * blockSize + sizeof(int) + 10 * sizeof(float));
+                curState.RotationalVelocity.y = BitConverter.ToSingle(byteArray, i * blockSize + sizeof(int) + 11 * sizeof(float));
+                curState.RotationalVelocity.z = BitConverter.ToSingle(byteArray, i * blockSize + sizeof(int) + 12 * sizeof(float));             
+                
+            }
+        }
+
+        public static event GameEventFiringHandler FiringEvent;
 		public override void FireEvent()
 		{
 			if (FiringEvent != null)
@@ -184,8 +234,11 @@ namespace Ymfas {
 				FiringEvent(this);
 			}
 		}
+
+
     }
     public struct ShipState {
+        public int id;
         public Vector3 Position;
         public Vector3 Velocity;
         public Vector3 RotationalVelocity;
