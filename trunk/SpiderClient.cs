@@ -120,7 +120,6 @@ namespace Ymfas
             NetMessage incMsg;
 
             while ((incMsg = spiderNet.ReadMessage()) != null) {
-                Console.Out.WriteLine("got a msg");
                 messageQueue.Enqueue(incMsg);
             }
 		}
@@ -131,17 +130,14 @@ namespace Ymfas
 		/// <returns>The next message on the message queue</returns>
 		public SpiderMessage GetNextMessage(){
 			if(messageQueue.Count == 0){ return null; }
-            Console.Out.WriteLine("hai");
 			NetMessage msg = (NetMessage)(messageQueue.Dequeue());
 			SpiderMessage result;
 			
 			try{
 				result = new SpiderMessage(msg);
-                Console.Out.WriteLine(result.ToString());
                 
 			}
 			catch(Exception e){
-                Console.Out.WriteLine(e.ToString());
 				return this.GetNextMessage();
 			}
 			
@@ -165,8 +161,6 @@ namespace Ymfas
 		public void SendMessage(SpiderMessage message, NetChannel deliveryType){
 			NetMessage msg = new NetMessage();
 			msg.Write(message.ToString());
-
-            Console.Out.WriteLine(msg.ReadString());
 				
 			spiderNet.SendMessage(msg, deliveryType);
 		}

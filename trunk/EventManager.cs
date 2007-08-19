@@ -63,19 +63,15 @@ namespace Ymfas {
 			SpiderMessage msg = null;
 			while (true)
 			{
-				Thread.Sleep(1000);
+				Thread.Sleep(100);
 				net.Update();
-				//System.Console.WriteLine("Requesting Messages...");
 
 				while ((msg = net.GetNextMessage()) != null)
 				{
 					try
 					{
-						Console.Out.WriteLine("got an event!");
-
 						//The type is contained in the label
 						Type eventType = Type.GetType(msg.Label);
-						Console.Out.WriteLine("the type is " + eventType.ToString());
 
 						//Create an event object
 						GameEvent msgEvent = (GameEvent)System.Activator.CreateInstance(eventType);
@@ -118,7 +114,6 @@ namespace Ymfas {
 			//Process each event
 			for (int i = 0; i < tempArray.Length; i++)
 			{
-				Console.Out.WriteLine("firing an event");
 				tempArray[i].FireEvent();
 			}
 		}

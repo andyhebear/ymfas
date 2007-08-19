@@ -142,7 +142,7 @@ namespace Ymfas
 
 		public void GrabEvents(uint x, object obj)
 		{
-			System.Console.WriteLine("updating");
+			//System.Console.WriteLine("updating");
 			eventMgr.Update();
 		}
 	}
