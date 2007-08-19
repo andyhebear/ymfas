@@ -302,6 +302,10 @@ namespace Ymfas {
                         gameStartTime = timerTicks * timer.Interval;
                         gameStarting = true;
                         break;
+                    case "kill":
+                        this.DialogResult = DialogResult.Cancel;
+                        this.Close();
+                        break;
                     default:
                         AddChatMessage("\nUnknown network message recieved.");
                         break;
