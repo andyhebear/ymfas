@@ -107,7 +107,7 @@ namespace Ymfas {
     //Information re: ship controls
     public class ShipControlStatus : GameEvent
     {
-        public short thrust, pitch, roll, yaw;
+        public int thrust, pitch, roll, yaw;
         public int playerID;
 
         public override Lidgren.Library.Network.NetChannel DeliveryType {
@@ -122,7 +122,7 @@ namespace Ymfas {
             playerID = -1;
         }
 
-        public ShipControlStatus(short _thrust, short _pitch, short _roll, short _yaw, int _playerID)
+        public ShipControlStatus(int _thrust, int _pitch, int _roll, int _yaw, int _playerID)
         {
             thrust = _thrust;
             pitch = _pitch;
@@ -134,28 +134,26 @@ namespace Ymfas {
 
         public override void SetDataFromByteArray(byte[] data)
         {
-			thrust = BitConverter.ToInt16(data, 0);
-			Mogre.LogManager.Singleton.DefaultLog.LogMessage("thrust received: " + thrust);
-			pitch = BitConverter.ToInt16(data, sizeof(short));
-			roll = BitConverter.ToInt16(data, 2 * sizeof(short));
-			yaw = BitConverter.ToInt16(data, 3 * sizeof(short));
-			playerID = BitConverter.ToInt32(data, 4 * sizeof(short));                        
+			playerID = BitConverter.ToInt32(data, 0);			
+			pitch = BitConverter.ToInt32(data, sizeof(int));
+            roll = BitConverter.ToInt32(data, 2 * sizeof(int));
+            yaw = BitConverter.ToInt32(data, 3 * sizeof(int));
+            thrust = BitConverter.ToInt32(data, 4 * sizeof(int));
         }
 
         public override byte[] ToByteArray()
         {
-            byte[] byteArray = new byte[4 * sizeof(short) + sizeof(int)];
+            byte[] byteArray = new byte[5*sizeof(int)+1];
             //byteArray[0] = thrust;
             //byteArray[1] = (byte)pitch;
             //byteArray[2] = (byte)roll;
             //byteArray[3] = (byte)yaw;
-			BitConverter.GetBytes(thrust).CopyTo(byteArray, 0);
-			Mogre.LogManager.Singleton.DefaultLog.LogMessage("thrust sent: " + thrust);
-			BitConverter.GetBytes(pitch).CopyTo(byteArray, sizeof(short));
-			BitConverter.GetBytes(roll).CopyTo(byteArray, 2 * sizeof(short));
-			BitConverter.GetBytes(yaw).CopyTo(byteArray, 3 * sizeof(short));
-			BitConverter.GetBytes(playerID).CopyTo(byteArray, 4 * sizeof(short));
-
+			BitConverter.GetBytes(playerID).CopyTo(byteArray, 0);            
+			BitConverter.GetBytes(pitch).CopyTo(byteArray, sizeof(int));        
+            BitConverter.GetBytes(roll).CopyTo(byteArray, 2 * sizeof(int));
+            BitConverter.GetBytes(yaw).CopyTo(byteArray, 3 * sizeof(int));
+            BitConverter.GetBytes(thrust).CopyTo(byteArray, 4 * sizeof(int));
+            byteArray[byteArray.Length - 1] = (byte)0;
             return byteArray;
         }
 
@@ -178,6 +176,9 @@ namespace Ymfas {
             states = stateList;
         }
 
+        public List<ShipState> getStates() {
+            return states;
+        }
 
         public override Lidgren.Library.Network.NetChannel DeliveryType {
             get { return Lidgren.Library.Network.NetChannel.Sequenced1; }
