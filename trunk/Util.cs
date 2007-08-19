@@ -6,13 +6,14 @@ namespace Ymfas
 	{
 		public static void RecordException(Exception e)
 		{
-			System.Console.WriteLine(e.GetType().Name);
-			System.Console.WriteLine(e.Source);
-			System.Console.WriteLine(e.Message);
-			System.Console.WriteLine(e.StackTrace);
+			Log(e.GetType().Name);
+			Log(e.Source);
+			Log(e.Message);
+			Log(e.StackTrace);
 		}
         public static void Log(String message) {
             Mogre.LogManager.Singleton.DefaultLog.LogMessage(message);
+            Console.Out.WriteLine(message);
         }
 	}
 
