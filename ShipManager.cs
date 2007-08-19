@@ -18,6 +18,7 @@ namespace Ymfas
         {
 			engine = _engine;
             ShipInit.FiringEvent += new GameEventFiringHandler(handleShipInit);
+            ShipStateStatus.FiringEvent += new GameEventFiringHandler(handleShipStateStatus);
         }
 
         private void handleShipInit(GameEvent e)
@@ -32,5 +33,16 @@ namespace Ymfas
             Console.Out.WriteLine("Ship " + ship.ID + "inited.  my ID is " + engine.PlayerId);
         }
 
-    }
+        private void handleShipStateStatus(GameEvent e)
+        {
+            ShipStateStatus ee = (ShipStateStatus) e;
+            List<ShipState> states = ee.getStates();
+            for(int i = 0; i < states.Count; i++){
+                Ship s;
+                shipTable.TryGetValue(states[i].id, out s);
+                s.Position = states[i].Position;
+                s.Velocity = states[i].Velocity;
+                s.
+
+        }
 }
