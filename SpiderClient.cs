@@ -160,8 +160,7 @@ namespace Ymfas
         /// <param name="deliveryType">The UDP delivery type</param>
 		public void SendMessage(SpiderMessage message, NetChannel deliveryType){
 			NetMessage msg = new NetMessage();
-			msg.Write(message.ToString());
-				
+            msg.Write(message.ToByteArray());
 			spiderNet.SendMessage(msg, deliveryType);
 		}
 

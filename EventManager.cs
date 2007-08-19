@@ -74,16 +74,11 @@ namespace Ymfas {
 						Type eventType = Type.GetType(msg.Label);
 
 						//Create an event object
-						GameEvent msgEvent = (GameEvent)System.Activator.CreateInstance(eventType);
+						GameEvent msgEvent = (GameEvent)System.Activator.CreateInstance(eventType);                   
 
-						//Get the message data
-						String msgData = (String)msg.Data;
+						//Add data to the event                       
+                        msgEvent.SetDataFromByteArray((byte[])msg.Data);
 
-						//Add this info to the event (string to byteArray first)
-						Encoder encoder = Encoding.GetEncoding(28591).GetEncoder();
-						Byte[] byteArray = new Byte[msgData.Length];
-						encoder.GetBytes(msgData.ToCharArray(), 0, msgData.Length, byteArray, 0, true);
-						msgEvent.SetDataFromByteArray(byteArray);
 
 						//Add this event to the queue
 						lock (EventQueue)
@@ -124,18 +119,7 @@ namespace Ymfas {
 		/// <param name="e">The game event to be sent</param>
 		public void SendEvent(GameEvent e)
 		{
-			//latin-1
-			Byte[] bytes = e.ToByteArray();
-			Decoder decoder = Encoding.GetEncoding(28591).GetDecoder();
-			char[] chars = new char[bytes.Length];
-			int ignored0;
-			int ignored1;
-			bool ignored2;
-			decoder.Convert(bytes, 0, bytes.Length, chars, 0, bytes.Length, true, out ignored0, out ignored1, out ignored2);
-			//chars[bytes.Length] = (char)0;  //null-terminate
-			String msgString = new String(chars);
-
-			SpiderMessage msg = new SpiderMessage(msgString, SpiderMessageType.String, e.GetType().ToString());
+			SpiderMessage msg = new SpiderMessage(e.ToByteArray(), SpiderMessageType.Bytes, e.GetType().ToString());         
 			net.SendMessage(msg, e.DeliveryType);
 		}
 	}

@@ -15,10 +15,10 @@ namespace Ymfas
         EventManager m;
         int playerID;
 
-        public const short POSITIVE = 0x7fff;
-        public const short NEGATIVE = -0x7fff;
-        public const short AUTOCORRECT = -0x8000;
-        public const short FULL = 0x7fff;
+        public const int POSITIVE = 24;
+        public const int NEGATIVE = -24;
+        public const int AUTOCORRECT = -8;
+        public const int FULL = 128;
 
         public UserInputManager(InputSystem _input, EventManager _m, int _playerID)
 	    {
@@ -31,10 +31,10 @@ namespace Ymfas
 
         public void PollInputs()
         {
-            short pitch = 0;
-			short roll = 0;
-			short yaw = 0;
-			short thrust = 0;
+            int pitch = 0;
+			int roll = 0;
+			int yaw = 0;
+			int thrust = 0;
 
             input.Update();
 

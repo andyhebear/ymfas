@@ -61,46 +61,75 @@ namespace Ymfas
 			//This is the exception we throw if something goes wrong
 			Exception e = new Exception("Could not read message");
 
-			String contents = msg.ReadString();
+            byte[] contents = msg.ReadBytes(msg.Length);
+            type = (SpiderMessageType)contents[0];
+            int dataOffset = BitConverter.ToInt32(contents, 1);
+            label = Encoding.UTF8.GetString(contents, 1 + sizeof(int), dataOffset - 1 - sizeof(int));
 
-			//Parse
-			String strType = contents.Substring(0, contents.IndexOf('|'));
-			contents = contents.Substring(contents.IndexOf('|') + 1);
-			String strLabel = contents.Substring(0, contents.IndexOf('|'));
-			contents = contents.Substring(contents.IndexOf('|') + 1);
-			String strData = contents.Substring(0, contents.IndexOf('|'));
+            senderIP = msg.Sender.RemoteEndpoint.Address;
+            connection = msg.Sender;
 
-			connection = msg.Sender;
-			senderIP = msg.Sender.RemoteEndpoint.Address;
-			//Create
-			switch (strType)
-			{
-				case "String":
-					data = strData;
-					type = SpiderMessageType.String;
-					break;
-				case "Int":
-					data = Convert.ToInt32(strData);
-					type = SpiderMessageType.Int;
-					break;
-				case "Double":
-					data = Convert.ToDouble(strData);
-					type = SpiderMessageType.Double;
-					break;
-				default:
-					throw e;
-			}
-			label = strLabel;
+            if (type == SpiderMessageType.Bytes) {
+                data = new byte[contents.Length - dataOffset];
+                for (int i = 0; i < contents.Length - dataOffset; i++) {
+                    ((byte[])data)[i] = contents[i + dataOffset];
+                }
+            }
+            else {
+                String tempData = Encoding.UTF8.GetString(contents, dataOffset, contents.Length - dataOffset);
+                switch (type) {
+                    case SpiderMessageType.Double:
+                        data = Convert.ToDouble(tempData);
+                        break;
+                    case SpiderMessageType.Int:
+                        data = Convert.ToInt32(tempData);
+                        break;
+                    default:
+                        data = tempData;
+                        break;
+                }
+            }
+
 		}
 
-		/// <summary>
-		/// Returns the message information as a string.
-		/// </summary>
-		/// <returns>A pipe-delimeted string encoding the type, label, data, and source IP.</returns>
-		public override String ToString()
+        /// <summary>
+        /// Returns the message information as a string.
+        /// </summary>
+        /// <returns>A pipe-delimeted string encoding the type, label, data, and source IP.</returns>
+        public override String ToString()
 		{
 			return type.ToString() + "|" + label + "|" + data.ToString() + "|" + ((senderIP == null) ? "" : senderIP.ToString());
 		}
+
+        /// <summary>
+        /// Returns the message information as a byte array
+        /// </summary>
+        /// <returns>Byte 0: Type, 1: Data offset, 5: Label, (Data offset): Data</returns>
+        public byte[] ToByteArray() {
+            byte[] labelBytes = Encoding.UTF8.GetBytes(label);
+            byte[] dataBytes = Encoding.UTF8.GetBytes(data.ToString());
+            int size = 1 + sizeof(int) + labelBytes.Length  + ((type == SpiderMessageType.Bytes) ? ((byte[])data).Length : dataBytes.Length);
+            byte[] retval = new byte[size];
+
+            retval[0] = (byte)type;
+            BitConverter.GetBytes(1 + sizeof(int) + labelBytes.Length).CopyTo(retval, 1);  // index of data start
+            labelBytes.CopyTo(retval, 1 + sizeof(int));
+
+            //test
+            /*byte[] test = new byte[Encoding.UTF8.GetMaxByteCount(label.Length)];
+            for (int i = 0; i < Encoding.UTF8.GetMaxByteCount(label.Length); i++) test[i] = retval[1 + sizeof(int) + i];
+            Console.Out.WriteLine("*" + Encoding.UTF8.GetString(test) + "*");*/
+            //test
+
+
+            if (type == SpiderMessageType.Bytes) {
+                ((byte[])data).CopyTo(retval, 1 + sizeof(int) + labelBytes.Length);
+            }
+            else {
+                dataBytes.CopyTo(retval, 1 + sizeof(int) + labelBytes.Length);
+            }
+            return retval;
+        }
 
 		#region PublicProperties
 		/// <summary>
@@ -151,5 +180,5 @@ namespace Ymfas
 		#endregion
 	}
 
-	public enum SpiderMessageType { String, Int, Double };
+	public enum SpiderMessageType { String, Int, Double, Bytes };
 }

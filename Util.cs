@@ -11,6 +11,9 @@ namespace Ymfas
 			System.Console.WriteLine(e.Message);
 			System.Console.WriteLine(e.StackTrace);
 		}
+        public static void Log(String message) {
+            Mogre.LogManager.Singleton.DefaultLog.LogMessage(message);
+        }
 	}
 
 	class YmfasException : Exception
