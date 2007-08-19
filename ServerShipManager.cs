@@ -75,5 +75,17 @@ namespace Ymfas
             s.TorqueRelative(torque);
             s.ThrustRelative(new Vector3(0.0f, 0.0f, ((float)ee.thrust) / ((float)UserInputManager.FULL)));
 		}
+
+        public void sendShipStateStatus()
+        {
+            List<ShipState> l = new List<ShipState>();
+            foreach (int id in server.PlayerIds)
+            {
+                Ship s;
+                shipTable.TryGetValue(id, out s);
+                l.Add(s.ShipState);
+            }
+            eventMgr.SendEvent(new ShipStateStatus(l));
+        }
     }
 }
