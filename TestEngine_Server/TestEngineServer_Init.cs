@@ -11,6 +11,7 @@ namespace Ymfas
 		private World world;
 		private EventManager eventMgr;
 		private YmfasServer netServer;
+		private ServerShipManager serverShipMgr;
 
 		private Mogre.Timer frameTimer;
 
@@ -38,6 +39,8 @@ namespace Ymfas
 
 			// various other things
 			frameTimer = new Mogre.Timer();
+
+			serverShipMgr = new ServerShipManager(world, eventMgr, netServer);
 		}
 
 		/// <summary>

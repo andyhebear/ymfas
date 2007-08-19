@@ -29,9 +29,8 @@ namespace Ymfas
         /// </summary>
         public void Go() 
 		{
-            ServerShipManager serverShipMgr = new ServerShipManager(world, eventMgr, netServer);
-
             while (true) {
+				System.Threading.Thread.Sleep(100);
 				eventMgr.Update();
 
 				IPAddress ip = null;
