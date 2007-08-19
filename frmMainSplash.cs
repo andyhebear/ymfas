@@ -60,10 +60,7 @@ namespace Ymfas {
 
                 this.DialogResult = DialogResult.OK;
                 this.Close();
-            }
-            else {
-                ymfasServer.SendMessage(new SpiderMessage("", SpiderMessageType.String, "kill"), NetChannel.ReliableUnordered);
-            }
+            }            
         }
 
         private void btnJoin_Click(object sender, EventArgs e) {
