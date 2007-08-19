@@ -60,7 +60,7 @@ namespace Ymfas
             if (ee.pitch != UserInputManager.AUTOCORRECT)
             {
                 torque.x = ee.pitch / ((float)UserInputManager.POSITIVE);
-            }
+			}
 
             if (ee.yaw != UserInputManager.AUTOCORRECT)
             {
