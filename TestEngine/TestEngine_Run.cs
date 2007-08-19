@@ -13,7 +13,6 @@ namespace Ymfas
 		ShipManager shipMgr;
 
 		StaticGeometry grid;
-		RibbonTrail ribbon;
 
         public static float WorldSizeParam {get { return 10000.0f; }  }
 
@@ -73,6 +72,8 @@ namespace Ymfas
 						}
 					}
 			grid.Build();
+
+			shipMgr = new ShipManager(this);
 		}
 
 		void Print(uint time, Object msg)
@@ -105,7 +106,7 @@ namespace Ymfas
 				frameTime = frameTimer.Milliseconds / 1000.0f;
 
 				//update input
-				inputMgr.PollInputs();
+				inputMgr.PollInputs();				
 
 				// grab events
 				GrabEvents(frameTimer.Milliseconds, null);

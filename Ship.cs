@@ -6,7 +6,6 @@ namespace Ymfas
 {
 	public class Ship : IDisposable
 	{
-
 		protected Body body;
 		protected string id;
 
