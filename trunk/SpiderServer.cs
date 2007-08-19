@@ -135,8 +135,8 @@ namespace Ymfas
         /// <param name="deliveryType">The UDP delivery type</param>
 		public void SendMessage(SpiderMessage message, NetChannel deliveryType){
 			NetMessage msg = new NetMessage();
-			msg.Write(message.ToString());
-				
+			msg.Write(message.ToByteArray());
+
 			spiderNet.Broadcast(msg, deliveryType);
 		}
 
@@ -148,7 +148,7 @@ namespace Ymfas
         /// <param name="targetConnection">The target connection</param>
         public void SendMessage(SpiderMessage message, NetChannel deliveryType, NetConnection targetConnection) {
             NetMessage msg = new NetMessage();
-            msg.Write(message.ToString());
+            msg.Write(message.ToByteArray());
 
             spiderNet.SendMessage(msg, targetConnection, deliveryType);
         }

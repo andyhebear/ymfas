@@ -176,10 +176,12 @@ namespace Ymfas {
 			while ( ( msg = server.GetNextMessage() ) != null) 
 			{
                 //server message check
-                Console.Out.WriteLine(msg.Label);
+                Console.Out.WriteLine("+" + msg.Label + "+");
+                Console.Out.WriteLine("+" + msg.Data.ToString() + "+");
                 switch (msg.Label) {
                     case "chat":
                         //bounce the message
+                        Console.Out.WriteLine("bouncing the message");
                         server.SendMessage(msg, Lidgren.Library.Network.NetChannel.ReliableUnordered);
                         break;
 
@@ -249,6 +251,9 @@ namespace Ymfas {
 			SpiderMessage msg = null;
 			while ( (msg = client.GetNextMessage()) != null)
 			{
+                Console.Out.WriteLine(msg.Label);
+                Console.Out.WriteLine((String)msg.Data.ToString());
+
                 // client message check
                 switch (msg.Label) 
 				{
