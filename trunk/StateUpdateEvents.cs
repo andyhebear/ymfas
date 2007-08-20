@@ -93,10 +93,9 @@ namespace Ymfas {
             ShipType.Class = (ShipClass)BitConverter.ToInt32(byteArray, sizeof(int) * 2 + sizeof(float) * 7);
             PlayerName = "";
             int position = sizeof(int) * 3 + sizeof(float) * 7;
-            for (int i = 0; position < byteArray.Length; i++) {
+            for (; position < byteArray.Length - 1; position += sizeof(char)) {
                 Console.Out.WriteLine("Writing byte " + position + " of " + byteArray.Length);
                 PlayerName += BitConverter.ToChar(byteArray, position);
-                position = sizeof(int) * 3 + sizeof(float) * 7 + (i+1) * sizeof(char);
                 
             }
             return;
