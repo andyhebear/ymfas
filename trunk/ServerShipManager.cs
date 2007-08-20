@@ -35,9 +35,10 @@ namespace Ymfas
 					server.GetPlayerName(id));
                 eventMgr.SendEvent(curShipInit);
 
-                Console.Out.WriteLine("sent init for ship " + id);
-                //TODO: put them in the world
-				
+                Util.Log("sent init for ship " + id);
+                
+
+                //put them in world				
 				Ship s = new Ship(world, id, curPosition, curOrientation);
 				shipTable.Add(id, s);
             }
