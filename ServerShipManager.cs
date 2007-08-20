@@ -28,7 +28,7 @@ namespace Ymfas
             //player ships
 			foreach (int id in server.PlayerIds )
 			{
-                Vector3 curPosition = new Vector3(Mogre.Math.RangeRandom(-TestEngine.WorldSizeParam / 1.5f, TestEngine.WorldSizeParam / 1.5f), Mogre.Math.RangeRandom(-TestEngine.WorldSizeParam / 1.5f, TestEngine.WorldSizeParam / 1.5f), Mogre.Math.RangeRandom(-TestEngine.WorldSizeParam / 1.5f, TestEngine.WorldSizeParam / 1.5f));
+				Vector3 curPosition = Vector3.ZERO;//new Vector3(Mogre.Math.RangeRandom(-TestEngine.WorldSizeParam / 1.5f, TestEngine.WorldSizeParam / 1.5f), Mogre.Math.RangeRandom(-TestEngine.WorldSizeParam / 1.5f, TestEngine.WorldSizeParam / 1.5f), Mogre.Math.RangeRandom(-TestEngine.WorldSizeParam / 1.5f, TestEngine.WorldSizeParam / 1.5f));
                 Quaternion curOrientation = Quaternion.IDENTITY;
 
                 ShipInit curShipInit = new ShipInit(id, curShipType, curPosition, curOrientation, 

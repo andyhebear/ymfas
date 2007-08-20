@@ -80,7 +80,7 @@ namespace Ymfas {
 			timerTicks = 0;
 			playersReady = new ArrayList();
 			playersNotReady = new ArrayList();
-			gameStartCount = 3;
+			gameStartCount = 1;
 			gameStarting = false;
 
 			cmbGameMode.SelectedIndex = 0;

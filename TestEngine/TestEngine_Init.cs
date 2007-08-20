@@ -196,6 +196,8 @@ namespace Ymfas
 		{
 			// destroy all scene instance-specific information
 			DisposeScene();
+			netClient.Dispose();
+			netClient = null;
 
 			if (world != null)
 			{

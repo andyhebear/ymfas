@@ -214,7 +214,7 @@ namespace Ymfas {
             states = new List<ShipState>();
             int blockSize = sizeof(int) + sizeof(float) * 13;
             ShipState curState;
-            for (int i = 0; (i + 1) * blockSize < byteArray.Length; i++) {
+            for (int i = 0; i * blockSize < byteArray.Length; i++) {
                 curState = new ShipState();
                 curState.id = BitConverter.ToInt32(byteArray, i * blockSize);
                 curState.Position.x = BitConverter.ToSingle(byteArray, i * blockSize + sizeof(int));
