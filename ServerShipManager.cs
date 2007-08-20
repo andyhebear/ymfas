@@ -79,14 +79,9 @@ namespace Ymfas
         public void sendShipStateStatus()
         {
             List<ShipState> l = new List<ShipState>();
-            foreach (int id in server.PlayerIds)
-            {
-                Ship s;
-                if (shipTable.TryGetValue(id, out s))
-                {
-                    l.Add(s.ShipState);
-                }
-            }
+            foreach (Ship s in shipTable.Values)
+                l.Add(s.ShipState);
+
             eventMgr.SendEvent(new ShipStateStatus(l));
         }
     }

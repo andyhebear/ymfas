@@ -14,6 +14,7 @@ namespace Ymfas
         public static void Log(String message) {
             Mogre.LogManager.Singleton.DefaultLog.LogMessage(message);
             Console.Out.WriteLine(message);
+            Console.Out.Flush();
         }
 	}
 

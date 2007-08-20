@@ -72,7 +72,7 @@ namespace Ymfas {
 					{
 						//The type is contained in the label
 						Type eventType = Type.GetType(msg.Label);
-
+                        
 						//Create an event object
 						GameEvent msgEvent = (GameEvent)System.Activator.CreateInstance(eventType);                   
 
