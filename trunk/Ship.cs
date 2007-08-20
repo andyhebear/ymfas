@@ -7,7 +7,7 @@ namespace Ymfas
 	public class Ship : IDisposable
 	{
 		protected Body body;
-		protected string id;
+		protected int id;
 
         Vector3 standbyForce;
 		Vector3 standbyTorque;
@@ -21,7 +21,7 @@ namespace Ymfas
         //this is VERY temporary
         const float time = 1 / 60.0f;
 
-		public Ship(World _w, string _id, Vector3 _position, Quaternion _orientation)
+		public Ship(World _w, int _id, Vector3 _position, Quaternion _orientation)
 		{
 
 			id = _id;
@@ -172,6 +172,7 @@ namespace Ymfas
 				body.getPositionOrientation(out s.Position, out s.Orientation);
 				s.Velocity = body.getVelocity();
 				s.RotationalVelocity = body.getOmega();
+				s.id = id;
 				return s;
 			}
 			set
@@ -182,7 +183,7 @@ namespace Ymfas
 			}
 		}
 
-        public string ID
+        public int ID
         {
             get { return id; }
         }

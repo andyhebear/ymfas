@@ -38,7 +38,7 @@ namespace Ymfas
                 Console.Out.WriteLine("sent init for ship " + id);
                 //TODO: put them in the world
 				
-				Ship s = new Ship(world, id.ToString(), curPosition, curOrientation);
+				Ship s = new Ship(world, id, curPosition, curOrientation);
 				shipTable.Add(id, s);
             }
 
