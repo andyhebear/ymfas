@@ -30,7 +30,7 @@ namespace Ymfas
 			if (ship.ID == engine.PlayerId)
 				engine.AttachCamera(ship);
 
-			Console.Out.WriteLine("Ship " + ship.ID + "inited.  my ID is " + engine.PlayerId);
+			Util.Log("Ship " + ship.ID + "inited.  my ID is " + engine.PlayerId);
 		}
 
 		private void handleShipStateStatus(GameEvent e)
