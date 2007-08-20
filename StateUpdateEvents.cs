@@ -253,7 +253,55 @@ namespace Ymfas {
         public Quaternion Orientation;
     }
 
+    public class ChatEvent : GameEvent{
+        private List<int> targetIds;
+        private String msg;
+        
 
+        public ChatEvent() { }
+
+        public ChatEvent(String message, List<int> recipientIds) {
+            targetIds = recipientIds;
+            msg = message;            
+        }
+
+        public static event GameEventFiringHandler FiringEvent;
+        public override void FireEvent() {
+            if (FiringEvent != null) {
+                FiringEvent(this);
+            }
+        }
+
+        public override byte[] ToByteArray() {
+            byte[] messageBytes = Encoding.UTF8.GetBytes(msg);
+            byte[] retval = new byte[(1 + targetIds.Count) * sizeof(int) + messageBytes.Length];
+            BitConverter.GetBytes(targetIds.Count).CopyTo(retval, 0);
+            for(int i=0;i<targetIds.Count;i++){
+                BitConverter.GetBytes(targetIds[i]).CopyTo(retval, (i + 1) * sizeof(int));
+            }
+            messageBytes.CopyTo(retval, (targetIds.Count + 1) * sizeof(int));
+
+            return retval; 
+        }
+
+        public override void SetDataFromByteArray(byte[] byteArray) {
+            int numTargets = BitConverter.ToInt32(byteArray, 0);
+            for (int i = 1; i <= numTargets; i++) {
+                targetIds.Add(BitConverter.ToInt32(byteArray, i*sizeof(int)));
+            }
+            byte[] messageBytes = new byte[byteArray.Length - (numTargets+1)*sizeof(int)];
+            for(int i=0;i<=byteArray.Length - (numTargets+1)*sizeof(int);i++){
+                messageBytes[i] = byteArray[i+(numTargets+1)*sizeof(int)];
+            }
+            msg = Encoding.UTF8.GetString(messageBytes);
+        }
+
+        public override Lidgren.Library.Network.NetChannel DeliveryType {
+            get { return Lidgren.Library.Network.NetChannel.ReliableUnordered; }
+        }
+
+
+    }
     
 }
 

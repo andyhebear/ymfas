@@ -113,6 +113,7 @@ namespace Ymfas
                 
 			}
 			catch(Exception e){
+                Util.RecordException(e);
 				return this.GetNextMessage();
 			}
 			
