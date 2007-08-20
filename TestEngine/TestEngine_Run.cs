@@ -9,7 +9,7 @@ namespace Ymfas
 {
 	public partial class TestEngine : IDisposable
 	{
-		ShipCamera shipCam;
+		ArcballCamera shipCam;
 		ShipManager shipMgr;
 
 		StaticGeometry grid;
@@ -43,7 +43,7 @@ namespace Ymfas
 			// to a scene node, however, in order to be rendered. Every entity (really, 
 			// every object in Ogre) must be assigned a unique name. 
 
-			shipCam = new ShipCamera(cam);
+			shipCam = new ArcballCamera(cam);
 			shipCam.Radius = 250.0f;
 			shipCam.Target = sceneMgr.RootSceneNode;
 
