@@ -12,7 +12,7 @@ namespace Ymfas
 	public class ShipManager
 	{
 		TestEngine engine;
-		Dictionary<String, ClientShip> shipTable = new Dictionary<String, ClientShip>();
+		Dictionary<int, ClientShip> shipTable = new Dictionary<int, ClientShip>();
 
 		public ShipManager(TestEngine _engine)
 		{
@@ -24,10 +24,10 @@ namespace Ymfas
 		private void handleShipInit(GameEvent e)
 		{
 			ShipInit ee = (ShipInit)e;
-			ClientShip ship = new ClientShip(engine.World, engine.SceneManager, null, ee.PlayerId.ToString(), ee.Position, ee.Orientation);
+			ClientShip ship = new ClientShip(engine.World, engine.SceneManager, null, ee.PlayerId, ee.Position, ee.Orientation);
 			shipTable.Add(ship.ID, ship);
 
-			if (ship.ID == engine.PlayerId.ToString())
+			if (ship.ID == engine.PlayerId)
 				engine.AttachCamera(ship);
 
 			Console.Out.WriteLine("Ship " + ship.ID + "inited.  my ID is " + engine.PlayerId);
@@ -40,7 +40,7 @@ namespace Ymfas
 			for (int i = 0; i < states.Count; i++)
 			{
 				ClientShip s;
-				shipTable.TryGetValue(states[i].id.ToString(), out s);
+				shipTable.TryGetValue(states[i].id, out s);
 				s.ShipState = states[i];
 			}
 		}

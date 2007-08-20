@@ -8,14 +8,14 @@ namespace Ymfas
     {
         SceneNode node;
         Entity mesh;
-        public ClientShip(World _w, SceneManager _mgr, SceneNode _parent, string _id, Vector3 _position, Quaternion _orientation) : base (_w, _id, _position, _orientation)
+        public ClientShip(World _w, SceneManager _mgr, SceneNode _parent, int _id, Vector3 _position, Quaternion _orientation) : base (_w, _id, _position, _orientation)
 		{
 			SceneNode parent = _mgr.RootSceneNode;
             if(_parent != null){
                 parent =  _parent;
             }
 
-			mesh = _mgr.CreateEntity(id, "razor.mesh");
+			mesh = _mgr.CreateEntity(id.ToString(), "razor.mesh");
 			node = parent.CreateChildSceneNode();
 			node.AttachObject(mesh);
         }
