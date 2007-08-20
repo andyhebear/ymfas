@@ -14,6 +14,11 @@ namespace Ymfas
 		TestEngine engine;
 		Dictionary<int, ClientShip> shipTable = new Dictionary<int, ClientShip>();
 
+		public ICollection<ClientShip> Ships
+		{
+			get { return shipTable.Values; }
+		}
+
 		public ShipManager(TestEngine _engine)
 		{
 			engine = _engine;

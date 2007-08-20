@@ -107,12 +107,24 @@ namespace Ymfas
 				frameTime = frameTimer.Milliseconds / 1000.0f;
 
 				//update input
-				inputMgr.PollInputs();				
+				inputMgr.PollInputs();
+
+				if (input.IsDown(Key.Escape))
+					break;
 
 				// grab events
 				GrabEvents(frameTimer.Milliseconds, null);
 
-				shipCam.Update();
+				// grab a ship, if there are any
+				ICollection<ClientShip> ships = shipMgr.Ships;
+				if (ships.Count > 0)
+				{
+					IEnumerator<ClientShip> e = ships.GetEnumerator();
+					e.MoveNext();
+
+					if (input.IsPressed(Key.Return))
+						Util.Log("Current State:" + e.Current.SceneNode.Position);
+				}
 
 				frameTimeMod50 += frameTimer.Milliseconds;
 				frameTimer.Reset();
@@ -122,6 +134,8 @@ namespace Ymfas
 					eventMgr.Update();
 					frameTimeMod50 -= 50;
 				}
+
+				shipCam.Update();
 
 				if (!root.RenderOneFrame())
 					break;

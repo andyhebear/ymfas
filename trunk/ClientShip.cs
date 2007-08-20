@@ -18,6 +18,7 @@ namespace Ymfas
 			mesh = _mgr.CreateEntity(id.ToString(), "razor.mesh");
 			node = parent.CreateChildSceneNode();
 			node.AttachObject(mesh);
+			body.attachToNode(node);
         }
         
         public SceneNode SceneNode

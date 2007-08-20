@@ -61,7 +61,7 @@ namespace Ymfas {
 		private void PollMessages()
 		{
 			SpiderMessage msg = null;
-			while (true)
+			while (net != null)
 			{
 				Thread.Sleep(100);
 				net.Update();
