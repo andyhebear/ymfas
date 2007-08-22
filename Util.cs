@@ -124,6 +124,10 @@ namespace Ymfas
             offset = 0;
         }
 
+        public int GetNumBytesRemaining() {
+            return contents.Length - offset;
+        }
+
         public int GetNextInt(){
             int retval = BitConverter.ToInt32(contents, offset);
             offset += sizeof(int);
