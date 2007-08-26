@@ -145,6 +145,11 @@ namespace Ymfas
             offset += sizeof(char);
             return retval;
         }
+        public byte GetNextByte() {
+            byte retval = contents[offset];
+            offset++;
+            return retval;
+        }
 
         public Mogre.Vector3 GetNextVector3(){
             return new Mogre.Vector3(GetNextFloat(), GetNextFloat(), GetNextFloat());
@@ -176,5 +181,21 @@ namespace Ymfas
 
             return System.Text.Encoding.UTF8.GetString(bytes);
         }
+    }
+
+    public class Tuple<T,U>{
+        private T a;
+        private U b;
+        public Tuple(){
+            a = default(T);
+            b = default(U);
+        }
+        public Tuple(T x, U y) {
+            a = x;
+            b = y;
+        }
+        public T X { get{return a;} set{a=value;} }
+        public U Y { get{return b;} set{b=value;} }
+
     }
 }

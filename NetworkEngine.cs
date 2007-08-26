@@ -5,20 +5,20 @@ using System.Text;
 using System.Net;
 
 namespace Ymfas {
-    public enum GameMode { Deathmatch, TeamDeathmatch, CaptureTheFlag, ConvoyDefense, KingOfTheAsteroid };
+    public enum GameModeEnum { Tag, Deathmatch, TeamDeathmatch, CaptureTheFlag, ConvoyDefense, KingOfTheAsteroid };
     public enum GameTeam { NoTeam, Team1, Team2 };
 	
 	public static class GameInfo
 	{
-		public static bool IsTeamGame( GameMode gm )
+		public static bool IsTeamGame( GameModeEnum gm )
 		{
-			return (gm != GameMode.TeamDeathmatch && gm == GameMode.KingOfTheAsteroid );
+			return (gm != GameModeEnum.TeamDeathmatch && gm == GameModeEnum.KingOfTheAsteroid );
 		}
 	}
 
 	public class YmfasClient : SpiderClient
 	{
-		public GameMode GameMode;
+		public GameModeEnum GameMode;
 		public GameTeam Team;
 		public int playerId;
 
@@ -36,7 +36,7 @@ namespace Ymfas {
     public class YmfasServer : SpiderServer 
 	{
         private Dictionary<IPAddress, string> playerIPs;
-        public GameMode GameMode;
+        public GameModeEnum GameMode;
         public GameTeam Team;
 		private Dictionary<IPAddress, int> playerIdsByIP;
 		private Dictionary<int, string> playerNamesById;

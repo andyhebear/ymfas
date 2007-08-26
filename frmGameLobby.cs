@@ -286,7 +286,7 @@ namespace Ymfas {
                             chkReady.Checked = false;
 
                             //parse selection into GameMode
-                            client.GameMode = (GameMode)Enum.Parse(typeof(GameMode), cmbGameMode.Items[cmbGameMode.SelectedIndex].ToString().Replace(" ", ""));
+                            client.GameMode = (GameModeEnum)Enum.Parse(typeof(GameModeEnum), cmbGameMode.Items[cmbGameMode.SelectedIndex].ToString().Replace(" ", ""));
                         }
                         catch (Exception err) {
 							System.Console.WriteLine(err.Message);
@@ -389,10 +389,10 @@ namespace Ymfas {
             server.SendMessage(msg, Lidgren.Library.Network.NetChannel.ReliableUnordered);
             
             //parse selection into GameMode
-            server.GameMode = (GameMode)Enum.Parse(typeof(GameMode), cmbGameMode.Items[cmbGameMode.SelectedIndex].ToString().Replace(" ", ""));
+            server.GameMode = (GameModeEnum)Enum.Parse(typeof(GameModeEnum), cmbGameMode.Items[cmbGameMode.SelectedIndex].ToString().Replace(" ", ""));
 
             //team or solo play?
-            if (server.GameMode != GameMode.Deathmatch && server.GameMode != GameMode.KingOfTheAsteroid) 
+            if (server.GameMode != GameModeEnum.Deathmatch && server.GameMode != GameModeEnum.KingOfTheAsteroid) 
                 cmbTeam.Enabled = true;
             else
                 cmbTeam.Enabled = false;

@@ -47,6 +47,8 @@ namespace Ymfas
             ShipControlStatus.FiringEvent += new GameEventFiringHandler(handleShipControlStatus);
         }
 
+        public Dictionary<int, Ship> ShipTable { get { return shipTable; } }
+
 		void handleShipControlStatus(GameEvent e)
 		{
 			ShipControlStatus ee = (ShipControlStatus)e;
