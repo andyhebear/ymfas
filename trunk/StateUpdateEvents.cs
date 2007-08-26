@@ -241,7 +241,7 @@ namespace Ymfas {
         }
 
         public override void SetDataFromByteArray(byte[] byteArray) {
-            Deserializer d = new Deserializer(byteArray);
+            Deserializer d = new Deserializer(byteArray);           
             int numTargets = d.GetNextInt();
             for (int i = 1; i <= numTargets; i++) {
                 targetIds.Add(d.GetNextInt());
@@ -253,8 +253,59 @@ namespace Ymfas {
             get { return Lidgren.Library.Network.NetChannel.ReliableUnordered; }
         }
 
+        public List<int> getRecipientIds() {
+            return targetIds;
+        }
+        public String getMessage() {
+            return msg;
+        }
+
 
     }
-    
+
+    public class StatBoardEvent : GameEvent {
+        private StatBoardEnum stat;
+        private Dictionary<int,int> valueById;
+        public static event GameEventFiringHandler FiringEvent;
+        public StatBoardEvent(StatBoardEnum statType, Dictionary<int, int> statValueByPlayerId) {
+            stat = statType;
+            valueById = statValueByPlayerId;
+        }
+
+        public override byte[] ToByteArray() {
+            Serializer s = new Serializer();
+            IEnumerator boardEnum = valueById.GetEnumerator();
+            boardEnum.Reset();
+            while (boardEnum.MoveNext()) {
+                KeyValuePair<int, int> curKV = (KeyValuePair<int, int>)boardEnum.Current;
+                s.Add(curKV.Key);
+                s.Add(curKV.Value);
+            }
+            return s.GetBytes();
+        }
+
+        public override void SetDataFromByteArray(byte[] byteArray) {
+            Deserializer d = new Deserializer(byteArray);
+            stat = (StatBoardEnum)d.GetNextByte();
+            valueById = new Dictionary<int, int>();
+            while (d.GetNumBytesRemaining() > 0) {                
+                valueById.Add(d.GetNextInt(), d.GetNextInt());
+            }
+        }
+
+        public override void FireEvent() {
+            if (FiringEvent != null) {
+                FiringEvent(this);
+            }
+        }
+
+        public override Lidgren.Library.Network.NetChannel DeliveryType {
+            get { return Lidgren.Library.Network.NetChannel.ReliableUnordered; }
+        }
+
+    }
+    public enum StatBoardEnum { PrimaryScore, Kills, Deaths, PositiveTime, NegativeTime }
+
+
 }
 

@@ -73,6 +73,7 @@
       <DependentUpon>frmMainSplash.cs</DependentUpon>
     </Compile>
     <Compile Include="EventManager.cs" />
+    <Compile Include="GameGoalManager.cs" />
     <Compile Include="InputSystem.cs" />
     <Compile Include="NetworkEngine.cs" />
     <Compile Include="ServerShipManager.cs" />
