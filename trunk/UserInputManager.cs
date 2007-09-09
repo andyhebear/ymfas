@@ -45,10 +45,10 @@ namespace Ymfas
                 pitch += NEGATIVE;
 
             if (input.IsDown(Key.F))
-                yaw += POSITIVE;
+                yaw += NEGATIVE;
 
             if (input.IsDown(Key.S))
-                yaw += NEGATIVE;
+                yaw += POSITIVE;
 
             if (input.IsDown(Key.R))
                 roll += POSITIVE;

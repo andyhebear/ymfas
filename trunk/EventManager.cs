@@ -60,7 +60,7 @@ namespace Ymfas {
 		/// </summary>
 		private void PollMessages()
 		{
-			SpiderMessage msg = null;
+			/*SpiderMessage msg = null;
 			while (net != null)
 			{
 				Thread.Sleep(100);
@@ -91,7 +91,7 @@ namespace Ymfas {
 						Util.RecordException(e);
 					}
 				}
-			}
+			}*/
 		}
 
 		/// <summary>
@@ -99,6 +99,30 @@ namespace Ymfas {
 		/// </summary>
 		public void Update()
 		{
+            net.Update();
+            SpiderMessage msg = null;
+            while ((msg = net.GetNextMessage()) != null) {
+                try {
+                    //The type is contained in the label
+                    Type eventType = Type.GetType(msg.Label);
+
+                    //Create an event object
+                    GameEvent msgEvent = (GameEvent)System.Activator.CreateInstance(eventType);
+
+                    //Add data to the event                       
+                    msgEvent.SetDataFromByteArray((byte[])msg.Data);
+
+
+                    //Add this event to the queue
+                    lock (EventQueue) {
+                        EventQueue.Enqueue(msgEvent);
+                    }
+                }
+                catch (Exception e) {
+                    Util.RecordException(e);
+                }
+            }
+
 			GameEvent[] tempArray = new GameEvent[EventQueue.Count];
 			lock (EventQueue)
 			{
