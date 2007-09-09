@@ -40,58 +40,15 @@ namespace Ymfas {
 	{
 		private SpiderBase net;
 		private Queue<GameEvent> EventQueue;
-		private Thread MessagePolling;
 
 		/// <summary>
-		/// Creates a new EventManager, which will begin polling the network for event messages
+		/// Creates a new EventManager
 		/// </summary>
 		/// <param name="networkEngine">The network engine to monitor for events</param>
 		public EventManager(SpiderBase _spider)
 		{
 			net = _spider;
 			EventQueue = new Queue<GameEvent>();
-
-			MessagePolling = new Thread(PollMessages);
-			MessagePolling.Start();
-		}
-
-		/// <summary>
-		/// Polls the message queue of the network engine indefinitely, parsing out events and filling the event
-		/// </summary>
-		private void PollMessages()
-		{
-			/*SpiderMessage msg = null;
-			while (net != null)
-			{
-				Thread.Sleep(100);
-				net.Update();
-
-				while ((msg = net.GetNextMessage()) != null)
-				{
-					try
-					{
-						//The type is contained in the label
-						Type eventType = Type.GetType(msg.Label);
-                        
-						//Create an event object
-						GameEvent msgEvent = (GameEvent)System.Activator.CreateInstance(eventType);                   
-
-						//Add data to the event                       
-                        msgEvent.SetDataFromByteArray((byte[])msg.Data);
-
-
-						//Add this event to the queue
-						lock (EventQueue)
-						{
-							EventQueue.Enqueue(msgEvent);
-						}
-					}
-					catch (Exception e)
-					{
-						Util.RecordException(e);
-					}
-				}
-			}*/
 		}
 
 		/// <summary>
@@ -113,28 +70,13 @@ namespace Ymfas {
                     msgEvent.SetDataFromByteArray((byte[])msg.Data);
 
 
-                    //Add this event to the queue
-                    lock (EventQueue) {
-                        EventQueue.Enqueue(msgEvent);
-                    }
+                    //Fire
+                    msgEvent.FireEvent();
                 }
                 catch (Exception e) {
                     Util.RecordException(e);
                 }
             }
-
-			GameEvent[] tempArray = new GameEvent[EventQueue.Count];
-			lock (EventQueue)
-			{
-				EventQueue.CopyTo(tempArray, 0);
-				EventQueue.Clear();
-			}
-
-			//Process each event
-			for (int i = 0; i < tempArray.Length; i++)
-			{
-				tempArray[i].FireEvent();
-			}
 		}
 
 		/// <summary>
