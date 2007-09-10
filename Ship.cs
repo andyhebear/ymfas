@@ -12,11 +12,11 @@ namespace Ymfas
         Vector3 standbyForce;
 		Vector3 standbyTorque;
 
-        const float FORCE = 10.0f;
+        const float MAX_THRUST = 5000.0f;
         const float BOUNDING_RADIUS = 50.0f;
-        const float MAX_X_TORQUE = 5.0f;
-        const float MAX_Y_TORQUE = 5.0f;
-        const float MAX_Z_TORQUE = 5.0f;
+        const float MAX_X_TORQUE = 2.0f;
+        const float MAX_Y_TORQUE = 2.0f;
+        const float MAX_Z_TORQUE = 2.0f;
 
         //this is VERY temporary
         const float time = 1 / 60.0f;
@@ -72,7 +72,7 @@ namespace Ymfas
 		// thrust is measured in meters / s^2
 		public void ThrustRelative(Vector3 vec)
 		{
-            standbyForce = vec * FORCE * BOUNDING_RADIUS;
+            standbyForce = vec * MAX_THRUST;
 		}
 		public void TorqueRelative(Vector3 vec)
 		{
@@ -86,7 +86,7 @@ namespace Ymfas
             Quaternion orient = new Quaternion();
             body.getPositionOrientation(out pos, out orient);
             Vector3 torque = orient.Inverse() * body.getOmega() * 100.0f / time;
-            
+            /*
             Console.Out.WriteLine("StopRotation");
             Console.Out.WriteLine("torque");
             Console.Out.WriteLine(torque.ToString());
@@ -95,50 +95,52 @@ namespace Ymfas
             Console.Out.WriteLine("omega");
             Console.Out.WriteLine((orient.Inverse() * body.getOmega()).ToString());
             Console.Out.WriteLine("");
+            */
 
+            Console.Out.WriteLine((torque/MAX_X_TORQUE).ToString());
 
             Vector3 correctiveTorque = new Vector3();
 
             //x correction
 
-            if(torque.x > MAX_X_TORQUE * BOUNDING_RADIUS)
+            if(torque.x > MAX_X_TORQUE)
             {
                 correctiveTorque.x = -1;
             }
-            else if (torque.x < -MAX_X_TORQUE * BOUNDING_RADIUS)
+            else if (torque.x < -MAX_X_TORQUE)
             {
                 correctiveTorque.x = 1;
             }
             else
             {
-                correctiveTorque.x = -torque.x / MAX_X_TORQUE / BOUNDING_RADIUS;
+                correctiveTorque.x = -torque.x / MAX_X_TORQUE;
             }
             //y correction
 
-            if (torque.y > MAX_Y_TORQUE * BOUNDING_RADIUS)
+            if (torque.y > MAX_Y_TORQUE)
             {
                 correctiveTorque.y = -1;
             }
-            else if (torque.y < -MAX_Y_TORQUE * BOUNDING_RADIUS)
+            else if (torque.y < -MAX_Y_TORQUE)
             {
                 correctiveTorque.y = 1;
             }
             else
             {
-                correctiveTorque.y = -torque.y / MAX_Y_TORQUE / BOUNDING_RADIUS;
+                correctiveTorque.y = -torque.y / MAX_Y_TORQUE;
             }
             //z correction
-            if (torque.z > MAX_Z_TORQUE * BOUNDING_RADIUS)
+            if (torque.z > MAX_Z_TORQUE)
             {
                 correctiveTorque.z = -1;
             }
-            else if (torque.z < -MAX_Z_TORQUE * BOUNDING_RADIUS)
+            else if (torque.z < -MAX_Z_TORQUE)
             {
                 correctiveTorque.z = 1;
             }
             else
             {
-                correctiveTorque.z = -torque.z / MAX_Z_TORQUE / BOUNDING_RADIUS;
+                correctiveTorque.z = -torque.z / MAX_Z_TORQUE;
             }
 
             return correctiveTorque;

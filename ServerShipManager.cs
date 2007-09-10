@@ -76,6 +76,7 @@ namespace Ymfas
             }
 
             s.TorqueRelative(torque);
+            Console.Out.WriteLine(torque.ToString());
             s.ThrustRelative(new Vector3(0.0f, 0.0f, ((float)ee.thrust) / ((float)UserInputManager.FULL)));
 		}
 
