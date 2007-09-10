@@ -53,7 +53,7 @@ namespace Ymfas
 			
             // update the position based on the orientation
             camera.Position = Target.Position + 
-				Target.Orientation * new Vector3(0, 0, -Radius);
+				Target.Orientation * new Vector3(0, Radius/6, -Radius);
 
             camera.Orientation = Target.Orientation;
             camera.Orientation = new Quaternion(Mogre.Math.PI, Camera.Up)*camera.Orientation;
