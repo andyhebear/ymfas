@@ -202,6 +202,7 @@ namespace Ymfas {
 
 
     }
+
     public struct ShipState {
         public int id;
         public Vector3 Position;

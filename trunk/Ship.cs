@@ -47,9 +47,12 @@ namespace Ymfas
         protected void ForceTorqueCallback(Body b)
         {
             //debugging
+            /*
             float mass;
             Vector3 inertia;
             body.getMassMatrix(out mass, out inertia);
+            */
+
             b.addLocalForce(standbyForce, Vector3.ZERO);
             //standbyForce = Vector3.ZERO;
 
@@ -85,7 +88,9 @@ namespace Ymfas
             Vector3 pos = new Vector3();
             Quaternion orient = new Quaternion();
             body.getPositionOrientation(out pos, out orient);
-            Vector3 torque = orient.Inverse() * body.getOmega() * 100.0f / time;
+            Vector3 omega = body.getOmega();
+            Console.Out.WriteLine(omega.ToString());
+            Vector3 torque = (orient.Inverse() * omega) * 100.0f / time;
             /*
             Console.Out.WriteLine("StopRotation");
             Console.Out.WriteLine("torque");
@@ -97,7 +102,7 @@ namespace Ymfas
             Console.Out.WriteLine("");
             */
 
-            Console.Out.WriteLine((torque/MAX_X_TORQUE).ToString());
+            //Console.Out.WriteLine(torque.ToString());
 
             Vector3 correctiveTorque = new Vector3();
 
