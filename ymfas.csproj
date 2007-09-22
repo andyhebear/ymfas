@@ -75,6 +75,7 @@
     <Compile Include="EventManager.cs" />
     <Compile Include="GameGoalManager.cs" />
     <Compile Include="InputSystem.cs" />
+    <Compile Include="Missile.cs" />
     <Compile Include="NetworkEngine.cs" />
     <Compile Include="ServerShipManager.cs" />
     <Compile Include="ShipCamera.cs" />

@@ -13,9 +13,13 @@ namespace Ymfas
         private World world;
         private EventManager eventMgr;
 		private YmfasServer server;
+        private Mogre.Log serverShipLog;
 
         public ServerShipManager(World serverWorld, EventManager eventManager, YmfasServer _server)
         {
+            serverShipLog = Mogre.LogManager.Singleton.CreateLog("server-ship.log");
+            serverShipLog.LogMessage("creating ssm");
+
             world = serverWorld;
             eventMgr = eventManager;
 			server = _server;
@@ -55,10 +59,10 @@ namespace Ymfas
 			Ship s;
 			shipTable.TryGetValue(ee.playerID, out s);
             Vector3 torque = new Vector3();
-            if (ee.pitch == UserInputManager.AUTOCORRECT || ee.roll == UserInputManager.AUTOCORRECT || ee.yaw == UserInputManager.AUTOCORRECT)
-            {
+            //if (ee.pitch == UserInputManager.AUTOCORRECT || ee.roll == UserInputManager.AUTOCORRECT || ee.yaw == UserInputManager.AUTOCORRECT)
+            //{
                 torque = s.GetCorrectiveTorque();
-            }
+            //}
 
             if (ee.pitch != UserInputManager.AUTOCORRECT)
             {
@@ -74,9 +78,10 @@ namespace Ymfas
             {
                 torque.z = ee.roll / ((float)UserInputManager.POSITIVE);
             }
-
+            //Console.Out.WriteLine(torque.ToString());
+            //Console.Out.WriteLine();
             s.TorqueRelative(torque);
-            Console.Out.WriteLine(torque.ToString());
+            
             s.ThrustRelative(new Vector3(0.0f, 0.0f, ((float)ee.thrust) / ((float)UserInputManager.FULL)));
 		}
 

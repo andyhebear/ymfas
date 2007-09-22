@@ -27,13 +27,14 @@ namespace Ymfas {
         public GameMode CreateMode(GameModeEnum gameMode){
             switch (gameMode) {
                 case GameModeEnum.Tag:
-                    return new Tag(eventMgr, shipMgr, TAG_RATE);
+                    return new Shadow(eventMgr, shipMgr, TAG_RATE);
                 default:
-                    return new Tag(eventMgr, shipMgr, TAG_RATE);
+                    return new Shadow(eventMgr, shipMgr, TAG_RATE);
             }
         }
     }
-    public class Tag : GameMode {
+    public class Shadow : GameMode {
+        private float FOLLOW_DISTANCE = 500.0f;
         private EventManager eventMgr;
         private ServerShipManager shipMgr;
         private int msgRate;
@@ -42,7 +43,7 @@ namespace Ymfas {
 
         public GameModeEnum Mode { get { return GameModeEnum.Tag; } }
 
-        public Tag(EventManager eventManager, ServerShipManager shipManager, int sendRate) {
+        public Shadow(EventManager eventManager, ServerShipManager shipManager, int sendRate) {
             eventMgr = eventManager;
             shipMgr = shipManager;
             msgRate = sendRate;
@@ -76,11 +77,23 @@ namespace Ymfas {
                     eventMgr.SendEvent(statBoard);
                 }
 
-                //calculate ship stats
-
-                //TO-DO
+                
             }
+            //calculate ship stats
 
+            //TO-DO
+            foreach (Ship shipOne in shipMgr.ShipTable.Values)
+            {
+                foreach (Ship shipTwo in shipMgr.ShipTable.Values)
+                {
+                    Vector3 distance = shipOne.ShipState.Orientation.Inverse() * (shipOne.Position - shipTwo.Position);
+                    if (distance.z < 0 && distance.x * distance.x + distance.y * distance.y < distance.z *distance.z && distance.Length < FOLLOW_DISTANCE)
+                    {
+                        playerStatsById[StatBoardEnum.PositiveTime][shipTwo.ID]++;
+                        playerStatsById[StatBoardEnum.NegativeTime][shipOne.ID]++;
+                    }
+                }
+            }
             processCtr++;
         }
     }
