@@ -59,6 +59,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ArcballCamera.cs" />
+    <Compile Include="ChatManager.cs" />
     <Compile Include="ClientShip.cs" />
     <Compile Include="frmGameLobby.cs">
       <SubType>Form</SubType>
@@ -73,7 +74,7 @@
       <DependentUpon>frmMainSplash.cs</DependentUpon>
     </Compile>
     <Compile Include="EventManager.cs" />
-    <Compile Include="GameGoalManager.cs" />
+    <Compile Include="GameModes.cs" />
     <Compile Include="InputSystem.cs" />
     <Compile Include="Missile.cs" />
     <Compile Include="NetworkEngine.cs" />
@@ -93,6 +94,7 @@
     <Compile Include="TestEngine\TestEngine_Run.cs" />
     <Compile Include="TestEngine_Server\TestEngineServer_Init.cs" />
     <Compile Include="TestEngine_Server\TestEngineServer_Run.cs" />
+    <Compile Include="TextRenderer.cs" />
     <Compile Include="TimedEventManager.cs" />
     <Compile Include="UserInputManager.cs" />
     <Compile Include="Util.cs" />

@@ -15,6 +15,7 @@ namespace Ymfas
 		private EventManager eventMgr;
 		private YmfasClient netClient;
 		private UserInputManager inputMgr;
+        private ChatManager chatMgr;
 
 		private Mogre.Timer frameTimer;
 
@@ -82,6 +83,10 @@ namespace Ymfas
 
 			// initalize the scene
 			InitializeScene();
+
+            //initialize chat manager
+            chatMgr = new ChatManager(netClient.GameMode, netClient.PlayerId);
+            TextRenderer.AddTextBox("frameCtr","FPS: 0",900,700,100,50, ColourValue.Green, ColourValue.White);
 		}
 
 		/// <summary>
@@ -168,6 +173,21 @@ namespace Ymfas
 			// usually, though, we'll need to fine comb it a little more
 			// InitializeResourceGroup allows us to load a single resource group,
 			// rather than loading the entire set at once
+
+            //load verdana font
+            try {
+                FontManager fontMgr = FontManager.Singleton;
+                ResourcePtr font = fontMgr.Create("Verdana", "General");
+                font.SetParameter("type", "truetype");
+                font.SetParameter("source", "verdana.ttf");
+                font.SetParameter("size", "16");
+                font.SetParameter("resolution", "96");
+                font.Load();
+                Console.Out.WriteLine("loaded, yo!");
+            }
+            catch (Exception e) {
+                Util.Log("Unable to load verdana.ttf");
+            }
 		}
 
 		/// <summary>

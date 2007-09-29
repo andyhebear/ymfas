@@ -45,8 +45,13 @@ namespace Ymfas
 			for (int i = 0; i < states.Count; i++)
 			{
 				ClientShip s;
-				shipTable.TryGetValue(states[i].id, out s);
-				s.ShipState = states[i];
+                shipTable.TryGetValue(states[i].id, out s);
+                try {
+                    s.ShipState = states[i];
+                }
+                catch (NullReferenceException nre) {
+                    Util.Log("Could not find a ship with ID " + i + ", but received a status update for one.");
+                }
 			}
 		}
 	}

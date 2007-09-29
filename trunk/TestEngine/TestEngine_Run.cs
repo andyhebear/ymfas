@@ -75,6 +75,7 @@ namespace Ymfas
 			grid.Build();
 
 			shipMgr = new ShipManager(this);
+            
 		}
 
 		void Print(uint time, Object msg)
@@ -134,6 +135,10 @@ namespace Ymfas
 					eventMgr.Update();
 					frameTimeMod50 -= 50;
 				}
+                //this.world.update( frameTime );
+
+                // score update
+                TextRenderer.UpdateTextBox("frameCtr","FPS: " +(int)(1 / (frameTime + 1)) );
 
 				shipCam.Update();
 

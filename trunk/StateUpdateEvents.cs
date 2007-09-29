@@ -266,16 +266,25 @@ namespace Ymfas {
 
     public class StatBoardEvent : GameEvent {
         private StatBoardEnum stat;
-        private Dictionary<int,int> valueById;
+        public StatBoardEnum Stat { get { return stat; } set { stat = value; } }
+        private Dictionary<int, int> valueById;
+        public Dictionary<int, int> ValueById { get { return valueById; } set { valueById = value; } }
         public static event GameEventFiringHandler FiringEvent;
+
+        public StatBoardEvent() {
+            Stat = default(StatBoardEnum);
+            ValueById = null;
+        }
+
         public StatBoardEvent(StatBoardEnum statType, Dictionary<int, int> statValueByPlayerId) {
-            stat = statType;
-            valueById = statValueByPlayerId;
+            Stat = statType;
+            ValueById = statValueByPlayerId;
         }
 
         public override byte[] ToByteArray() {
             Serializer s = new Serializer();
-            IEnumerator boardEnum = valueById.GetEnumerator();
+            IEnumerator boardEnum = ValueById.GetEnumerator();
+            s.Add((byte)Stat);
             boardEnum.Reset();
             while (boardEnum.MoveNext()) {
                 KeyValuePair<int, int> curKV = (KeyValuePair<int, int>)boardEnum.Current;
@@ -287,10 +296,10 @@ namespace Ymfas {
 
         public override void SetDataFromByteArray(byte[] byteArray) {
             Deserializer d = new Deserializer(byteArray);
-            stat = (StatBoardEnum)d.GetNextByte();
-            valueById = new Dictionary<int, int>();
+            Stat = (StatBoardEnum)d.GetNextByte();
+            ValueById = new Dictionary<int, int>();
             while (d.GetNumBytesRemaining() > 0) {                
-                valueById.Add(d.GetNextInt(), d.GetNextInt());
+                ValueById.Add(d.GetNextInt(), d.GetNextInt());
             }
         }
 
