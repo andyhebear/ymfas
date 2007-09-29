@@ -163,7 +163,6 @@ namespace Ymfas {
             get { return Lidgren.Library.Network.NetChannel.Sequenced1; }
         }
         public override byte[] ToByteArray() {
-   
             Serializer s = new Serializer();
             for (int i = 0; i < states.Count; i++) {
                 s.Add(states[i].id);
