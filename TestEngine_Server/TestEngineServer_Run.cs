@@ -46,7 +46,7 @@ namespace Ymfas
 					break;
 
 				world.update(frameTimer.Milliseconds / 1000.0f);
-
+                mode.ProcessState();
                 serverShipMgr.sendShipStateStatus();
 			}
         }

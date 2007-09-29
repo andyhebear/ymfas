@@ -12,6 +12,7 @@ namespace Ymfas
 		private EventManager eventMgr;
 		private YmfasServer netServer;
 		private ServerShipManager serverShipMgr;
+        private GameMode mode;
 
 		private Mogre.Timer frameTimer;
 
@@ -41,6 +42,7 @@ namespace Ymfas
 			frameTimer = new Mogre.Timer();
 
 			serverShipMgr = new ServerShipManager(world, eventMgr, netServer);
+            mode = new GameModeFactory(eventMgr, serverShipMgr).CreateMode(netServer.GameMode);
 		}
 
 		/// <summary>
