@@ -107,7 +107,7 @@ namespace Ymfas
             Vector3 correctiveTorque = new Vector3();
 
             //x correction
-            Util.Log(torque.ToString());
+            //Util.Log(torque.ToString());
             if(torque.x > MAX_X_TORQUE)
             {
                 correctiveTorque.x = -1;         
@@ -184,7 +184,11 @@ namespace Ymfas
 			}
 			set
 			{
-				body.setPositionOrientation(value.Position, value.Orientation);
+                Vector3 pos = new Vector3();
+                Quaternion or = new Quaternion();
+                body.getPositionOrientation(out pos, out or);
+                Console.Out.WriteLine(or.ToString() + " - " + value.Orientation.ToString() + "|\n");
+				body.setPositionOrientation(value.Position, value.Orientation);                
 				body.setVelocity(value.Velocity);
 				body.setOmega(value.RotationalVelocity);
 			}

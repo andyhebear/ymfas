@@ -138,7 +138,7 @@ namespace Ymfas
                 //this.world.update( frameTime );
 
                 // score update
-                TextRenderer.UpdateTextBox("frameCtr","FPS: " +(int)(1 / (frameTime + 1)) );
+                TextRenderer.UpdateTextBox("frameCtr","FPS: " +(int)(1 / (frameTime)) );
 
 				shipCam.Update();
 
