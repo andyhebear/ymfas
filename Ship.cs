@@ -89,8 +89,8 @@ namespace Ymfas
             Quaternion orient = new Quaternion();
             body.getPositionOrientation(out pos, out orient);
             Vector3 omega = body.getOmega();
-            Console.Out.WriteLine(omega.ToString());
-            Vector3 torque = (orient.Inverse() * omega) * 100.0f / time;
+            //Console.Out.WriteLine(omega.ToString());
+            Vector3 torque = (orient.Inverse() * omega) / 50.0f / time;
             /*
             Console.Out.WriteLine("StopRotation");
             Console.Out.WriteLine("torque");
@@ -107,10 +107,10 @@ namespace Ymfas
             Vector3 correctiveTorque = new Vector3();
 
             //x correction
-
+            Util.Log(torque.ToString());
             if(torque.x > MAX_X_TORQUE)
             {
-                correctiveTorque.x = -1;
+                correctiveTorque.x = -1;         
             }
             else if (torque.x < -MAX_X_TORQUE)
             {
@@ -190,6 +190,14 @@ namespace Ymfas
 			}
 		}
 
+        public Vector3 RotationalVelocity {
+            get {
+                return body.getOmega();
+            }
+            set {
+                body.setOmega(value);
+            }
+        }
         public int ID
         {
             get { return id; }

@@ -14,7 +14,7 @@ namespace Ymfas
         private EventManager eventMgr;
 		private YmfasServer server;
         private Mogre.Log serverShipLog;
-        private static const float AUTOCORRECT_CUTOFF = 5.0;
+        private const float AUTOCORRECT_CUTOFF = 0.001f;
 
         public ServerShipManager(World serverWorld, EventManager eventManager, YmfasServer _server)
         {
@@ -60,16 +60,22 @@ namespace Ymfas
 			Ship s;
 			shipTable.TryGetValue(ee.playerID, out s);
             Vector3 torque = s.GetCorrectiveTorque();
-            if (torque.x < AUTOCORRECT_CUTOFF) {
+
+            
+            if (Mogre.Math.Abs(s.RotationalVelocity.x) < AUTOCORRECT_CUTOFF) {
                 torque.x = 0;
+                s.RotationalVelocity = new Vector3(0, s.RotationalVelocity.y, s.RotationalVelocity.z);
             }
-            if (torque.y < AUTOCORRECT_CUTOFF) {
+            if (Mogre.Math.Abs(s.RotationalVelocity.y) < AUTOCORRECT_CUTOFF) {
                 torque.y = 0;
+                s.RotationalVelocity = new Vector3(s.RotationalVelocity.x, 0, s.RotationalVelocity.z);
             }
-            if (torque.z < AUTOCORRECT_CUTOFF) {
+            if (Mogre.Math.Abs(s.RotationalVelocity.z) < AUTOCORRECT_CUTOFF) {
                 torque.z = 0;
+                s.RotationalVelocity = new Vector3(s.RotationalVelocity.x, s.RotationalVelocity.y, 0);
             }
             
+
 
             if (ee.pitch != UserInputManager.AUTOCORRECT)
             {
