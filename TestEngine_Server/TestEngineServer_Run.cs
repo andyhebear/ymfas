@@ -29,8 +29,11 @@ namespace Ymfas
         /// </summary>
         public void Go() 
 		{
+            float MAX_UPDATE = 1.0f / 60.0f;
 			Mogre.Timer frameTimer = new Timer();
-			frameTimer.Reset();
+            frameTimer.Reset();
+
+            SafeTimer timer = new SafeTimer();
 
             while (true) {
 				System.Threading.Thread.Sleep(100);
@@ -45,7 +48,17 @@ namespace Ymfas
 				if (netServer.NumPlayers == 0)
 					break;
 
-				world.update(frameTimer.Milliseconds / 1000.0f);
+                //world update
+                float diff = (float)timer.Diff / 1000.0f;
+                while (diff > MAX_UPDATE) {
+
+                    this.world.update(MAX_UPDATE);
+                    diff -= MAX_UPDATE;
+                }      
+                if (diff > 0) {
+                    this.world.update(diff);
+                }
+
                 mode.ProcessState();
                 serverShipMgr.sendShipStateStatus();
 			}
