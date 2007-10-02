@@ -83,7 +83,6 @@ namespace Ymfas {
                 while (byStat.MoveNext()) {
                     KeyValuePair<StatBoardEnum, Dictionary<int, int>> curKV = (KeyValuePair<StatBoardEnum, Dictionary<int, int>>)byStat.Current;
                     StatBoardEvent statBoard = new StatBoardEvent(curKV.Key, curKV.Value);
-                    Console.Out.WriteLine("sending");
                     eventMgr.SendEvent(statBoard);
                 }
 

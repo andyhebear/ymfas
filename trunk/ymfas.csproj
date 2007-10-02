@@ -78,6 +78,7 @@
     <Compile Include="InputSystem.cs" />
     <Compile Include="Missile.cs" />
     <Compile Include="NetworkEngine.cs" />
+    <Compile Include="SafeTimer.cs" />
     <Compile Include="ServerShipManager.cs" />
     <Compile Include="ShipCamera.cs" />
     <Compile Include="ShipManager.cs" />

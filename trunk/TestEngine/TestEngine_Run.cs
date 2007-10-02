@@ -98,6 +98,9 @@ namespace Ymfas
 			float frameTime;
 			uint frameTimeMod50 = 0;
 
+            SafeTimer timer = new SafeTimer();
+            Console.Out.WriteLine(timer.Diff/1000.0f);
+            float MAX_UPDATE = 1.0f / 60.0f;
             //float MAX_SPEED = 30.0f;
 
 			// RenderOneFrame returns false when we Ogre
@@ -114,15 +117,14 @@ namespace Ymfas
 					break;
 
 				// grab events
-				GrabEvents(frameTimer.Milliseconds, null);
+				GrabEvents((uint)timer.Time, null);
 
 				// grab a ship, if there are any
 				ICollection<ClientShip> ships = shipMgr.Ships;
 				if (ships.Count > 0)
 				{
 					IEnumerator<ClientShip> e = ships.GetEnumerator();
-					e.MoveNext();
-
+					e.MoveNext();                   
 					if (input.IsPressed(Key.Return))
 						Util.Log("Current State:" + e.Current.SceneNode.Position);
 				}
@@ -135,7 +137,15 @@ namespace Ymfas
 					eventMgr.Update();
 					frameTimeMod50 -= 50;
 				}
-                //this.world.update( frameTime );
+                //world update
+                float diff = (float)timer.Diff / 1000.0f ;
+                while (diff > MAX_UPDATE) {                    
+                    this.world.update(MAX_UPDATE);
+                    diff -= MAX_UPDATE;
+                }
+                if (diff > 0) {
+                    this.world.update(diff);
+                }
 
                 // score update
                 TextRenderer.UpdateTextBox("frameCtr","FPS: " +(int)(1 / (frameTime)) );

@@ -61,7 +61,7 @@ namespace Ymfas
                 //if (!SetupRenderSystem())
                 throw new Exception();
 
-			CreateWindow("blah blah");
+			CreateWindow("YMFAS");
 			InitializeResourceGroups();
 
 			// Ogre allows callbacks for lots of different events.
