@@ -14,9 +14,9 @@ namespace Ymfas
 
         const float MAX_THRUST = 5000.0f;
         const float BOUNDING_RADIUS = 50.0f;
-        const float MAX_X_TORQUE = 2.0f;
-        const float MAX_Y_TORQUE = 2.0f;
-        const float MAX_Z_TORQUE = 2.0f;
+        const float MAX_X_TORQUE = 0.05f;
+        const float MAX_Y_TORQUE = 0.05f;
+        const float MAX_Z_TORQUE = 0.05f;
 
         //this is VERY temporary
         const float time = 1 / 60.0f;
