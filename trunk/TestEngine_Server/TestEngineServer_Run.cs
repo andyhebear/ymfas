@@ -36,7 +36,7 @@ namespace Ymfas
             SafeTimer timer = new SafeTimer();
 
             while (true) {
-				System.Threading.Thread.Sleep(100);
+				System.Threading.Thread.Sleep(10);
 				eventMgr.Update();
 
 				IPAddress ip = null;
