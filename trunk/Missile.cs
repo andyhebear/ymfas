@@ -21,8 +21,6 @@ namespace Ymfas
         const float MAX_Y_TORQUE = 5.0f;
         const float MAX_Z_TORQUE = 5.0f;
 
-
-
 		public Missile(World _w, int _id, Vector3 _position, Quaternion _orientation, Ship _target)
 		{
 
