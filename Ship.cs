@@ -23,12 +23,13 @@ namespace Ymfas
 
 		public Ship(World _w, int _id, Vector3 _position, Quaternion _orientation)
 		{
-
 			id = _id;
 
             MogreNewt.CollisionPrimitives.Box bodyBox =
                 new MogreNewt.CollisionPrimitives.Box(_w, new Vector3(1.0f, 1.0f, 1.0f));
-            body = new Body(_w, bodyBox);
+            
+			// for now, bodies do not collide
+			body = new Body(_w, new MogreNewt.CollisionPrimitives.Null(_w));
 
             float mass;
             Vector3 inertia;
