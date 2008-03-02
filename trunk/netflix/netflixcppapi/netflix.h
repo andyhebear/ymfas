@@ -116,7 +116,13 @@ public:
   // write the prediction file for use with compute_wrmse.py
   void write_wrmse_pred_file(string filename);
   void write_norate_pred_file(string norate, string pred);
-  
+
+  // error files
+  void write_user_total_error_file(string error)
+  { write_user_error_file(error, false); }
+  void write_user_average_error_file(string error)
+  { write_user_error_file(error, true); }
+
   /*** utilities ***/
   // converts a raw rmse value to the appropriate percentage above water level
   double rmse_to_water_level(double rmse) const { return 100.0 * (1 - rmse / WATER_LEVEL); }
@@ -134,6 +140,7 @@ public:
   virtual ~NetflixAlgorithm() { }
 
 protected:
+  void write_user_error_file(string error, bool use_average);
   Netflix* get_training_set() { return &training_set; }
 
 private:

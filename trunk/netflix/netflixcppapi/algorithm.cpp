@@ -43,7 +43,6 @@ double NetflixAlgorithm::compute_RMSE()
   } 
 
   return sqrt(se / (double)total_ratings);
-
 }
 
 /*
@@ -164,4 +163,51 @@ void NetflixAlgorithm::write_norate_pred_file(string norate, string pred)
   nr_file.close();
   pred_file.flush();
   pred_file.close();
+}
+
+
+/* 
+ * user error file
+ */
+void NetflixAlgorithm::write_user_error_file(string error, bool use_average)
+{
+  ofstream error_file(error.c_str());
+  double user_errors[NUM_MOVIES + 1];
+  int user_rating_sizes[NUM_MOVIES + 1];
+  memset(user_errors, 0, sizeof(user_errors));
+  memset(user_rating_sizes, 0, sizeof(user_rating_sizes));
+
+  int num_ratings_in_movie;
+  vector<movie_rating> movies;
+  double r;
+
+  // go through each movie
+  for (int i = 1; i <= NUM_MOVIES; ++i)
+  {      
+    // grab the data
+    movies.clear();
+    valid_set.get_all_movie_ratings(i, movies);
+    num_ratings_in_movie = movies.size();
+
+    // go through each rating and print
+    for (int j = 0; j < num_ratings_in_movie; ++j)
+    {
+      r = predict_rating(movies[j].user_id, i, 
+                         movies[j].year, movies[j].month, movies[j].day);
+      double rating_error = pow(r - movies[j].rating, 2);
+      user_errors[training_set.get_num_user_ratings(i)] += rating_error;
+
+      if (use_average)
+        user_rating_sizes[training_set.get_num_user_ratings(i)]++;
+    }
+  }
+
+  for (int i = 1; i <= NUM_MOVIES; ++i)
+  {
+    error_file << 
+      user_errors[i] / (use_average ? (user_rating_sizes[i] > 0 ? user_rating_sizes[i] : 1) : 1) << endl;
+  }
+
+  error_file.flush();
+  error_file.close();
 }
