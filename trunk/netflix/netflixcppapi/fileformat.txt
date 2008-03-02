@@ -1,0 +1,11 @@
+Large File Format:
+
+Movie offset:
+for each movie:
+  integer representing number of bytes offset in user file
+
+Movie file:
+for each movie:
+  integer number of ratings
+  list of movie_rating structures
+

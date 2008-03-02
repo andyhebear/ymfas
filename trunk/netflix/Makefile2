@@ -1,0 +1,11 @@
+CC = g++
+OPTIONS = -g -O2 -Wall -I/home/mason/lib -L/home/mason/lib -lnetflix
+
+sample:
+	 $(CC) -o sample sample.cpp $(OPTIONS)
+
+factor: factor_algorithm.cpp mat_dump.o
+	$(CC) -o factor factor_algorithm.cpp mat_dump.o $(OPTIONS) -lnewmat
+
+clean:
+	rm -f *.o sample factor
