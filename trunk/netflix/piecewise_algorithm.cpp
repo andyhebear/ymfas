@@ -37,14 +37,14 @@ void PiecewiseAlgorithm::output_files()
   cout << "Writing probe norate file..." << endl;
   write_norate_pred_file("../netflix_data/probe.norate.txt", 
                              generate_filename("norate_probe", ".txt"));
+
+  cout << "Writing error file..." << endl;
+  write_user_error_file(generate_filename("error", ".txt"), true);
 }
 
 double PiecewiseAlgorithm::predict_rating(int user_id, int movie_id, int year, int month, int day)
 {
-  vector<user_rating> ratings;
-  nf->get_all_user_ratings(user_id, ratings);
-
-  if((int)ratings.size() < cutoff)
+  if(nf->get_num_user_ratings(user_id) < cutoff)
     return algo1->predict_rating(user_id, movie_id, year, month, day);
   else
     return algo2->predict_rating(user_id, movie_id, year, month, day);

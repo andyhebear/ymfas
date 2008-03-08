@@ -15,8 +15,8 @@ AsymFctrAlgorithm::AsymFctrAlgorithm(int _num_dims = 5, double _lambda = 0.3, bo
   set_validation_users_dir("../netflix_data/valid_lf/users");
   set_validation_movies_dir("../netflix_data/valid_lf/movies");
   
-  set_training_users_dir("../netflix_data/base_lf/users");
-  set_training_movies_dir("../netflix_data/base_lf/movies");
+  set_training_users_dir("../netflix_data/both_set/users");
+  set_training_movies_dir("../netflix_data/both_set/movies");
 
   if (from_file)
   {
@@ -47,6 +47,9 @@ void AsymFctrAlgorithm::output_files()
   cout << "Writing probe norate file..." << endl;
   write_norate_pred_file("../netflix_data/probe.norate.txt", 
                              generate_filename("norate_probe", ".txt"));
+  cout << "Writing error file..." << endl;
+  write_user_error_file(generate_filename("error", ".txt"), true);
+
 }
 
 /*** load file ***/

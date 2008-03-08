@@ -57,12 +57,15 @@ int main(int argc, char* argv[])
   } else if (!strcmp(alg_type, "-p")) {
 
 
-    NetflixAlgorithm **algo = new NetflixAlgorithm*[2];
+    NetflixAlgorithm **algo = new NetflixAlgorithm*[4];
 
     algo[0] = new SimuFctrAlgorithm(5, 0.6, true);
     algo[1] = new SimuFctrAlgorithm(8, 0.6, true);
+    algo[2] = new AsymFctrAlgorithm(3, 0.6, true);
 
-    PiecewiseAlgorithm fa(algo[0], algo[1], 200);
+    algo[3] = new PiecewiseAlgorithm(algo[0], algo[1], 50);
+
+    PiecewiseAlgorithm fa(algo[2], algo[3], 20);
 
     double rmse = fa.compute_weighted_RMSE();
     cout << "Piecewise algorithm: " << rmse
