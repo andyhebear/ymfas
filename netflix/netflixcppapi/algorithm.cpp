@@ -195,10 +195,13 @@ void NetflixAlgorithm::write_user_error_file(string error, bool use_average)
       r = predict_rating(movies[j].user_id, i, 
                          movies[j].year, movies[j].month, movies[j].day);
       double rating_error = pow(r - movies[j].rating, 2);
-      user_errors[training_set.get_num_user_ratings(i)] += rating_error;
+      
+      int num_user_ratings = training_set.get_num_user_ratings(movies[j].user_id);
+
+      user_errors[num_user_ratings] += rating_error;
 
       if (use_average)
-        user_rating_sizes[training_set.get_num_user_ratings(i)]++;
+        ++user_rating_sizes[num_user_ratings];
     }
   }
 
