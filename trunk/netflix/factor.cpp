@@ -3,8 +3,6 @@
 #include "piecewise_algorithm.h"
 #include "aggregate_algorithm.h"
 
-
-
 int main(int argc, char* argv[])
 {
   int num_factors = 0;
@@ -12,7 +10,6 @@ int main(int argc, char* argv[])
   char *alg_type = "-s";  
 
   bool from_file = false;
-
 
   if (argc >= 2)
     alg_type = argv[1];
