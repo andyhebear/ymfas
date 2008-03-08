@@ -91,6 +91,7 @@ double NetflixAlgorithm::compute_weighted_RMSE()
  */
 void NetflixAlgorithm::write_wrmse_pred_file(string filename)
 {
+
   ofstream pred_file(filename.c_str());
 
   int num_ratings_in_movie;
@@ -172,6 +173,7 @@ void NetflixAlgorithm::write_norate_pred_file(string norate, string pred)
 void NetflixAlgorithm::write_user_error_file(string error, bool use_average)
 {
   ofstream error_file(error.c_str());
+  ofstream c_error_file(('c' + error).c_str());
   double user_errors[NUM_MOVIES + 1];
   int user_rating_sizes[NUM_MOVIES + 1];
   memset(user_errors, 0, sizeof(user_errors));
@@ -200,17 +202,41 @@ void NetflixAlgorithm::write_user_error_file(string error, bool use_average)
 
       user_errors[num_user_ratings] += rating_error;
 
-      if (use_average)
-        ++user_rating_sizes[num_user_ratings];
+      ++user_rating_sizes[num_user_ratings];
     }
   }
 
-  for (int i = 1; i <= NUM_MOVIES; ++i)
+
+  double total = 0;
+  double temp = 0;
+  double temptwo = 0;
+
+  for (int i = 1; i <= 20; ++i)
   {
-    error_file << 
-      user_errors[i] / (use_average ? (user_rating_sizes[i] > 0 ? user_rating_sizes[i] : 1) : 1) << endl;
+
+    temp = user_errors[i] / (user_rating_sizes[i] > 0 ? user_rating_sizes[i] : 1);
+    error_file << temp << endl;
+
+    total += temp/20;
+    c_error_file << total << endl;
+  }
+
+  for (int i = 20 + 1; i <= NUM_MOVIES; ++i)
+  {
+    temp = user_errors[i] / (user_rating_sizes[i] > 0 ? user_rating_sizes[i] : 1);
+    temptwo = user_errors[i-20] / (user_rating_sizes[i-20] > 0 ? user_rating_sizes[i-20] : 1);
+    error_file << temp << endl;
+
+   
+    total += (temp - temptwo)/20;
+
+    c_error_file << total << endl;
   }
 
   error_file.flush();
   error_file.close();
+  c_error_file.flush();
+  c_error_file.close();
+
+
 }
