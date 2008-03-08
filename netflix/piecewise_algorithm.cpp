@@ -39,10 +39,6 @@ void PiecewiseAlgorithm::output_files()
                              generate_filename("norate_probe", ".txt"));
 }
 
-
-
-   
-
 double PiecewiseAlgorithm::predict_rating(int user_id, int movie_id, int year, int month, int day)
 {
   vector<user_rating> ratings;
