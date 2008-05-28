@@ -9,8 +9,6 @@ using namespace std;
 SimuFctrAlgorithm::SimuFctrAlgorithm(int _num_dims = 5, double _lambda = 0.3, bool from_file = false) : 
   NetflixAlgorithm(30, 30), show_status(true), NUM_DIMS(_num_dims), lambda(_lambda) 
 {
-
-
   set_validation_users_dir("../netflix_data/valid_lf/users");
   set_validation_movies_dir("../netflix_data/valid_lf/movies");
   
